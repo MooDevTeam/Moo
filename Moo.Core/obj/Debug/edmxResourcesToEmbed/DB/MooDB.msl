@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MooDBStoreContainer" CdmEntityContainer="MooDB">
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.User)">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="BriefDescription" ColumnName="BriefDescription" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+          <ScalarProperty Name="PreferredLanguage" ColumnName="PreferredLanguage" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Roles">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Role)">
+        <MappingFragment StoreEntitySet="Roles">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Functions">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Function)">
+        <MappingFragment StoreEntitySet="Functions">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Problems">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Problem)">
+        <MappingFragment StoreEntitySet="Problems">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Lock" ColumnName="Lock" />
+          <ScalarProperty Name="LockSolution" ColumnName="LockSolution" />
+          <ScalarProperty Name="LockTestCase" ColumnName="LockTestCase" />
+          <ScalarProperty Name="LockPost" ColumnName="LockPost" />
+          <ScalarProperty Name="LockRecord" ColumnName="LockRecord" />
+          <ScalarProperty Name="AllowTesting" ColumnName="AllowTesting" />
+          <ScalarProperty Name="Hidden" ColumnName="Hidden" />
+          <ScalarProperty Name="TestCaseHidden" ColumnName="TestCaseHidden" />
+          <ScalarProperty Name="SubmissionCount" ColumnName="SubmissionCount" />
+          <ScalarProperty Name="ScoreSum" ColumnName="ScoreSum" />
+          <ScalarProperty Name="SubmissionUser" ColumnName="SubmissionUser" />
+          <ScalarProperty Name="MaximumScore" ColumnName="MaximumScore" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Records">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Record)">
+        <MappingFragment StoreEntitySet="Records">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
+          <ScalarProperty Name="PublicCode" ColumnName="PublicCode" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Language" ColumnName="Language" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TestCases">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.TestCase)">
+        <MappingFragment StoreEntitySet="TestCases">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.SpecialJudgedTestCase)">
+        <MappingFragment StoreEntitySet="TestCases_SpecialJudgedTestCase">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Input" ColumnName="Input" />
+          <ScalarProperty Name="Answer" ColumnName="Answer" />
+          <ScalarProperty Name="TimeLimit" ColumnName="TimeLimit" />
+          <ScalarProperty Name="MemoryLimit" ColumnName="MemoryLimit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.InteractiveTestCase)">
+        <MappingFragment StoreEntitySet="TestCases_InteractiveTestCase">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="TestData" ColumnName="TestData" />
+          <ScalarProperty Name="TimeLimit" ColumnName="TimeLimit" />
+          <ScalarProperty Name="MemoryLimit" ColumnName="MemoryLimit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.AnswerOnlyTestCase)">
+        <MappingFragment StoreEntitySet="TestCases_AnswerOnlyTestCase">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="TestData" ColumnName="TestData" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.TranditionalTestCase)">
+        <MappingFragment StoreEntitySet="TestCases_TranditionalTestCase">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Input" ColumnName="Input" />
+          <ScalarProperty Name="Answer" ColumnName="Answer" />
+          <ScalarProperty Name="TimeLimit" ColumnName="TimeLimit" />
+          <ScalarProperty Name="MemoryLimit" ColumnName="MemoryLimit" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProblemRevisions">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.ProblemRevision)">
+        <MappingFragment StoreEntitySet="ProblemRevisions">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SolutionRevisions">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.SolutionRevision)">
+        <MappingFragment StoreEntitySet="SolutionRevisions">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Posts">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Post)">
+        <MappingFragment StoreEntitySet="Posts">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Lock" ColumnName="Lock" />
+          <ScalarProperty Name="OnTop" ColumnName="OnTop" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PostItems">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.PostItem)">
+        <MappingFragment StoreEntitySet="PostItems">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="JudgeInfos">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.JudgeInfo)">
+        <MappingFragment StoreEntitySet="JudgeInfos">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Score" ColumnName="Score" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Mails">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Mail)">
+        <MappingFragment StoreEntitySet="Mails">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Contests">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Contest)">
+        <MappingFragment StoreEntitySet="Contests">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="LockProblemOnStart" ColumnName="LockProblemOnStart" />
+          <ScalarProperty Name="LockTestCaseOnStart" ColumnName="LockTestCaseOnStart" />
+          <ScalarProperty Name="LockSolutionOnStart" ColumnName="LockSolutionOnStart" />
+          <ScalarProperty Name="LockPostOnStart" ColumnName="LockPostOnStart" />
+          <ScalarProperty Name="HideTestCaseOnStart" ColumnName="HideTestCaseOnStart" />
+          <ScalarProperty Name="AllowTestingOnStart" ColumnName="AllowTestingOnStart" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="HideProblemOnStart" ColumnName="HideProblemOnStart" />
+          <ScalarProperty Name="LockRecordOnStart" ColumnName="LockRecordOnStart" />
+          <ScalarProperty Name="LockProblemOnEnd" ColumnName="LockProblemOnEnd" />
+          <ScalarProperty Name="LockSolutionOnEnd" ColumnName="LockSolutionOnEnd" />
+          <ScalarProperty Name="LockTestCaseOnEnd" ColumnName="LockTestCaseOnEnd" />
+          <ScalarProperty Name="LockPostOnEnd" ColumnName="LockPostOnEnd" />
+          <ScalarProperty Name="LockRecordOnEnd" ColumnName="LockRecordOnEnd" />
+          <ScalarProperty Name="AllowTestingOnEnd" ColumnName="AllowTestingOnEnd" />
+          <ScalarProperty Name="HideProblemOnEnd" ColumnName="HideProblemOnEnd" />
+          <ScalarProperty Name="HideTestCaseOnEnd" ColumnName="HideTestCaseOnEnd" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UploadedFiles">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.UploadedFile)">
+        <MappingFragment StoreEntitySet="UploadedFiles">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Path" ColumnName="Path" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HomepageRevisions">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.HomepageRevision)">
+        <MappingFragment StoreEntitySet="HomepageRevisions">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Logs">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Log)">
+        <MappingFragment StoreEntitySet="Logs">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="Info" ColumnName="Info" />
+          <ScalarProperty Name="RemoteAddress" ColumnName="RemoteAddress" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="FunctionForRole" TypeName="Moo.Core.DB.FunctionForRole" StoreEntitySet="FunctionForRole">
+      <EndProperty Name="Function">
+        <ScalarProperty Name="ID" ColumnName="AllowedFunction_ID" />
+      </EndProperty>
+      <EndProperty Name="Role">
+        <ScalarProperty Name="ID" ColumnName="FunctionForRole_Function_ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="RecordProblem" TypeName="Moo.Core.DB.RecordProblem" StoreEntitySet="Records">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
+      </EndProperty>
+      <EndProperty Name="Record">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TestDataProblem" TypeName="Moo.Core.DB.TestDataProblem" StoreEntitySet="TestCases">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
+      </EndProperty>
+      <EndProperty Name="TestData">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ProblemProblemRevision" TypeName="Moo.Core.DB.ProblemProblemRevision" StoreEntitySet="ProblemRevisions">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
+      </EndProperty>
+      <EndProperty Name="ProblemRevision">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserProblemRevision" TypeName="Moo.Core.DB.UserProblemRevision" StoreEntitySet="ProblemRevisions">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
+      </EndProperty>
+      <EndProperty Name="ProblemRevision">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserRole" TypeName="Moo.Core.DB.UserRole" StoreEntitySet="Users">
+      <EndProperty Name="Role">
+        <ScalarProperty Name="ID" ColumnName="Role_ID" />
+      </EndProperty>
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ProblemSolutionRevision" TypeName="Moo.Core.DB.ProblemSolutionRevision" StoreEntitySet="SolutionRevisions">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
+      </EndProperty>
+      <EndProperty Name="SolutionRevision">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserCreateSolutionRevision" TypeName="Moo.Core.DB.UserCreateSolutionRevision" StoreEntitySet="SolutionRevisions">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
+      </EndProperty>
+      <EndProperty Name="SolutionRevision">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserCreatePostItem" TypeName="Moo.Core.DB.UserCreatePostItem" StoreEntitySet="PostItems">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
+      </EndProperty>
+      <EndProperty Name="PostItem">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="PostItemPost" TypeName="Moo.Core.DB.PostItemPost" StoreEntitySet="PostItems">
+      <EndProperty Name="Post">
+        <ScalarProperty Name="ID" ColumnName="Post_ID" />
+      </EndProperty>
+      <EndProperty Name="PostItem">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ProblemPost" TypeName="Moo.Core.DB.ProblemPost" StoreEntitySet="Posts">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
+      </EndProperty>
+      <EndProperty Name="Post">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+      <Condition ColumnName="Problem_ID" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="RecordJudgeInfo" TypeName="Moo.Core.DB.RecordJudgeInfo" StoreEntitySet="JudgeInfos">
+      <EndProperty Name="Record">
+        <ScalarProperty Name="ID" ColumnName="Record_ID" />
+      </EndProperty>
+      <EndProperty Name="JudgeInfo">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MailFrom" TypeName="Moo.Core.DB.MailFrom" StoreEntitySet="Mails">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="From_ID" />
+      </EndProperty>
+      <EndProperty Name="Mail">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MailTo" TypeName="Moo.Core.DB.MailTo" StoreEntitySet="Mails">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="To_ID" />
+      </EndProperty>
+      <EndProperty Name="Mail">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="LastestRevisionOfProblem" TypeName="Moo.Core.DB.LastestRevisionOfProblem" StoreEntitySet="ProblemRevisions">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="LatestRevisionOf_ID" />
+      </EndProperty>
+      <EndProperty Name="ProblemRevision">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+      <Condition ColumnName="LatestRevisionOf_ID" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="LatestSolutionOfProblem" TypeName="Moo.Core.DB.LatestSolutionOfProblem" StoreEntitySet="SolutionRevisions">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="LatestSolutionOf_ID" />
+      </EndProperty>
+      <EndProperty Name="SolutionRevision">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+      <Condition ColumnName="LatestSolutionOf_ID" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserAttendContest" TypeName="Moo.Core.DB.UserAttendContest" StoreEntitySet="UserAttendContest">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="User_ID" />
+      </EndProperty>
+      <EndProperty Name="Contest">
+        <ScalarProperty Name="ID" ColumnName="UserAttendContest_User_ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserRecord" TypeName="Moo.Core.DB.UserRecord" StoreEntitySet="Records">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="User_ID" />
+      </EndProperty>
+      <EndProperty Name="Record">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ContestProblem" TypeName="Moo.Core.DB.ContestProblem" StoreEntitySet="ContestProblem">
+      <EndProperty Name="Contest">
+        <ScalarProperty Name="ID" ColumnName="Contest_ID" />
+      </EndProperty>
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="SpecialJudgedTestCaseUploadedFile" TypeName="Moo.Core.DB.SpecialJudgedTestCaseUploadedFile" StoreEntitySet="TestCases_SpecialJudgedTestCase">
+      <EndProperty Name="UploadedFile">
+        <ScalarProperty Name="ID" ColumnName="Judger_ID" />
+      </EndProperty>
+      <EndProperty Name="SpecialJudgedTestCase">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserCreateHomepageRevision" TypeName="Moo.Core.DB.UserCreateHomepageRevision" StoreEntitySet="HomepageRevisions">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
+      </EndProperty>
+      <EndProperty Name="HomepageRevision">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="InteractiveTestCaseInvokerFile" TypeName="Moo.Core.DB.InteractiveTestCaseInvokerFile" StoreEntitySet="TestCases_InteractiveTestCase">
+      <EndProperty Name="UploadedFile">
+        <ScalarProperty Name="ID" ColumnName="Invoker_ID" />
+      </EndProperty>
+      <EndProperty Name="InteractiveTestCase">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AnswerOnlyTestCaseUploadedFile" TypeName="Moo.Core.DB.AnswerOnlyTestCaseUploadedFile" StoreEntitySet="TestCases_AnswerOnlyTestCase">
+      <EndProperty Name="UploadedFile">
+        <ScalarProperty Name="ID" ColumnName="Judger_ID" />
+      </EndProperty>
+      <EndProperty Name="AnswerOnlyTestCase">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserTestCase" TypeName="Moo.Core.DB.UserTestCase" StoreEntitySet="TestCases">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
+      </EndProperty>
+      <EndProperty Name="TestCase">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="LogUser" TypeName="Moo.Core.DB.LogUser" StoreEntitySet="Logs">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="User_ID" />
+      </EndProperty>
+      <EndProperty Name="Log">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+      <Condition ColumnName="User_ID" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UploadedFileUser" TypeName="Moo.Core.DB.UploadedFileUser" StoreEntitySet="UploadedFiles">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
+      </EndProperty>
+      <EndProperty Name="UploadedFile">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping>

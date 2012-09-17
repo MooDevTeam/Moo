@@ -1,0 +1,8 @@
+D:\VSProject\Moo\Moo.Debug\bin\Debug\Moo.Debug.exe
+D:\VSProject\Moo\Moo.Debug\bin\Debug\Moo.Debug.pdb
+D:\VSProject\Moo\Moo.Debug\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\VSProject\Moo\Moo.Debug\obj\x86\Debug\Moo.Debug.exe
+D:\VSProject\Moo\Moo.Debug\obj\x86\Debug\Moo.Debug.pdb
+D:\VSProject\Moo\Moo.Debug\bin\Debug\Moo.Core.dll
+D:\VSProject\Moo\Moo.Debug\bin\Debug\Moo.Core.pdb
+D:\VSProject\Moo\Moo.Debug\bin\Debug\Moo.Debug.exe.config
