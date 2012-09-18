@@ -6,7 +6,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}</ProjectGuid>
+    <ProjectGuid>{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -54,7 +54,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="API.svc" />
+    <Content Include="API\JsonAPI.svc" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -64,13 +64,17 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API.svc.cs">
-      <DependentUpon>API.svc</DependentUpon>
+    <Compile Include="API\BriefProblem.cs" />
+    <Compile Include="API\BriefUser.cs" />
+    <Compile Include="API\ErrorHandler.cs" />
+    <Compile Include="API\ErrorHandlerExtension.cs" />
+    <Compile Include="API\FullProblem.cs" />
+    <Compile Include="API\FullProblemRevision.cs" />
+    <Compile Include="API\JsonAPI.svc.cs">
+      <DependentUpon>JsonAPI.svc</DependentUpon>
     </Compile>
-    <Compile Include="IAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Moo.Core\Moo.Core.csproj">
       <Project>{4E9C3A2E-4239-4E6E-9BA7-6BD46EBB9E4E}</Project>
@@ -85,7 +89,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>50010</DevelopmentServerPort>
+          <DevelopmentServerPort>52590</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

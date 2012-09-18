@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="fe45bcdd-36db-4288-8a48-0f26799716f4" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="39907ac1-14a2-4298-bbba-172adc0f3381" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
@@ -18,14 +18,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:50010/API.svc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:50010/JsonAPI.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="API.xsd" MetadataType="Schema" ID="c35b4103-dd66-4009-bee1-6491d4d27aa8" SourceId="1" SourceUrl="http://localhost:50010/API.svc?xsd=xsd2" />
-    <MetadataFile FileName="API1.xsd" MetadataType="Schema" ID="32b3675b-18f5-4335-ab37-4545c802a7f3" SourceId="1" SourceUrl="http://localhost:50010/API.svc?xsd=xsd1" />
-    <MetadataFile FileName="API.disco" MetadataType="Disco" ID="6ead9c41-1dce-438e-8c6b-30c2161dd8bc" SourceId="1" SourceUrl="http://localhost:50010/API.svc?disco" />
-    <MetadataFile FileName="API2.xsd" MetadataType="Schema" ID="235dbd92-d367-4bd2-9a31-d9266e375b08" SourceId="1" SourceUrl="http://localhost:50010/API.svc?xsd=xsd0" />
-    <MetadataFile FileName="API.wsdl" MetadataType="Wsdl" ID="ef2f9302-40d9-4afb-98c3-2ed7b619a6ca" SourceId="1" SourceUrl="http://localhost:50010/API.svc?wsdl" />
+    <MetadataFile FileName="JsonAPI.disco" MetadataType="Disco" ID="e51c5a65-3b99-4997-82d0-e0bac2d170c0" SourceId="1" SourceUrl="http://localhost:50010/JsonAPI.svc?disco" />
+    <MetadataFile FileName="JsonAPI.xsd" MetadataType="Schema" ID="c0238b6a-bb0a-438b-928d-e225012eb806" SourceId="1" SourceUrl="http://localhost:50010/JsonAPI.svc?xsd=xsd2" />
+    <MetadataFile FileName="API.wsdl" MetadataType="Wsdl" ID="e04610dc-0ff0-47d4-b229-efd4defd8199" SourceId="1" SourceUrl="http://localhost:50010/JsonAPI.svc?wsdl" />
+    <MetadataFile FileName="JsonAPI1.xsd" MetadataType="Schema" ID="126b163e-fa6b-41fa-8e62-808490935fb6" SourceId="1" SourceUrl="http://localhost:50010/JsonAPI.svc?xsd=xsd1" />
+    <MetadataFile FileName="JsonAPI2.xsd" MetadataType="Schema" ID="147ad27a-1092-419d-9f70-54dd105c9dac" SourceId="1" SourceUrl="http://localhost:50010/JsonAPI.svc?xsd=xsd0" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

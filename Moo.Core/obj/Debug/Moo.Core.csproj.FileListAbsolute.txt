@@ -3,3 +3,4 @@ D:\VSProject\Moo\Moo.Core\bin\Debug\Moo.Core.pdb
 D:\VSProject\Moo\Moo.Core\obj\Debug\ResolveAssemblyReference.cache
 D:\VSProject\Moo\Moo.Core\obj\Debug\Moo.Core.dll
 D:\VSProject\Moo\Moo.Core\obj\Debug\Moo.Core.pdb
+D:\VSProject\Moo\Moo.Core\bin\Debug\Moo.Core.dll.config

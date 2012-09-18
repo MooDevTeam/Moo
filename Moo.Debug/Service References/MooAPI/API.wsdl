@@ -2,97 +2,47 @@
 <wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="API" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
-      <xsd:import schemaLocation="http://localhost:50010/API.svc?xsd=xsd0" namespace="http://tempuri.org/" />
-      <xsd:import schemaLocation="http://localhost:50010/API.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:50010/API.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Moo.API" />
+      <xsd:import schemaLocation="http://localhost:50010/JsonAPI.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:50010/JsonAPI.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:50010/JsonAPI.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Moo.API" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IAPI_Login_InputMessage">
+  <wsdl:message name="IJsonAPI_Login_InputMessage">
     <wsdl:part name="parameters" element="tns:Login" />
   </wsdl:message>
-  <wsdl:message name="IAPI_Login_OutputMessage">
+  <wsdl:message name="IJsonAPI_Login_OutputMessage">
     <wsdl:part name="parameters" element="tns:LoginResponse" />
   </wsdl:message>
-  <wsdl:message name="IAPI_AddTrustedUser_InputMessage">
-    <wsdl:part name="parameters" element="tns:AddTrustedUser" />
+  <wsdl:message name="IJsonAPI_GetCurrentUser_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentUser" />
   </wsdl:message>
-  <wsdl:message name="IAPI_AddTrustedUser_OutputMessage">
-    <wsdl:part name="parameters" element="tns:AddTrustedUserResponse" />
+  <wsdl:message name="IJsonAPI_GetCurrentUser_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCurrentUserResponse" />
   </wsdl:message>
-  <wsdl:message name="IAPI_RemoveTrustedUser_InputMessage">
-    <wsdl:part name="parameters" element="tns:RemoveTrustedUser" />
+  <wsdl:message name="IJsonAPI_Logout_InputMessage">
+    <wsdl:part name="parameters" element="tns:Logout" />
   </wsdl:message>
-  <wsdl:message name="IAPI_RemoveTrustedUser_OutputMessage">
-    <wsdl:part name="parameters" element="tns:RemoveTrustedUserResponse" />
+  <wsdl:message name="IJsonAPI_Logout_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogoutResponse" />
   </wsdl:message>
-  <wsdl:message name="IAPI_ListTrustedUser_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListTrustedUser" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_ListTrustedUser_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListTrustedUserResponse" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_GetUserByName_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetUserByName" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_GetUserByName_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetUserByNameResponse" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_CreateProblem_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateProblem" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_CreateProblem_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateProblemResponse" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_CreateTranditionalTestCase_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateTranditionalTestCase" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_CreateTranditionalTestCase_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateTranditionalTestCaseResponse" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_CreateSpecialJudgedTestCase_InputMessage">
-    <wsdl:part name="parameters" element="tns:CreateSpecialJudgedTestCase" />
-  </wsdl:message>
-  <wsdl:message name="IAPI_CreateSpecialJudgedTestCase_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CreateSpecialJudgedTestCaseResponse" />
-  </wsdl:message>
-  <wsdl:portType name="IAPI">
+  <wsdl:portType name="IJsonAPI">
     <wsdl:operation name="Login">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/Login" message="tns:IAPI_Login_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/LoginResponse" message="tns:IAPI_Login_OutputMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IJsonAPI/Login" message="tns:IJsonAPI_Login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJsonAPI/LoginResponse" message="tns:IJsonAPI_Login_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="AddTrustedUser">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/AddTrustedUser" message="tns:IAPI_AddTrustedUser_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/AddTrustedUserResponse" message="tns:IAPI_AddTrustedUser_OutputMessage" />
+    <wsdl:operation name="GetCurrentUser">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJsonAPI/GetCurrentUser" message="tns:IJsonAPI_GetCurrentUser_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJsonAPI/GetCurrentUserResponse" message="tns:IJsonAPI_GetCurrentUser_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="RemoveTrustedUser">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/RemoveTrustedUser" message="tns:IAPI_RemoveTrustedUser_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/RemoveTrustedUserResponse" message="tns:IAPI_RemoveTrustedUser_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListTrustedUser">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/ListTrustedUser" message="tns:IAPI_ListTrustedUser_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/ListTrustedUserResponse" message="tns:IAPI_ListTrustedUser_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetUserByName">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/GetUserByName" message="tns:IAPI_GetUserByName_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/GetUserByNameResponse" message="tns:IAPI_GetUserByName_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CreateProblem">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/CreateProblem" message="tns:IAPI_CreateProblem_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/CreateProblemResponse" message="tns:IAPI_CreateProblem_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CreateTranditionalTestCase">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/CreateTranditionalTestCase" message="tns:IAPI_CreateTranditionalTestCase_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/CreateTranditionalTestCaseResponse" message="tns:IAPI_CreateTranditionalTestCase_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CreateSpecialJudgedTestCase">
-      <wsdl:input wsaw:Action="http://tempuri.org/IAPI/CreateSpecialJudgedTestCase" message="tns:IAPI_CreateSpecialJudgedTestCase_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IAPI/CreateSpecialJudgedTestCaseResponse" message="tns:IAPI_CreateSpecialJudgedTestCase_OutputMessage" />
+    <wsdl:operation name="Logout">
+      <wsdl:input wsaw:Action="http://tempuri.org/IJsonAPI/Logout" message="tns:IJsonAPI_Logout_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IJsonAPI/LogoutResponse" message="tns:IJsonAPI_Logout_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="BasicHttpBinding_IAPI" type="tns:IAPI">
+  <wsdl:binding name="BasicHttpBinding_IJsonAPI" type="tns:IJsonAPI">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Login">
-      <soap:operation soapAction="http://tempuri.org/IAPI/Login" style="document" />
+      <soap:operation soapAction="http://tempuri.org/IJsonAPI/Login" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -100,8 +50,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="AddTrustedUser">
-      <soap:operation soapAction="http://tempuri.org/IAPI/AddTrustedUser" style="document" />
+    <wsdl:operation name="GetCurrentUser">
+      <soap:operation soapAction="http://tempuri.org/IJsonAPI/GetCurrentUser" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -109,53 +59,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="RemoveTrustedUser">
-      <soap:operation soapAction="http://tempuri.org/IAPI/RemoveTrustedUser" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ListTrustedUser">
-      <soap:operation soapAction="http://tempuri.org/IAPI/ListTrustedUser" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetUserByName">
-      <soap:operation soapAction="http://tempuri.org/IAPI/GetUserByName" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="CreateProblem">
-      <soap:operation soapAction="http://tempuri.org/IAPI/CreateProblem" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="CreateTranditionalTestCase">
-      <soap:operation soapAction="http://tempuri.org/IAPI/CreateTranditionalTestCase" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="CreateSpecialJudgedTestCase">
-      <soap:operation soapAction="http://tempuri.org/IAPI/CreateSpecialJudgedTestCase" style="document" />
+    <wsdl:operation name="Logout">
+      <soap:operation soapAction="http://tempuri.org/IJsonAPI/Logout" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -165,8 +70,8 @@
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="API">
-    <wsdl:port name="BasicHttpBinding_IAPI" binding="tns:BasicHttpBinding_IAPI">
-      <soap:address location="http://localhost:50010/API.svc" />
+    <wsdl:port name="BasicHttpBinding_IJsonAPI" binding="tns:BasicHttpBinding_IJsonAPI">
+      <soap:address location="http://localhost:50010/JsonAPI.svc" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

@@ -15,9 +15,9 @@ namespace Moo.Debug.MooAPI {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="BriefUserInfo", Namespace="http://schemas.datacontract.org/2004/07/Moo.API")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BriefUser", Namespace="http://schemas.datacontract.org/2004/07/Moo.API")]
     [System.SerializableAttribute()]
-    public partial class BriefUserInfo : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    public partial class BriefUser : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -75,58 +75,43 @@ namespace Moo.Debug.MooAPI {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MooAPI.IAPI")]
-    public interface IAPI {
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MooAPI.IJsonAPI")]
+    public interface IJsonAPI {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/Login", ReplyAction="http://tempuri.org/IAPI/LoginResponse")]
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJsonAPI/Login", ReplyAction="http://tempuri.org/IJsonAPI/LoginResponse")]
         string Login(string userName, string password);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/AddTrustedUser", ReplyAction="http://tempuri.org/IAPI/AddTrustedUserResponse")]
-        void AddTrustedUser(string sToken, int userID);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJsonAPI/GetCurrentUser", ReplyAction="http://tempuri.org/IJsonAPI/GetCurrentUserResponse")]
+        Moo.Debug.MooAPI.BriefUser GetCurrentUser(string token);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/RemoveTrustedUser", ReplyAction="http://tempuri.org/IAPI/RemoveTrustedUserResponse")]
-        void RemoveTrustedUser(string sToken, int userID);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/ListTrustedUser", ReplyAction="http://tempuri.org/IAPI/ListTrustedUserResponse")]
-        Moo.Debug.MooAPI.BriefUserInfo[] ListTrustedUser(string sToken);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/GetUserByName", ReplyAction="http://tempuri.org/IAPI/GetUserByNameResponse")]
-        Moo.Debug.MooAPI.BriefUserInfo GetUserByName(string sToken, string userName);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/CreateProblem", ReplyAction="http://tempuri.org/IAPI/CreateProblemResponse")]
-        int CreateProblem(string sToken, string name, string type, string content);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/CreateTranditionalTestCase", ReplyAction="http://tempuri.org/IAPI/CreateTranditionalTestCaseResponse")]
-        int CreateTranditionalTestCase(string sToken, int problemID, byte[] input, byte[] answer, int timeLimit, int memoryLimit, int score);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAPI/CreateSpecialJudgedTestCase", ReplyAction="http://tempuri.org/IAPI/CreateSpecialJudgedTestCaseResponse")]
-        int CreateSpecialJudgedTestCase(string sToken, int problemID, int judgerID, byte[] input, byte[] answer, int timeLimit, int memoryLimit);
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IJsonAPI/Logout", ReplyAction="http://tempuri.org/IJsonAPI/LogoutResponse")]
+        void Logout(string token);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IAPIChannel : Moo.Debug.MooAPI.IAPI, System.ServiceModel.IClientChannel {
+    public interface IJsonAPIChannel : Moo.Debug.MooAPI.IJsonAPI, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class APIClient : System.ServiceModel.ClientBase<Moo.Debug.MooAPI.IAPI>, Moo.Debug.MooAPI.IAPI {
+    public partial class JsonAPIClient : System.ServiceModel.ClientBase<Moo.Debug.MooAPI.IJsonAPI>, Moo.Debug.MooAPI.IJsonAPI {
         
-        public APIClient() {
+        public JsonAPIClient() {
         }
         
-        public APIClient(string endpointConfigurationName) : 
+        public JsonAPIClient(string endpointConfigurationName) : 
                 base(endpointConfigurationName) {
         }
         
-        public APIClient(string endpointConfigurationName, string remoteAddress) : 
+        public JsonAPIClient(string endpointConfigurationName, string remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public APIClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public JsonAPIClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
         
-        public APIClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public JsonAPIClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
         }
         
@@ -134,32 +119,12 @@ namespace Moo.Debug.MooAPI {
             return base.Channel.Login(userName, password);
         }
         
-        public void AddTrustedUser(string sToken, int userID) {
-            base.Channel.AddTrustedUser(sToken, userID);
+        public Moo.Debug.MooAPI.BriefUser GetCurrentUser(string token) {
+            return base.Channel.GetCurrentUser(token);
         }
         
-        public void RemoveTrustedUser(string sToken, int userID) {
-            base.Channel.RemoveTrustedUser(sToken, userID);
-        }
-        
-        public Moo.Debug.MooAPI.BriefUserInfo[] ListTrustedUser(string sToken) {
-            return base.Channel.ListTrustedUser(sToken);
-        }
-        
-        public Moo.Debug.MooAPI.BriefUserInfo GetUserByName(string sToken, string userName) {
-            return base.Channel.GetUserByName(sToken, userName);
-        }
-        
-        public int CreateProblem(string sToken, string name, string type, string content) {
-            return base.Channel.CreateProblem(sToken, name, type, content);
-        }
-        
-        public int CreateTranditionalTestCase(string sToken, int problemID, byte[] input, byte[] answer, int timeLimit, int memoryLimit, int score) {
-            return base.Channel.CreateTranditionalTestCase(sToken, problemID, input, answer, timeLimit, memoryLimit, score);
-        }
-        
-        public int CreateSpecialJudgedTestCase(string sToken, int problemID, int judgerID, byte[] input, byte[] answer, int timeLimit, int memoryLimit) {
-            return base.Channel.CreateSpecialJudgedTestCase(sToken, problemID, judgerID, input, answer, timeLimit, memoryLimit);
+        public void Logout(string token) {
+            base.Channel.Logout(token);
         }
     }
 }

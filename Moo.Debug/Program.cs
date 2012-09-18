@@ -9,8 +9,8 @@ namespace Moo.Debug
     {
         static void Main(string[] args)
         {
-            MooAPI.APIClient client = new MooAPI.APIClient();
-            Console.Write(client.Login("onetwogoo", "123456"));
+            MooAPI.JsonAPIClient client = new MooAPI.JsonAPIClient();
+            Console.WriteLine(client.GetCurrentUser(client.Login("onetwogoo", "123456")).ID);
         }
     }
 }

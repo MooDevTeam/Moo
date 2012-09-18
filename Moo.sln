@@ -4,11 +4,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moo.Core", "Moo.Core\Moo.Core.csproj", "{4E9C3A2E-4239-4E6E-9BA7-6BD46EBB9E4E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moo.Debug", "Moo.Debug\Moo.Debug.csproj", "{425FB83F-058F-4E65-AF67-DEFF7E2CED29}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA} = {8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moo.API", "Moo.API\Moo.API.csproj", "{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moo.API", "Moo.API\Moo.API.csproj", "{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,16 +37,16 @@ Global
 		{425FB83F-058F-4E65-AF67-DEFF7E2CED29}.Release|Mixed Platforms.Build.0 = Release|x86
 		{425FB83F-058F-4E65-AF67-DEFF7E2CED29}.Release|x86.ActiveCfg = Release|x86
 		{425FB83F-058F-4E65-AF67-DEFF7E2CED29}.Release|x86.Build.0 = Release|x86
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{8E41BE2A-A640-4BAD-A0FD-02434C45B9DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AE6073EF-83D0-4AC1-A692-B0B2201CDDF4}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
