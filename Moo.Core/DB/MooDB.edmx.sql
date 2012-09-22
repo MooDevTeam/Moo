@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 09/21/2012 13:38:36
+-- Date Created: 09/22/2012 17:16:39
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -35,12 +35,6 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_UserRole_Role]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[UserRole] DROP CONSTRAINT [FK_UserRole_Role];
 GO
-IF OBJECT_ID(N'[dbo].[FK_ProblemSolutionRevision]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[SolutionRevisions] DROP CONSTRAINT [FK_ProblemSolutionRevision];
-GO
-IF OBJECT_ID(N'[dbo].[FK_UserCreateSolutionRevision]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[SolutionRevisions] DROP CONSTRAINT [FK_UserCreateSolutionRevision];
-GO
 IF OBJECT_ID(N'[dbo].[FK_UserCreatePostItem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[PostItems] DROP CONSTRAINT [FK_UserCreatePostItem];
 GO
@@ -61,9 +55,6 @@ IF OBJECT_ID(N'[dbo].[FK_MailTo]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_LastestRevisionOfProblem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ProblemRevisions] DROP CONSTRAINT [FK_LastestRevisionOfProblem];
-GO
-IF OBJECT_ID(N'[dbo].[FK_LatestSolutionOfProblem]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[SolutionRevisions] DROP CONSTRAINT [FK_LatestSolutionOfProblem];
 GO
 IF OBJECT_ID(N'[dbo].[FK_UserAttendContest_User]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[UserAttendContest] DROP CONSTRAINT [FK_UserAttendContest_User];
@@ -141,9 +132,6 @@ IF OBJECT_ID(N'[dbo].[TestCases]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[ProblemRevisions]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ProblemRevisions];
-GO
-IF OBJECT_ID(N'[dbo].[SolutionRevisions]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[SolutionRevisions];
 GO
 IF OBJECT_ID(N'[dbo].[Posts]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Posts];
@@ -235,7 +223,8 @@ CREATE TABLE [dbo].[Problems] (
     [SubmissionCount] int  NOT NULL,
     [ScoreSum] bigint  NOT NULL,
     [SubmissionUser] int  NOT NULL,
-    [MaximumScore] int  NULL
+    [MaximumScore] int  NULL,
+    [CreateTime] datetime  NOT NULL
 );
 GO
 
@@ -243,7 +232,6 @@ GO
 CREATE TABLE [dbo].[Records] (
     [ID] uniqueidentifier  NOT NULL,
     [Code] nvarchar(max)  NOT NULL,
-    [PublicCode] bit  NOT NULL,
     [CreateTime] datetime  NOT NULL,
     [Language] varchar(12)  NOT NULL,
     [Problem_ID] uniqueidentifier  NOT NULL,
@@ -264,20 +252,10 @@ CREATE TABLE [dbo].[ProblemRevisions] (
     [ID] uniqueidentifier  NOT NULL,
     [Content] nvarchar(max)  NOT NULL,
     [Reason] nvarchar(40)  NOT NULL,
+    [CreateTime] datetime  NOT NULL,
     [Problem_ID] uniqueidentifier  NOT NULL,
     [CreatedBy_ID] uniqueidentifier  NOT NULL,
     [LatestRevisionOf_ID] uniqueidentifier  NULL
-);
-GO
-
--- Creating table 'SolutionRevisions'
-CREATE TABLE [dbo].[SolutionRevisions] (
-    [ID] uniqueidentifier  NOT NULL,
-    [Content] nvarchar(max)  NOT NULL,
-    [Reason] nvarchar(40)  NOT NULL,
-    [Problem_ID] uniqueidentifier  NOT NULL,
-    [CreatedBy_ID] uniqueidentifier  NOT NULL,
-    [LatestSolutionOf_ID] uniqueidentifier  NULL
 );
 GO
 
@@ -328,7 +306,6 @@ CREATE TABLE [dbo].[Contests] (
     [Title] nvarchar(40)  NOT NULL,
     [LockProblemOnStart] bit  NOT NULL,
     [LockTestCaseOnStart] bit  NOT NULL,
-    [LockSolutionOnStart] bit  NOT NULL,
     [LockPostOnStart] bit  NOT NULL,
     [HideTestCaseOnStart] bit  NOT NULL,
     [AllowTestingOnStart] bit  NOT NULL,
@@ -337,7 +314,6 @@ CREATE TABLE [dbo].[Contests] (
     [HideProblemOnStart] bit  NOT NULL,
     [LockRecordOnStart] bit  NOT NULL,
     [LockProblemOnEnd] bit  NOT NULL,
-    [LockSolutionOnEnd] bit  NOT NULL,
     [LockTestCaseOnEnd] bit  NOT NULL,
     [LockPostOnEnd] bit  NOT NULL,
     [LockRecordOnEnd] bit  NOT NULL,
@@ -492,12 +468,6 @@ GO
 -- Creating primary key on [ID] in table 'ProblemRevisions'
 ALTER TABLE [dbo].[ProblemRevisions]
 ADD CONSTRAINT [PK_ProblemRevisions]
-    PRIMARY KEY CLUSTERED ([ID] ASC);
-GO
-
--- Creating primary key on [ID] in table 'SolutionRevisions'
-ALTER TABLE [dbo].[SolutionRevisions]
-ADD CONSTRAINT [PK_SolutionRevisions]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
@@ -680,34 +650,6 @@ ON [dbo].[UserRole]
     ([Role_ID]);
 GO
 
--- Creating foreign key on [Problem_ID] in table 'SolutionRevisions'
-ALTER TABLE [dbo].[SolutionRevisions]
-ADD CONSTRAINT [FK_ProblemSolutionRevision]
-    FOREIGN KEY ([Problem_ID])
-    REFERENCES [dbo].[Problems]
-        ([ID])
-    ON DELETE CASCADE ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ProblemSolutionRevision'
-CREATE INDEX [IX_FK_ProblemSolutionRevision]
-ON [dbo].[SolutionRevisions]
-    ([Problem_ID]);
-GO
-
--- Creating foreign key on [CreatedBy_ID] in table 'SolutionRevisions'
-ALTER TABLE [dbo].[SolutionRevisions]
-ADD CONSTRAINT [FK_UserCreateSolutionRevision]
-    FOREIGN KEY ([CreatedBy_ID])
-    REFERENCES [dbo].[Users]
-        ([ID])
-    ON DELETE CASCADE ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_UserCreateSolutionRevision'
-CREATE INDEX [IX_FK_UserCreateSolutionRevision]
-ON [dbo].[SolutionRevisions]
-    ([CreatedBy_ID]);
-GO
-
 -- Creating foreign key on [CreatedBy_ID] in table 'PostItems'
 ALTER TABLE [dbo].[PostItems]
 ADD CONSTRAINT [FK_UserCreatePostItem]
@@ -804,20 +746,6 @@ ADD CONSTRAINT [FK_LastestRevisionOfProblem]
 CREATE INDEX [IX_FK_LastestRevisionOfProblem]
 ON [dbo].[ProblemRevisions]
     ([LatestRevisionOf_ID]);
-GO
-
--- Creating foreign key on [LatestSolutionOf_ID] in table 'SolutionRevisions'
-ALTER TABLE [dbo].[SolutionRevisions]
-ADD CONSTRAINT [FK_LatestSolutionOfProblem]
-    FOREIGN KEY ([LatestSolutionOf_ID])
-    REFERENCES [dbo].[Problems]
-        ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_LatestSolutionOfProblem'
-CREATE INDEX [IX_FK_LatestSolutionOfProblem]
-ON [dbo].[SolutionRevisions]
-    ([LatestSolutionOf_ID]);
 GO
 
 -- Creating foreign key on [User_ID] in table 'UserAttendContest'

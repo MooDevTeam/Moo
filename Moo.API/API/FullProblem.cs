@@ -18,6 +18,9 @@ namespace Moo.API.API
         public string Type { get; set; }
 
         [DataMember]
+        public DateTime? CreateTime { get; set; }
+
+        [DataMember]
         public int? SubmissionCount { get; set; }
 
         [DataMember]
@@ -34,8 +37,5 @@ namespace Moo.API.API
 
         [DataMember]
         public Guid? LatestRevision { get; set; }
-
-        [DataMember]
-        public Guid? LatestSolution { get; set; }
     }
 }

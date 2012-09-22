@@ -63,14 +63,26 @@ namespace Moo.Debug
             return ReadResponse(request);
         }
 
+        static string Delete(string uri)
+        {
+            WebRequest request = HttpWebRequest.Create(ROOT + uri);
+            request.Method = "DELETE";
+            request.Headers.Add("Auth", Auth);
+            return ReadResponse(request);
+        }
+
         static void Main(string[] args)
         {
             Auth = Post("Login", "{\"userName\":\"onetwogoo\",\"password\":\"123456\"}");
             Auth = Auth.Substring(1, Auth.Length - 2);
             Console.WriteLine("Got Token <{0}>",Auth);
+            Console.WriteLine(Get("Problems"));
+            //Console.WriteLine(Get("Problems/d9212b32-744d-4718-88bf-29e21956381c/Revisions"));
+            //Console.WriteLine(Get("Problems/d9212b32-744d-4718-88bf-29e21956381c/Revisions/948b9e9c-efed-483c-a907-50618a53f79f"));
 
-            Console.WriteLine(Get("Problems/41dde870-2967-4824-8984-2b46dfdd7777"));
-            Console.WriteLine(Get("Problems/41dde870-2967-4824-8984-2b46dfdd7777/Revisions"));
+            //Console.WriteLine(Get("Records?contestID=d9212b32-744d-4718-88bf-29e21956381c"));
+            
+            //Console.WriteLine(Post("Problems/d9212b32-744d-4718-88bf-29e21956381c/Revisions","{\"revision\":{\"Reason\":\"闲的\",\"Content\":\"这是内容\"}}"));
             
             //Console.WriteLine(Post("Problems", "{\"problem\":{\"Name\":\"This is A Test Problem\",\"Type\":\"SpecialJudged\"}}"));
             //Console.WriteLine(Get("Problems/"));

@@ -9,9 +9,10 @@ namespace Moo.Core.Security
 {
     public static class Security
     {
-        static Dictionary<string, Function> functionByName = new Dictionary<string, Function>();
+        static Dictionary<string, Guid> functionByName = new Dictionary<string, Guid>();
         static Dictionary<string, string> functionNames = new Dictionary<string, string>();
-        static Function GetFunctionByName(string name)
+
+        public static Guid GetFunctionID(string name)
         {
             if (functionByName.ContainsKey(name))
             {
@@ -25,11 +26,18 @@ namespace Moo.Core.Security
                                          where f.Name == name
                                          select f).SingleOrDefault<Function>();
                     if (function == null) throw new ArgumentException("不存在名为 " + name + " 的功能");
-                    functionByName.Add(name, function);
+                    functionByName.Add(name, function.ID);
                     functionNames.Add(name, function.DisplayName);
-                    return function;
+                    return function.ID;
                 }
             }
+        }
+
+        public static Function GetFunction(MooDB db,string name)
+        {
+            return (from f in db.Functions
+                    where f.Name == name
+                    select f).Single<Function>();
         }
 
         public static SiteUser CurrentUser
@@ -73,7 +81,7 @@ namespace Moo.Core.Security
 
         public static bool CheckPermission(MooDB db, List<Guid> subjects, Guid obj, string type, string permission)
         {
-            return CheckPermission(db, subjects, obj, type, GetFunctionByName(permission).ID);
+            return CheckPermission(db, subjects, obj, type, GetFunctionID(permission));
         }
 
         public static bool CheckPermission(MooDB db, Guid obj, string type, string permission)
@@ -130,11 +138,6 @@ namespace Moo.Core.Security
                                                        where r.ID == obj
                                                        select r).Single<ProblemRevision>();
                     return CheckPermission(db, subjects, problemRevision.Problem.ID, "Problem", permission);
-                case "Solution":
-                    SolutionRevision solutionRevision = (from r in db.SolutionRevisions
-                                                         where r.ID == obj
-                                                         select r).Single<SolutionRevision>();
-                    return CheckPermission(db, subjects, solutionRevision.Problem.ID, "Problem", permission);
                 case "User":
                     return CheckPermission(db, subjects, Guid.Empty, null, permission);
                 case "Homepage":

@@ -108,7 +108,8 @@ namespace Moo.Core.DB
                 SubmissionCount = 10,
                 ScoreSum = 100,
                 SubmissionUser = 1,
-                MaximumScore = 30
+                MaximumScore = 30,
+                CreateTime=DateTime.Now
             };
 
             Problem CPlusD = new Problem()
@@ -118,7 +119,8 @@ namespace Moo.Core.DB
                 SubmissionCount = 20,
                 ScoreSum = 5,
                 SubmissionUser = 2,
-                MaximumScore = 120
+                MaximumScore = 120,
+                CreateTime=DateTime.Now.AddSeconds(1)
             };
             db.Problems.AddObject(CPlusD);
 
@@ -129,7 +131,8 @@ namespace Moo.Core.DB
                 SubmissionCount = 40,
                 ScoreSum = 300,
                 SubmissionUser = 4,
-                MaximumScore = 110
+                MaximumScore = 110,
+                CreateTime=DateTime.Now.AddSeconds(2)
             };
             db.Problems.AddObject(EPlusF);
 
@@ -137,6 +140,7 @@ namespace Moo.Core.DB
             {
                 Name = "Cat",
                 Type = "SpecialJudged",
+                CreateTime=DateTime.Now.AddSeconds(3)
             };
             db.Problems.AddObject(Cat);
 
@@ -144,6 +148,7 @@ namespace Moo.Core.DB
             {
                 Name = "Easy A+B",
                 Type = "Interactive",
+                CreateTime=DateTime.Now.AddSeconds(4)
             };
             db.Problems.AddObject(EasyAPlusB);
 
@@ -151,6 +156,7 @@ namespace Moo.Core.DB
             {
                 Name = "Answer A+B",
                 Type = "AnswerOnly",
+                CreateTime=DateTime.Now.AddSeconds(5)
             };
 
             //File
@@ -269,7 +275,8 @@ namespace Moo.Core.DB
                  Problem = APlusB,
                  Content = "输入A,B。输出A+B。啊！输错了！",
                  Reason = "蛋疼",
-                 CreatedBy = ShaBi
+                 CreatedBy = ShaBi,
+                 CreateTime=DateTime.Now
              });
 
             db.ProblemRevisions.AddObject(new ProblemRevision()
@@ -277,7 +284,8 @@ namespace Moo.Core.DB
                 Problem = APlusB,
                 Content = "输入A,B。输出它们的和。",
                 Reason = "蛋疼",
-                CreatedBy = MrPhone
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
             });
 
             db.ProblemRevisions.AddObject(new ProblemRevision()
@@ -285,7 +293,8 @@ namespace Moo.Core.DB
                 Problem = APlusB,
                 Content = "输入俩蛋，输出它们的和。",
                 Reason = "蛋疼",
-                CreatedBy = ShaBi
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
             });
 
             APlusB.LatestRevision = new ProblemRevision()
@@ -293,7 +302,8 @@ namespace Moo.Core.DB
                 Problem = APlusB,
                 Content = "输入两个Int32，输出它们的和。",
                 Reason = "蛋疼",
-                CreatedBy = MrPhone
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
             };
 
             CPlusD.LatestRevision = new ProblemRevision()
@@ -301,7 +311,8 @@ namespace Moo.Core.DB
                 Problem = CPlusD,
                 Content = "输入C,D。*注意是Int64*输出它们的和。",
                 Reason = "蛋疼",
-                CreatedBy = ShaBi
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
             };
 
             EPlusF.LatestRevision = new ProblemRevision()
@@ -309,7 +320,8 @@ namespace Moo.Core.DB
                 Problem = EPlusF,
                 Content = "输入E,F。输出它们的和。",
                 Reason = "蛋疼",
-                CreatedBy = ShaBi
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
             };
 
             Cat.LatestRevision = new ProblemRevision()
@@ -317,7 +329,8 @@ namespace Moo.Core.DB
                 Problem = Cat,
                 Content = "模拟Cat",
                 Reason = "擦！",
-                CreatedBy = MrPhone
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
             };
 
             EasyAPlusB.LatestRevision = new ProblemRevision()
@@ -325,7 +338,8 @@ namespace Moo.Core.DB
                 Problem = EasyAPlusB,
                 Content = "仅需编写一个int APlusB(int,int);即可。",
                 Reason = "This is Interactive",
-                CreatedBy = ShaBi
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
             };
 
             AnswerAPlusB.LatestRevision = new ProblemRevision()
@@ -333,64 +347,8 @@ namespace Moo.Core.DB
                 Problem = AnswerAPlusB,
                 Content = "提交答案吧！",
                 Reason = "None",
-                CreatedBy = MrPhone
-            };
-
-            //Solution
-            db.SolutionRevisions.AddObject(new SolutionRevision()
-            {
-                Problem = APlusB,
-                Content = "很简单。水题不解释。",
-                Reason = "太水了",
-                CreatedBy = ShaBi
-            });
-
-            APlusB.LatestSolution = new SolutionRevision()
-            {
-                Problem = APlusB,
-                Content = "var a,b:*int64*; begin read(a,b); write(a+b); end.",
-                Reason = "上代码",
-                CreatedBy = MrPhone
-            };
-
-            CPlusD.LatestSolution = new SolutionRevision()
-            {
-                Problem = CPlusD,
-                Content = "这个好像跟A+B一样吧",
-                Reason = "神犇题解",
-                CreatedBy = ShaBi
-            };
-
-            EPlusF.LatestSolution = new SolutionRevision()
-            {
-                Problem = EPlusF,
-                Content = "太难了，不会啊",
-                Reason = "垃圾题解",
-                CreatedBy = ShaBi
-            };
-
-            Cat.LatestSolution = new SolutionRevision()
-            {
-                Problem = Cat,
-                Content = "抄！",
-                Reason = "",
-                CreatedBy = ShaBi
-            };
-
-            EasyAPlusB.LatestSolution = new SolutionRevision()
-            {
-                Problem = EasyAPlusB,
-                Content = "就……就A了。",
-                Reason = "",
-                CreatedBy = MrPhone
-            };
-
-            AnswerAPlusB.LatestSolution = new SolutionRevision()
-            {
-                Problem = AnswerAPlusB,
-                Content = "弱爆了",
-                Reason = "xxx",
-                CreatedBy = ShaBi
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
             };
 
             //Post
@@ -528,7 +486,6 @@ namespace Moo.Core.DB
                 Description = "全是--水--题啊！",
                 LockProblemOnStart = true,
                 LockPostOnStart = true,
-                LockSolutionOnStart = true,
                 LockTestCaseOnStart = true,
                 AllowTestingOnStart = false,
                 HideTestCaseOnStart = true,
@@ -538,7 +495,6 @@ namespace Moo.Core.DB
                 LockPostOnEnd = false,
                 LockProblemOnEnd = false,
                 LockRecordOnEnd = false,
-                LockSolutionOnEnd = false,
                 LockTestCaseOnEnd = false,
                 HideProblemOnEnd = false,
                 HideTestCaseOnEnd = false,
@@ -561,7 +517,6 @@ namespace Moo.Core.DB
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
                 Problem = APlusB,
-                PublicCode = true
             };
             record.JudgeInfo = info;
             info.Record = record;
@@ -580,7 +535,6 @@ namespace Moo.Core.DB
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
                 Problem = APlusB,
-                PublicCode = true
             };
             record.JudgeInfo = info;
             info.Record = record;
@@ -599,7 +553,6 @@ namespace Moo.Core.DB
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
                 Problem = CPlusD,
-                PublicCode = true
             };
             record.JudgeInfo = info;
             info.Record = record;
@@ -612,7 +565,6 @@ namespace Moo.Core.DB
                 Language = "c++",
                 Problem = EasyAPlusB,
                 User = MrPhone,
-                PublicCode = true
             });
 
             db.Records.AddObject(new Record()
@@ -623,7 +575,6 @@ namespace Moo.Core.DB
                 Language = "plaintext",
                 Problem = AnswerAPlusB,
                 User = MrPhone,
-                PublicCode = true
             });
 
             db.SaveChanges();

@@ -23,8 +23,6 @@ using System.Runtime.Serialization;
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ProblemProblemRevision", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Problem), "ProblemRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ProblemRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserProblemRevision", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "ProblemRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ProblemRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserRole", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.User), "Role", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Role))]
-[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ProblemSolutionRevision", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Problem), "SolutionRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.SolutionRevision))]
-[assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateSolutionRevision", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "SolutionRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.SolutionRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreatePostItem", "PostItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.PostItem), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "PostItemPost", "PostItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.PostItem), "Post", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Post))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ProblemPost", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Problem), "Post", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Post))]
@@ -32,7 +30,6 @@ using System.Runtime.Serialization;
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "MailFrom", "Mail", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Mail), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "MailTo", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "Mail", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Mail))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "LastestRevisionOfProblem", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Problem), "ProblemRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.ProblemRevision))]
-[assembly: EdmRelationshipAttribute("Moo.Core.DB", "LatestSolutionOfProblem", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Problem), "SolutionRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.SolutionRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserAttendContest", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.User), "Contest", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Contest))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserRecord", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "Record", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Record))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ContestProblem", "Contest", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Contest), "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Problem))]
@@ -206,22 +203,6 @@ namespace Moo.Core.DB
             }
         }
         private ObjectSet<ProblemRevision> _ProblemRevisions;
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        public ObjectSet<SolutionRevision> SolutionRevisions
-        {
-            get
-            {
-                if ((_SolutionRevisions == null))
-                {
-                    _SolutionRevisions = base.CreateObjectSet<SolutionRevision>("SolutionRevisions");
-                }
-                return _SolutionRevisions;
-            }
-        }
-        private ObjectSet<SolutionRevision> _SolutionRevisions;
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -424,14 +405,6 @@ namespace Moo.Core.DB
         public void AddToProblemRevisions(ProblemRevision problemRevision)
         {
             base.AddObject("ProblemRevisions", problemRevision);
-        }
-    
-        /// <summary>
-        /// 用于向 SolutionRevisions EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
-        /// </summary>
-        public void AddToSolutionRevisions(SolutionRevision solutionRevision)
-        {
-            base.AddObject("SolutionRevisions", solutionRevision);
         }
     
         /// <summary>
@@ -802,7 +775,6 @@ namespace Moo.Core.DB
         /// <param name="title">Title 属性的初始值。</param>
         /// <param name="lockProblemOnStart">LockProblemOnStart 属性的初始值。</param>
         /// <param name="lockTestCaseOnStart">LockTestCaseOnStart 属性的初始值。</param>
-        /// <param name="lockSolutionOnStart">LockSolutionOnStart 属性的初始值。</param>
         /// <param name="lockPostOnStart">LockPostOnStart 属性的初始值。</param>
         /// <param name="hideTestCaseOnStart">HideTestCaseOnStart 属性的初始值。</param>
         /// <param name="allowTestingOnStart">AllowTestingOnStart 属性的初始值。</param>
@@ -811,14 +783,13 @@ namespace Moo.Core.DB
         /// <param name="hideProblemOnStart">HideProblemOnStart 属性的初始值。</param>
         /// <param name="lockRecordOnStart">LockRecordOnStart 属性的初始值。</param>
         /// <param name="lockProblemOnEnd">LockProblemOnEnd 属性的初始值。</param>
-        /// <param name="lockSolutionOnEnd">LockSolutionOnEnd 属性的初始值。</param>
         /// <param name="lockTestCaseOnEnd">LockTestCaseOnEnd 属性的初始值。</param>
         /// <param name="lockPostOnEnd">LockPostOnEnd 属性的初始值。</param>
         /// <param name="lockRecordOnEnd">LockRecordOnEnd 属性的初始值。</param>
         /// <param name="allowTestingOnEnd">AllowTestingOnEnd 属性的初始值。</param>
         /// <param name="hideProblemOnEnd">HideProblemOnEnd 属性的初始值。</param>
         /// <param name="hideTestCaseOnEnd">HideTestCaseOnEnd 属性的初始值。</param>
-        public static Contest CreateContest(global::System.Guid id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockSolutionOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean allowTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockSolutionOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean allowTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd)
+        public static Contest CreateContest(global::System.Guid id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean allowTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean allowTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd)
         {
             Contest contest = new Contest();
             contest.ID = id;
@@ -827,7 +798,6 @@ namespace Moo.Core.DB
             contest.Title = title;
             contest.LockProblemOnStart = lockProblemOnStart;
             contest.LockTestCaseOnStart = lockTestCaseOnStart;
-            contest.LockSolutionOnStart = lockSolutionOnStart;
             contest.LockPostOnStart = lockPostOnStart;
             contest.HideTestCaseOnStart = hideTestCaseOnStart;
             contest.AllowTestingOnStart = allowTestingOnStart;
@@ -836,7 +806,6 @@ namespace Moo.Core.DB
             contest.HideProblemOnStart = hideProblemOnStart;
             contest.LockRecordOnStart = lockRecordOnStart;
             contest.LockProblemOnEnd = lockProblemOnEnd;
-            contest.LockSolutionOnEnd = lockSolutionOnEnd;
             contest.LockTestCaseOnEnd = lockTestCaseOnEnd;
             contest.LockPostOnEnd = lockPostOnEnd;
             contest.LockRecordOnEnd = lockRecordOnEnd;
@@ -995,30 +964,6 @@ namespace Moo.Core.DB
         private global::System.Boolean _LockTestCaseOnStart;
         partial void OnLockTestCaseOnStartChanging(global::System.Boolean value);
         partial void OnLockTestCaseOnStartChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Boolean LockSolutionOnStart
-        {
-            get
-            {
-                return _LockSolutionOnStart;
-            }
-            set
-            {
-                OnLockSolutionOnStartChanging(value);
-                ReportPropertyChanging("LockSolutionOnStart");
-                _LockSolutionOnStart = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("LockSolutionOnStart");
-                OnLockSolutionOnStartChanged();
-            }
-        }
-        private global::System.Boolean _LockSolutionOnStart;
-        partial void OnLockSolutionOnStartChanging(global::System.Boolean value);
-        partial void OnLockSolutionOnStartChanged();
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -1211,30 +1156,6 @@ namespace Moo.Core.DB
         private global::System.Boolean _LockProblemOnEnd;
         partial void OnLockProblemOnEndChanging(global::System.Boolean value);
         partial void OnLockProblemOnEndChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Boolean LockSolutionOnEnd
-        {
-            get
-            {
-                return _LockSolutionOnEnd;
-            }
-            set
-            {
-                OnLockSolutionOnEndChanging(value);
-                ReportPropertyChanging("LockSolutionOnEnd");
-                _LockSolutionOnEnd = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("LockSolutionOnEnd");
-                OnLockSolutionOnEndChanged();
-            }
-        }
-        private global::System.Boolean _LockSolutionOnEnd;
-        partial void OnLockSolutionOnEndChanging(global::System.Boolean value);
-        partial void OnLockSolutionOnEndChanged();
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2772,7 +2693,8 @@ namespace Moo.Core.DB
         /// <param name="submissionCount">SubmissionCount 属性的初始值。</param>
         /// <param name="scoreSum">ScoreSum 属性的初始值。</param>
         /// <param name="submissionUser">SubmissionUser 属性的初始值。</param>
-        public static Problem CreateProblem(global::System.Guid id, global::System.String name, global::System.String type, global::System.Int32 submissionCount, global::System.Int64 scoreSum, global::System.Int32 submissionUser)
+        /// <param name="createTime">CreateTime 属性的初始值。</param>
+        public static Problem CreateProblem(global::System.Guid id, global::System.String name, global::System.String type, global::System.Int32 submissionCount, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime)
         {
             Problem problem = new Problem();
             problem.ID = id;
@@ -2781,6 +2703,7 @@ namespace Moo.Core.DB
             problem.SubmissionCount = submissionCount;
             problem.ScoreSum = scoreSum;
             problem.SubmissionUser = submissionUser;
+            problem.CreateTime = createTime;
             return problem;
         }
 
@@ -2957,6 +2880,30 @@ namespace Moo.Core.DB
         private Nullable<global::System.Int32> _MaximumScore;
         partial void OnMaximumScoreChanging(Nullable<global::System.Int32> value);
         partial void OnMaximumScoreChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime CreateTime
+        {
+            get
+            {
+                return _CreateTime;
+            }
+            set
+            {
+                OnCreateTimeChanging(value);
+                ReportPropertyChanging("CreateTime");
+                _CreateTime = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CreateTime");
+                OnCreateTimeChanged();
+            }
+        }
+        private global::System.DateTime _CreateTime;
+        partial void OnCreateTimeChanging(global::System.DateTime value);
+        partial void OnCreateTimeChanged();
 
         #endregion
     
@@ -3006,44 +2953,6 @@ namespace Moo.Core.DB
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "LatestSolutionOfProblem", "SolutionRevision")]
-        public SolutionRevision LatestSolution
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SolutionRevision>("Moo.Core.DB.LatestSolutionOfProblem", "SolutionRevision").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SolutionRevision>("Moo.Core.DB.LatestSolutionOfProblem", "SolutionRevision").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<SolutionRevision> LatestSolutionReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<SolutionRevision>("Moo.Core.DB.LatestSolutionOfProblem", "SolutionRevision");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<SolutionRevision>("Moo.Core.DB.LatestSolutionOfProblem", "SolutionRevision", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
         [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ContestProblem", "Contest")]
         public EntityCollection<Contest> Contest
         {
@@ -3079,12 +2988,14 @@ namespace Moo.Core.DB
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="content">Content 属性的初始值。</param>
         /// <param name="reason">Reason 属性的初始值。</param>
-        public static ProblemRevision CreateProblemRevision(global::System.Guid id, global::System.String content, global::System.String reason)
+        /// <param name="createTime">CreateTime 属性的初始值。</param>
+        public static ProblemRevision CreateProblemRevision(global::System.Guid id, global::System.String content, global::System.String reason, global::System.DateTime createTime)
         {
             ProblemRevision problemRevision = new ProblemRevision();
             problemRevision.ID = id;
             problemRevision.Content = content;
             problemRevision.Reason = reason;
+            problemRevision.CreateTime = createTime;
             return problemRevision;
         }
 
@@ -3165,6 +3076,30 @@ namespace Moo.Core.DB
         private global::System.String _Reason;
         partial void OnReasonChanging(global::System.String value);
         partial void OnReasonChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime CreateTime
+        {
+            get
+            {
+                return _CreateTime;
+            }
+            set
+            {
+                OnCreateTimeChanging(value);
+                ReportPropertyChanging("CreateTime");
+                _CreateTime = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CreateTime");
+                OnCreateTimeChanged();
+            }
+        }
+        private global::System.DateTime _CreateTime;
+        partial void OnCreateTimeChanging(global::System.DateTime value);
+        partial void OnCreateTimeChanged();
 
         #endregion
     
@@ -3302,15 +3237,13 @@ namespace Moo.Core.DB
         /// </summary>
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="code">Code 属性的初始值。</param>
-        /// <param name="publicCode">PublicCode 属性的初始值。</param>
         /// <param name="createTime">CreateTime 属性的初始值。</param>
         /// <param name="language">Language 属性的初始值。</param>
-        public static Record CreateRecord(global::System.Guid id, global::System.String code, global::System.Boolean publicCode, global::System.DateTime createTime, global::System.String language)
+        public static Record CreateRecord(global::System.Guid id, global::System.String code, global::System.DateTime createTime, global::System.String language)
         {
             Record record = new Record();
             record.ID = id;
             record.Code = code;
-            record.PublicCode = publicCode;
             record.CreateTime = createTime;
             record.Language = language;
             return record;
@@ -3369,30 +3302,6 @@ namespace Moo.Core.DB
         private global::System.String _Code;
         partial void OnCodeChanging(global::System.String value);
         partial void OnCodeChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Boolean PublicCode
-        {
-            get
-            {
-                return _PublicCode;
-            }
-            set
-            {
-                OnPublicCodeChanging(value);
-                ReportPropertyChanging("PublicCode");
-                _PublicCode = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("PublicCode");
-                OnPublicCodeChanged();
-            }
-        }
-        private global::System.Boolean _PublicCode;
-        partial void OnPublicCodeChanging(global::System.Boolean value);
-        partial void OnPublicCodeChanged();
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -3668,230 +3577,6 @@ namespace Moo.Core.DB
 
         #endregion
     
-    }
-    
-    /// <summary>
-    /// 没有元数据文档可用。
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="SolutionRevision")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class SolutionRevision : EntityObject
-    {
-        #region 工厂方法
-    
-        /// <summary>
-        /// 创建新的 SolutionRevision 对象。
-        /// </summary>
-        /// <param name="id">ID 属性的初始值。</param>
-        /// <param name="content">Content 属性的初始值。</param>
-        /// <param name="reason">Reason 属性的初始值。</param>
-        public static SolutionRevision CreateSolutionRevision(global::System.Guid id, global::System.String content, global::System.String reason)
-        {
-            SolutionRevision solutionRevision = new SolutionRevision();
-            solutionRevision.ID = id;
-            solutionRevision.Content = content;
-            solutionRevision.Reason = reason;
-            return solutionRevision;
-        }
-
-        #endregion
-        #region 基元属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Guid ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Content
-        {
-            get
-            {
-                return _Content;
-            }
-            set
-            {
-                OnContentChanging(value);
-                ReportPropertyChanging("Content");
-                _Content = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("Content");
-                OnContentChanged();
-            }
-        }
-        private global::System.String _Content;
-        partial void OnContentChanging(global::System.String value);
-        partial void OnContentChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Reason
-        {
-            get
-            {
-                return _Reason;
-            }
-            set
-            {
-                OnReasonChanging(value);
-                ReportPropertyChanging("Reason");
-                _Reason = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("Reason");
-                OnReasonChanged();
-            }
-        }
-        private global::System.String _Reason;
-        partial void OnReasonChanging(global::System.String value);
-        partial void OnReasonChanged();
-
-        #endregion
-    
-        #region 导航属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ProblemSolutionRevision", "Problem")]
-        public Problem Problem
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.ProblemSolutionRevision", "Problem").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.ProblemSolutionRevision", "Problem").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Problem> ProblemReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.ProblemSolutionRevision", "Problem");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Problem>("Moo.Core.DB.ProblemSolutionRevision", "Problem", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "UserCreateSolutionRevision", "User")]
-        public User CreatedBy
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateSolutionRevision", "User").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateSolutionRevision", "User").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<User> CreatedByReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateSolutionRevision", "User");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<User>("Moo.Core.DB.UserCreateSolutionRevision", "User", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "LatestSolutionOfProblem", "Problem")]
-        public Problem LatestSolutionOf
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.LatestSolutionOfProblem", "Problem").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.LatestSolutionOfProblem", "Problem").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Problem> LatestSolutionOfReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.LatestSolutionOfProblem", "Problem");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Problem>("Moo.Core.DB.LatestSolutionOfProblem", "Problem", value);
-                }
-            }
-        }
-
-        #endregion
     }
     
     /// <summary>

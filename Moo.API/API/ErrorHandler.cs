@@ -28,7 +28,8 @@ namespace Moo.API.API
                 fault = Message.CreateMessage(version, "", new CustomFault
                 {
                     Type = error.GetType().Name,
-                    Message = error.Message
+                    Message = error.Message,
+                    StackTrace = error.StackTrace
                 }, new DataContractJsonSerializer(typeof(CustomFault)));
                 fault.Properties.Add(WebBodyFormatMessageProperty.Name, new WebBodyFormatMessageProperty(WebContentFormat.Json));
 
@@ -48,5 +49,8 @@ namespace Moo.API.API
 
         [DataMember]
         public string Message { get; set; }
+
+        [DataMember]
+        public string StackTrace { get; set; }
     }
 }

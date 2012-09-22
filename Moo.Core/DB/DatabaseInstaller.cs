@@ -33,10 +33,6 @@ namespace Moo.Core.DB
         static Function ModifyTestCase = new Function() { Name = "testcase.modify", DisplayName = "修改测试数据" };
         static Function DeleteTestCase = new Function() { Name = "testcase.delete", DisplayName = "删除测试数据" };
 
-        static Function ReadSolution = new Function() { Name = "solution.read", DisplayName = "读取题解" };
-        static Function UpdateSolution = new Function() { Name = "solution.update", DisplayName = "更新题解" };
-        static Function DeleteSolution = new Function() { Name = "solution.delete", DisplayName = "删除题解" };
-
         static Function CreatePost = new Function() { Name = "post.create", DisplayName = "创建帖子" };
         static Function ReadPost = new Function() { Name = "post.read", DisplayName = "读取帖子" };
         static Function ModifyPost = new Function() { Name = "post.modify", DisplayName = "修改帖子" };
@@ -155,7 +151,6 @@ namespace Moo.Core.DB
                 new ACE(){Subject=siteManager,Function=DeleteProblemRevision,Allowed=true},
                 new ACE(){Subject=siteManager,Function=ModifyTestCase,Allowed=true},
                 new ACE(){Subject=siteManager,Function=DeleteTestCase,Allowed=true},
-                new ACE(){Subject=siteManager,Function=DeleteSolution,Allowed=true},
                 new ACE(){Subject=siteManager,Function=ModifyPost,Allowed=true},
                 new ACE(){Subject=siteManager,Function=DeletePost,Allowed=true},
                 new ACE(){Subject=siteManager,Function=DeletePostItem,Allowed=true},
@@ -173,11 +168,11 @@ namespace Moo.Core.DB
                 new ACE(){Subject=contributor,Function=CreateProblemRevision,Allowed=true},
                 new ACE(){Subject=contributor,Function=CreateProblem,Allowed=true},
                 new ACE(){Subject=contributor,Function=CreateTestCase,Allowed=true},
-                new ACE(){Subject=contributor,Function=UpdateSolution,Allowed=true},
                 new ACE(){Subject=contributor,Function=CreatePostItem,Allowed=true},
                 new ACE(){Subject=contributor,Function=CreateRecord,Allowed=true},
                 new ACE(){Subject=contributor,Function=DeleteRecordJudgeInfo,Allowed=true},
                 new ACE(){Subject=contributor,Function=CreateMail,Allowed=true},
+                new ACE(){Subject=contributor,Function=DeleteMail,Allowed=true},
                 new ACE(){Subject=contributor,Function=AttendContest,Allowed=true},
                 new ACE(){Subject=contributor,Function=CreateFile,Allowed=true},
 
@@ -186,12 +181,12 @@ namespace Moo.Core.DB
                 new ACE(){Subject=reader,Function=ReadProblem,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadProblemRevision,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadTestCase,Allowed=true},
-                new ACE(){Subject=reader,Function=ReadSolution,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadPost,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadPostItem,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadRecord,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadRecordJudgeInfo,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadUser,Allowed=true},
+                new ACE(){Subject=reader,Function=ReadMail,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadContest,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadFile,Allowed=true},
                 new ACE(){Subject=reader,Function=ReadACL,Allowed=true},

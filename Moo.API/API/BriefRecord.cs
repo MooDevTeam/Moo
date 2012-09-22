@@ -6,24 +6,27 @@ using System.Runtime.Serialization;
 namespace Moo.API.API
 {
     [DataContract]
-    public class FullProblemRevision
+    public class BriefRecord
     {
         [DataMember]
-        public Guid? ID { get; set; }
+        public Guid? ID;
 
         [DataMember]
-        public string Content { get; set; }
+        public string Language;
 
         [DataMember]
-        public string Reason { get; set; }
+        public bool? PublicCode;
 
         [DataMember]
-        public DateTime? CreateTime { get; set; }
+        public DateTime? CreateTime;
 
         [DataMember]
-        public Guid? CreatedBy { get; set; }
+        public Guid? Problem;
 
         [DataMember]
-        public Guid? Problem { get; set; }
+        public Guid? JudgeInfo;
+
+        [DataMember]
+        public Guid? User;
     }
 }

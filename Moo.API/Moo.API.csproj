@@ -73,11 +73,14 @@
     <Compile Include="API\ErrorHandler.cs" />
     <Compile Include="API\CustomBehavior.cs" />
     <Compile Include="API\ExtMethods.cs" />
+    <Compile Include="API\FullJudgeInfo.cs" />
     <Compile Include="API\FullProblem.cs" />
     <Compile Include="API\FullProblemRevision.cs" />
+    <Compile Include="API\FullRecord.cs" />
     <Compile Include="API\JsonAPI.svc.cs">
       <DependentUpon>JsonAPI.svc</DependentUpon>
     </Compile>
+    <Compile Include="API\BriefRecord.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
