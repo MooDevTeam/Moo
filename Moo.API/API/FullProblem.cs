@@ -37,5 +37,8 @@ namespace Moo.API.API
 
         [DataMember]
         public Guid? LatestRevision { get; set; }
+
+        [DataMember]
+        public Guid? CreatedBy { get; set; }
     }
 }

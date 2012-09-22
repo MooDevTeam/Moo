@@ -29,7 +29,7 @@ namespace Moo.Core.DB
                 Description = "我是--屌丝--我骄傲，我为国家省钞票!",
                 Email = "onetwogoo@live.com",
                 Score = 256,
-                PreferredLanguage="c++"
+                PreferredLanguage = "c++"
             };
             new List<Role>
             {
@@ -49,7 +49,7 @@ namespace Moo.Core.DB
                 Description = "Moo*真*他妈的好！",
                 Email = "sunjiayu_2006@126.com",
                 Score = 128,
-                PreferredLanguage="c++"
+                PreferredLanguage = "c++"
             };
             new List<Role>
             {
@@ -67,7 +67,7 @@ namespace Moo.Core.DB
                 Description = "真不懂",
                 Email = "helloyuhao@gmail.com",
                 Score = 1000,
-                PreferredLanguage="pascal"
+                PreferredLanguage = "pascal"
             };
             new List<Role>
             {
@@ -84,7 +84,7 @@ namespace Moo.Core.DB
                 Description = "太他妈冤枉了！",
                 Email = "",
                 Score = 0,
-                PreferredLanguage="c"
+                PreferredLanguage = "c"
             });
 
             //Homepage
@@ -109,7 +109,8 @@ namespace Moo.Core.DB
                 ScoreSum = 100,
                 SubmissionUser = 1,
                 MaximumScore = 30,
-                CreateTime=DateTime.Now
+                CreateTime = DateTime.Now,
+                CreatedBy = MrPhone
             };
 
             Problem CPlusD = new Problem()
@@ -120,7 +121,8 @@ namespace Moo.Core.DB
                 ScoreSum = 5,
                 SubmissionUser = 2,
                 MaximumScore = 120,
-                CreateTime=DateTime.Now.AddSeconds(1)
+                CreateTime = DateTime.Now.AddSeconds(1),
+                CreatedBy = ShaBi
             };
             db.Problems.AddObject(CPlusD);
 
@@ -132,7 +134,8 @@ namespace Moo.Core.DB
                 ScoreSum = 300,
                 SubmissionUser = 4,
                 MaximumScore = 110,
-                CreateTime=DateTime.Now.AddSeconds(2)
+                CreateTime = DateTime.Now.AddSeconds(2),
+                CreatedBy = Baby
             };
             db.Problems.AddObject(EPlusF);
 
@@ -140,7 +143,8 @@ namespace Moo.Core.DB
             {
                 Name = "Cat",
                 Type = "SpecialJudged",
-                CreateTime=DateTime.Now.AddSeconds(3)
+                CreateTime = DateTime.Now.AddSeconds(3),
+                CreatedBy = MrPhone
             };
             db.Problems.AddObject(Cat);
 
@@ -148,7 +152,8 @@ namespace Moo.Core.DB
             {
                 Name = "Easy A+B",
                 Type = "Interactive",
-                CreateTime=DateTime.Now.AddSeconds(4)
+                CreateTime = DateTime.Now.AddSeconds(4),
+                CreatedBy = MrPhone
             };
             db.Problems.AddObject(EasyAPlusB);
 
@@ -156,7 +161,8 @@ namespace Moo.Core.DB
             {
                 Name = "Answer A+B",
                 Type = "AnswerOnly",
-                CreateTime=DateTime.Now.AddSeconds(5)
+                CreateTime = DateTime.Now.AddSeconds(5),
+                CreatedBy = MrPhone
             };
 
             //File
@@ -165,7 +171,7 @@ namespace Moo.Core.DB
                 Name = "SPJ for Cat",
                 Description = "给Cat的SPJ",
                 Path = "D:\\Cat.exe",
-                CreatedBy=MrPhone
+                CreatedBy = MrPhone
             };
             db.UploadedFiles.AddObject(file);
 
@@ -178,7 +184,7 @@ namespace Moo.Core.DB
                 TimeLimit = 1000,
                 MemoryLimit = 1024 * 1024 * 6,
                 Score = 12,
-                CreatedBy=MrPhone
+                CreatedBy = MrPhone
             });
             db.SaveChanges();
 
@@ -246,7 +252,7 @@ namespace Moo.Core.DB
             file = new UploadedFile()
             {
                 Name = "Judger Of Answer A+B",
-                Description="*测评程序*啊",
+                Description = "*测评程序*啊",
                 Path = "D:\\AnswerA+B.exe",
                 CreatedBy = MrPhone
             };
@@ -276,7 +282,7 @@ namespace Moo.Core.DB
                  Content = "输入A,B。输出A+B。啊！输错了！",
                  Reason = "蛋疼",
                  CreatedBy = ShaBi,
-                 CreateTime=DateTime.Now
+                 CreateTime = DateTime.Now
              });
 
             db.ProblemRevisions.AddObject(new ProblemRevision()

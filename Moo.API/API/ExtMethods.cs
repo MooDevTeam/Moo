@@ -20,6 +20,7 @@ namespace Moo.API.API
                 Name = problem.Name,
                 Type = problem.Type,
                 CreateTime = problem.CreateTime,
+                CreatedBy = problem.CreatedBy.ID,
                 MaximumScore = problem.MaximumScore,
                 AverageScore = problem.SubmissionUser != 0 ? (double?)(problem.ScoreSum / (double)problem.SubmissionUser) : null,
                 MyScore = myRecords.Any() ? (int?)myRecords.Max(r => r.JudgeInfo.Score) : null,
@@ -97,6 +98,72 @@ namespace Moo.API.API
                 Info = info.Info,
                 Record = info.Record.ID,
                 Score = info.Score
+            };
+        }
+
+        public static FullTestCase ToFullTestCase(this TestCase testCase)
+        {
+            return new FullTestCase()
+            {
+                ID = testCase.ID,
+                CreatedBy = testCase.CreatedBy.ID,
+                Problem = testCase.Problem.ID
+            };
+        }
+
+        public static FullTranditionalTestCase ToFullTranditionalTestCase(this TranditionalTestCase testCase)
+        {
+            return new FullTranditionalTestCase()
+            {
+                ID = testCase.ID,
+                Answer = testCase.Answer,
+                CreatedBy = testCase.CreatedBy.ID,
+                Input = testCase.Input,
+                MemoryLimit = testCase.MemoryLimit,
+                Problem = testCase.Problem.ID,
+                Score = testCase.Score,
+                TimeLimit = testCase.TimeLimit,
+            };
+        }
+
+        public static FullSpecialJudgedTestCase ToFullSpecialJudgedTestCase(this SpecialJudgedTestCase testCase)
+        {
+            return new FullSpecialJudgedTestCase()
+            {
+                ID = testCase.ID,
+                Answer = testCase.Answer,
+                CreatedBy = testCase.CreatedBy.ID,
+                Input = testCase.Input,
+                Judger = testCase.Judger.ID,
+                MemoryLimit = testCase.MemoryLimit,
+                TimeLimit = testCase.TimeLimit,
+                Problem = testCase.Problem.ID
+            };
+        }
+
+        public static FullInteractiveTestCase ToFullInteractiveTestCase(this InteractiveTestCase testCase)
+        {
+            return new FullInteractiveTestCase()
+            {
+                ID = testCase.ID,
+                CreatedBy = testCase.CreatedBy.ID,
+                Invoker = testCase.Invoker.ID,
+                MemoryLimit = testCase.MemoryLimit,
+                Problem = testCase.Problem.ID,
+                TestData = testCase.TestData,
+                TimeLimit = testCase.TimeLimit,
+            };
+        }
+
+        public static FullAnswerOnlyTestCase ToFullAnswerOnlyTestCase(this AnswerOnlyTestCase testCase)
+        {
+            return new FullAnswerOnlyTestCase()
+            {
+                CreatedBy = testCase.CreatedBy.ID,
+                ID = testCase.ID,
+                Judger = testCase.Judger.ID,
+                Problem = testCase.Problem.ID,
+                TestData = testCase.TestData,
             };
         }
     }

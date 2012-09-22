@@ -103,13 +103,14 @@ namespace Moo.API.API
                 Security.RequirePermission(db, Guid.Empty, null, "problem.create");
                 if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
                 {
-                    throw new ArgumentException("不支持的题目类型：" + problem.Type);
+                    throw new NotSupportedException("不支持的题目类型：" + problem.Type);
                 }
                 Problem newProblem = new Problem()
                 {
                     Name = problem.Name,
                     Type = problem.Type,
-                    CreateTime = DateTime.Now
+                    CreateTime = DateTime.Now,
+                    CreatedBy = Security.CurrentUser.GetDBUser(db)
                 };
                 db.Problems.AddObject(newProblem);
                 db.SaveChanges();
@@ -157,8 +158,8 @@ namespace Moo.API.API
         [WebGet(UriTemplate = "Problems")]
         public List<FullProblem> ListProblem()
         {
-            int? start = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
-            int? count = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
             string nameContains = QueryParameters["nameContains"] == null ? null : QueryParameters["nameContains"];
             using (MooDB db = new MooDB())
             {
@@ -171,13 +172,13 @@ namespace Moo.API.API
 
                 problems = problems.OrderByDescending(p => p.CreateTime);
 
-                if (start != null)
+                if (skip != null)
                 {
-                    problems = problems.Skip((int)start);
+                    problems = problems.Skip((int)skip);
                 }
-                if (count != null)
+                if (top != null)
                 {
-                    problems = problems.Take((int)count);
+                    problems = problems.Take((int)top);
                 }
 
                 return problems.ToList().Select(p => p.ToFullProblem(db)).ToList();
@@ -267,7 +268,7 @@ namespace Moo.API.API
                 {
                     if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
                     {
-                        throw new ArgumentException("不支持的题目类型：" + problem.Type);
+                        throw new NotSupportedException("不支持的题目类型：" + problem.Type);
                     }
                     theProblem.Type = problem.Type;
                 }
@@ -320,7 +321,6 @@ namespace Moo.API.API
         [WebGet(UriTemplate = "Problems/{problemID}/Revisions/{id}")]
         public FullProblemRevision GetProblemRevision(string problemID, string id)
         {
-            Guid gprolemID = Guid.Parse(problemID);
             Guid gid = Guid.Parse(id);
             using (MooDB db = new MooDB())
             {
@@ -329,7 +329,6 @@ namespace Moo.API.API
                                             select r).SingleOrDefault<ProblemRevision>();
 
                 if (revision == null) throw new ArgumentException("无此题目版本");
-                if (revision.Problem.ID != gprolemID) throw new ArgumentException("题目与题目版本不匹配");
 
                 Security.RequirePermission(db, revision.ID, "ProblemRevision", "problem.revision.read");
 
@@ -379,7 +378,6 @@ namespace Moo.API.API
         [WebInvoke(UriTemplate = "Problems/{problemID}/Revisions/{id}", Method = "DELETE")]
         public void DeleteProblemRevision(string problemID, string id)
         {
-            Guid gproblemID = Guid.Parse(problemID);
             Guid gid = Guid.Parse(id);
             using (MooDB db = new MooDB())
             {
@@ -387,7 +385,6 @@ namespace Moo.API.API
                                             where r.ID == gid
                                             select r).SingleOrDefault<ProblemRevision>();
                 if (revision == null) throw new ArgumentException("无此题目版本");
-                if (revision.Problem.ID != gproblemID) throw new ArgumentException("题目与题目版本不匹配");
 
                 Security.RequirePermission(db, revision.ID, "ProblemRevision", "problem.revision.delete");
 
@@ -728,6 +725,83 @@ namespace Moo.API.API
                 record.JudgeInfo = null;
                 db.JudgeInfos.DeleteObject(info);
                 db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region TestCases
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/{problemID}/TestCases/Count")]
+        public int CountTestCase(string problemID)
+        {
+            Guid gproblemID = Guid.Parse(problemID);
+            using (MooDB db = new MooDB())
+            {
+                return (from t in db.TestCases
+                        where t.Problem.ID == gproblemID
+                        select t).Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/{problemID}/TestCases")]
+        public int ListTestCase(string problemID)
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            Guid gproblemID = Guid.Parse(problemID);
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<TestCase> testCases = from t in db.TestCases
+                                                 where t.Problem.ID == gproblemID
+                                                 select t;
+                if (skip != null)
+                {
+                    testCases = testCases.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    testCases = testCases.Take((int)top);
+                }
+
+                return testCases.ToList().Select(t => t.T);
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/{problemID}/TestCases/{id}")]
+        public FullTestCase GetTestCase(string problemID, string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                TestCase testCase = (from t in db.TestCases
+                                     where t.ID == gid
+                                     select t).SingleOrDefault<TestCase>();
+                if (testCase == null) throw new ArgumentException("无此测试数据");
+
+                Security.RequirePermission(db, testCase.ID, "TestCase", "testcase.read");
+
+                if (testCase is TranditionalTestCase)
+                {
+                    return ((TranditionalTestCase)testCase).ToFullTranditionalTestCase();
+                }
+                else if (testCase is SpecialJudgedTestCase)
+                {
+                    return ((SpecialJudgedTestCase)testCase).ToFullSpecialJudgedTestCase();
+                }
+                else if (testCase is InteractiveTestCase)
+                {
+                    return ((InteractiveTestCase)testCase).ToFullInteractiveTestCase();
+                }
+                else if (testCase is AnswerOnlyTestCase)
+                {
+                    return ((AnswerOnlyTestCase)testCase).ToFullAnswerOnlyTestCase();
+                }
+                else
+                {
+                    throw new NotSupportedException("不支持的测试数据类型");
+                }
             }
         }
         #endregion
