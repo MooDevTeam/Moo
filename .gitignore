@@ -1,4 +1,5 @@
-[Dd]ebug*/
-[Bb]in*/
-obj*/
-[Rr]elease*/
+Moo.API/PublicWeb
+Moo.Core/bin
+Moo.Core/obj
+Moo.Debug/bin
+Moo.Debug/obj
