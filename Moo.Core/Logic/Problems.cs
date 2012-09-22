@@ -3,93 +3,185 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Moo.Core.DB;
+/*
 namespace Moo.Core.Logic
 {
     public static class Problems
     {
-        public static void Create(Problem problem)
+        public static int Create(FullProblem problem)
         {
             Security.Authorize("problem.create", false);
-            problem.AllowTesting = true;
-            problem.Hidden = false;
-            problem.LatestRevision = null;
-            problem.LatestSolution = null;
-            problem.Lock = false;
-            problem.LockPost = false;
-            problem.LockRecord = false;
-            problem.LockSolution = false;
-            problem.LockTestCase = false;
-            problem.MaximumScore = null;
-            problem.ScoreSum = 0;
-            problem.SubmissionCount = 0;
-            problem.SubmissionUser = 0;
-            problem.TestCaseHidden = false;
+
             if (problem.Type != "Tranditional" && problem.Type != "SpecialJudged" && problem.Type != "Interactive" && problem.Type != "AnswerOnly")
             {
                 throw new ArgumentException("不支持的题目类型：" + problem.Type);
             }
 
-            MooDB db = new MooDB();
-            db.Problems.AddObject(problem);
-            db.SaveChanges();
+            using (MooDB db = new MooDB())
+            {
+                Problem newProblem = new Problem()
+                {
+                    AllowTesting = true,
+                    Hidden = false,
+                    LatestRevision = null,
+                    LatestSolution = null,
+                    Lock = false,
+                    LockPost = false,
+                    LockRecord = false,
+                    LockSolution = false,
+                    LockTestCase = false,
+                    MaximumScore = null,
+                    ScoreSum = 0,
+                    SubmissionCount = 0,
+                    SubmissionUser = 0,
+                    TestCaseHidden = false,
+                    Name = problem.Name,
+                    Type = problem.Type
+                };
+                db.Problems.AddObject(newProblem);
+                db.SaveChanges();
+                return newProblem.ID;
+            }
         }
 
-        public static IEnumerable<Problem> List()
+        public static int Count()
+        {
+            using (MooDB db = new MooDB())
+            {
+                return db.Problems.Count();
+            }
+        }
+
+        public static List<BriefProblem> List(int? start, int? count)
         {
             Security.Authorize("problem.list", true);
-            return new MooDB().Problems;
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<BriefProblem> problems = from p in db.Problems
+                                                    orderby p.ID descending
+                                                    select new BriefProblem()
+                                                    {
+                                                        ID = p.ID,
+                                                        Name = p.Name
+                                                    };
+                if (start != null)
+                {
+                    problems = problems.Skip((int)start);
+                }
+                if (count != null)
+                {
+                    problems = problems.Take((int)count);
+                }
+                return problems.ToList();
+            }
         }
 
-        public static Problem Get(int id)
+        public static FullProblem Get(Guid id)
         {
-            MooDB db = new MooDB();
-            Problem problem = (from p in db.Problems
-                               where p.ID == id
-                               select p).SingleOrDefault<Problem>();
+            using (MooDB db = new MooDB())
+            {
+                Problem problem = (from p in db.Problems
+                                   where p.ID == id
+                                   select p).SingleOrDefault<Problem>();
 
-            if (problem == null) throw new ArgumentException("无此题目");
-            return problem;
+                if (problem == null) throw new ArgumentException("无此题目");
+                return new FullProblem()
+                {
+                    ID = problem.ID,
+                    Name = problem.Name,
+                    Type = problem.Type,
+                    Lock = problem.Lock,
+                    LockPost = problem.LockPost,
+                    LockRecord = problem.LockRecord,
+                    LockSolution = problem.LockSolution,
+                    LockTestCase = problem.LockTestCase,
+                    AllowTesting = problem.AllowTesting,
+                    Hidden = problem.Hidden,
+                    TestCaseHidden = problem.TestCaseHidden,
+                    MaximumScore = problem.MaximumScore,
+                    ScoreSum = problem.ScoreSum,
+                    SubmissionCount = problem.SubmissionCount,
+                    SubmissionUser = problem.SubmissionUser,
+                    LatestRevision = problem.LatestRevision == null ? null : (int?)problem.LatestRevision.ID,
+                    LatestSolution = problem.LatestSolution == null ? null : (int?)problem.LatestSolution.ID
+                };
+            }
         }
 
-        public static void Update(Problem problem)
+        public static void Update(int id, FullProblem problem)
         {
             Security.Authorize("problem.modify", false);
-            MooDB db = new MooDB();
-            Problem theProblem = (from p in db.Problems
-                                  where p.ID == problem.ID
-                                  select p).SingleOrDefault<Problem>();
-            if (theProblem == null) throw new ArgumentException("无此题目");
-            theProblem.AllowTesting = problem.AllowTesting;
-            theProblem.Hidden = problem.Hidden;
-            theProblem.Lock = problem.Lock;
-            theProblem.LockPost = problem.LockPost;
-            theProblem.LockRecord = problem.LockRecord;
-            theProblem.LockSolution = problem.LockSolution;
-            theProblem.LockTestCase = problem.LockTestCase;
-            theProblem.TestCaseHidden = problem.TestCaseHidden;
-            theProblem.Name = problem.Name;
-            if (problem.Type != "Tranditional" && problem.Type != "SpecialJudged" && problem.Type != "Interactive" && problem.Type != "AnswerOnly")
+            if (problem.Type != null && problem.Type != "Tranditional" && problem.Type != "SpecialJudged" && problem.Type != "Interactive" && problem.Type != "AnswerOnly")
             {
                 throw new ArgumentException("不支持的题目类型：" + problem.Type);
             }
-            theProblem.Type = problem.Type;
 
-            db.SaveChanges();
+            using (MooDB db = new MooDB())
+            {
+                Problem theProblem = (from p in db.Problems
+                                      where p.ID == id
+                                      select p).SingleOrDefault<Problem>();
+                if (theProblem == null) throw new ArgumentException("无此题目");
+
+                if (problem.AllowTesting != null)
+                {
+                    theProblem.AllowTesting = (bool)problem.AllowTesting;
+                }
+                if (problem.Hidden != null)
+                {
+                    theProblem.Hidden = (bool)problem.Hidden;
+                }
+                if (problem.Lock != null)
+                {
+                    theProblem.Lock = (bool)problem.Lock;
+                }
+                if (problem.LockPost != null)
+                {
+                    theProblem.LockPost = (bool)problem.LockPost;
+                }
+                if (problem.LockRecord != null)
+                {
+                    theProblem.LockRecord = (bool)problem.LockRecord;
+                }
+                if (problem.LockSolution != null)
+                {
+                    theProblem.LockSolution = (bool)problem.LockSolution;
+                }
+                if (problem.LockTestCase != null)
+                {
+                    theProblem.LockTestCase = (bool)problem.LockTestCase;
+                }
+                if (problem.TestCaseHidden != null)
+                {
+                    theProblem.TestCaseHidden = (bool)problem.TestCaseHidden;
+                }
+                if (problem.Name != null)
+                {
+                    theProblem.Name = problem.Name;
+                }
+                if (problem.Type != null)
+                {
+                    theProblem.Type = problem.Type;
+                }
+                db.SaveChanges();
+            }
         }
 
         public static void Delete(int id)
         {
             Security.Authorize("problem.delete", false);
-            MooDB db = new MooDB();
-            Problem problem = (from p in db.Problems
-                               where p.ID == id
-                               select p).SingleOrDefault<Problem>();
-            if (problem == null) throw new ArgumentException("无此题目");
+            using (MooDB db = new MooDB())
+            {
+                Problem problem = (from p in db.Problems
+                                   where p.ID == id
+                                   select p).SingleOrDefault<Problem>();
+                if (problem == null) throw new ArgumentException("无此题目");
 
-            if (problem.Contest.Any()) throw new InvalidOperationException("尚有比赛使用此题目");
+                if (problem.Contest.Any()) throw new InvalidOperationException("尚有比赛使用此题目");
 
-            db.Problems.DeleteObject(problem);
-            db.SaveChanges();
+                db.Problems.DeleteObject(problem);
+                db.SaveChanges();
+            }
         }
 
         public static ProblemRevision GetRevision(int id)
@@ -139,3 +231,5 @@ namespace Moo.Core.Logic
         }
     }
 }
+
+*/

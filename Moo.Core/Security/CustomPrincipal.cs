@@ -6,7 +6,7 @@ using System.Security.Principal;
 namespace Moo.Core.Security
 {
     /// <summary>
-    /// 自定义的用户权限管理
+    /// 自定义的Principal
     /// </summary>
     public class CustomPrincipal : IPrincipal
     {
@@ -14,15 +14,7 @@ namespace Moo.Core.Security
         
         public bool IsInRole(string role)
         {
-            SiteUser user = Identity as SiteUser;
-            return user.Role.Name == role;
-        }
-
-        public bool IsAllowed(string function)
-        {
-            SiteUser user=Identity as SiteUser;
-            return user.Role.AllowedFunction.Contains(function);
+            throw new NotImplementedException();
         }
     }
-
 }

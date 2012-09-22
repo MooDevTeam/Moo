@@ -37,6 +37,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -48,54 +49,12 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\MooAPI\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Moo.Core\Moo.Core.csproj">
-      <Project>{4E9C3A2E-4239-4E6E-9BA7-6BD46EBB9E4E}</Project>
-      <Name>Moo.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Service References\MooAPI\API.wsdl" />
-    <None Include="Service References\MooAPI\JsonAPI.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\MooAPI\JsonAPI1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\MooAPI\JsonAPI2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\MooAPI\Moo.Debug.MooAPI.BriefUser.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\MooAPI\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MooAPI\JsonAPI.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MooAPI\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MooAPI\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\MooAPI\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

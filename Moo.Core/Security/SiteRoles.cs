@@ -1,34 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
 using Moo.Core.DB;
 namespace Moo.Core.Security
 {
-    /// <summary>
-    /// 长期驻留的所有用户组信息
-    /// </summary>
-    public static class SiteRoles
+    public class SiteRoles
     {
-        public static Dictionary<int, SiteRole> ByID { get; set; }
-        public static Dictionary<RoleType, SiteRole> ByType { get; set; }
+        MooDB db;
 
-        static SiteRoles()
+        Role aclManager, roleManager, siteManager, contributor, reader;
+
+        public Role ACLManger
         {
-            ByID = new Dictionary<int, SiteRole>();
-            ByType = new Dictionary<RoleType, SiteRole>();
-
-            using (MooDB db = new MooDB())
+            get
             {
-                IEnumerable<Role> roles = from r in db.Roles
-                                          select r;
-                foreach (Role role in roles)
+                if (aclManager == null)
                 {
-                    SiteRole siteRole=new SiteRole(role);
-                    ByID.Add(siteRole.ID, siteRole);
-                    ByType.Add(siteRole.Type, siteRole);
+                    aclManager = (from r in db.Roles
+                                  where r.Name == "ACLManager"
+                                  select r).Single<Role>();
                 }
+                return aclManager;
             }
+        }
+
+        public Role RoleManger
+        {
+            get
+            {
+                if (roleManager == null)
+                {
+                    roleManager = (from r in db.Roles
+                                   where r.Name == "RoleManager"
+                                   select r).Single<Role>();
+                }
+                return roleManager;
+            }
+        }
+
+        public Role SiteManger
+        {
+            get
+            {
+                if (siteManager == null)
+                {
+                    siteManager = (from r in db.Roles
+                                   where r.Name == "SiteManager"
+                                   select r).Single<Role>();
+                }
+                return siteManager;
+            }
+        }
+
+        public Role Contributor
+        {
+            get
+            {
+                if (contributor == null)
+                {
+                    contributor = (from r in db.Roles
+                                   where r.Name == "Contributor"
+                                   select r).Single<Role>();
+                }
+                return contributor;
+            }
+        }
+
+        public Role Reader
+        {
+            get
+            {
+                if (reader == null)
+                {
+                    reader = (from r in db.Roles
+                              where r.Name == "Reader"
+                              select r).Single<Role>();
+                }
+                return reader;
+            }
+        }
+
+        public SiteRoles(MooDB db)
+        {
+            this.db = db;
         }
     }
 }

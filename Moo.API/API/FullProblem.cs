@@ -9,7 +9,7 @@ namespace Moo.API.API
     public class FullProblem
     {
         [DataMember]
-        public int ID { get; set; }
+        public Guid? ID { get; set; }
 
         [DataMember]
         public string Name { get; set; }
@@ -18,45 +18,24 @@ namespace Moo.API.API
         public string Type { get; set; }
 
         [DataMember]
-        public bool Lock { get; set; }
+        public int? SubmissionCount { get; set; }
 
         [DataMember]
-        public bool LockSolution { get; set; }
+        public double? AverageScore { get; set; }
 
         [DataMember]
-        public bool LockTestCase { get; set; }
-
-        [DataMember]
-        public bool LockPost { get; set; }
-
-        [DataMember]
-        public bool LockRecord { get; set; }
-
-        [DataMember]
-        public bool AllowTesting { get; set; }
-
-        [DataMember]
-        public bool Hidden{get;set;}
-
-        [DataMember]
-        public bool TestCaseHidden { get; set; }
-
-        [DataMember]
-        public int SubmissionCount { get; set; }
-
-        [DataMember]
-        public long ScoreSum { get; set; }
-
-        [DataMember]
-        public int SubmissionUser { get; set; }
+        public int? SubmissionUser { get; set; }
 
         [DataMember]
         public int? MaximumScore { get; set; }
 
         [DataMember]
-        public int? LatestRevision { get; set; }
+        public int? MyScore { get; set; }
 
         [DataMember]
-        public int? LatestSolution { get; set; }
+        public Guid? LatestRevision { get; set; }
+
+        [DataMember]
+        public Guid? LatestSolution { get; set; }
     }
 }

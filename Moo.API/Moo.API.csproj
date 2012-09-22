@@ -55,7 +55,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="API\JsonAPI.svc" />
-    <Content Include="Web.config" />
+    <Content Include="Global.asax" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -64,14 +67,19 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\BriefProblem.cs" />
+    <Compile Include="API\Authenticator.cs" />
+    <Compile Include="API\BriefProblemRevision.cs" />
     <Compile Include="API\BriefUser.cs" />
     <Compile Include="API\ErrorHandler.cs" />
-    <Compile Include="API\ErrorHandlerExtension.cs" />
+    <Compile Include="API\CustomBehavior.cs" />
+    <Compile Include="API\ExtMethods.cs" />
     <Compile Include="API\FullProblem.cs" />
     <Compile Include="API\FullProblemRevision.cs" />
     <Compile Include="API\JsonAPI.svc.cs">
       <DependentUpon>JsonAPI.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

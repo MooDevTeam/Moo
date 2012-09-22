@@ -1,23 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Text;
-
-using Moo.Core.Logic;
 using Moo.Core.DB;
 using Moo.Core.Security;
+using Moo.Core.Text;
+
 namespace Moo.API.API
 {
     [ServiceContract]
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class JsonAPI
     {
+        NameValueCollection QueryParameters
+        {
+            get
+            {
+                return WebOperationContext.Current.IncomingRequest.UriTemplateMatch.QueryParameters;
+            }
+        }
+
         #region Test
         [OperationContract]
+        [WebGet(UriTemplate = "some/{text}/thing")]
         public string Echo(string text)
         {
             return text;
@@ -25,7 +34,7 @@ namespace Moo.API.API
         [OperationContract]
         public string Debug()
         {
-            return null;
+            throw new ArgumentException("没事啊");
         }
         #endregion
 
@@ -34,6 +43,12 @@ namespace Moo.API.API
         public string Wiki2HTML(string wiki)
         {
             return wiki;
+        }
+
+        [OperationContract]
+        public string GenerateDiffHTML(string oldText, string newText)
+        {
+            return DiffGenerator.Generate(oldText, newText);
         }
         #endregion
 
@@ -45,9 +60,9 @@ namespace Moo.API.API
         }
 
         [OperationContract]
-        public BriefUser GetCurrentUser(string token)
+        [WebGet(UriTemplate = "CurrentUser")]
+        public BriefUser GetCurrentUser()
         {
-            Security.Authenticate(token);
             SiteUser currentUser = Security.CurrentUser;
             return new BriefUser()
             {
@@ -57,128 +72,248 @@ namespace Moo.API.API
         }
 
         [OperationContract]
-        public void Logout(string token)
+        public bool CheckPermission(Guid obj, string type, string permission)
         {
-            Security.Authenticate(token);
+            return Security.CheckPermission(Security.CurrentUser.Subjects, obj, type, permission);
+        }
+
+        [OperationContract]
+        public void Logout()
+        {
             Security.Logout();
         }
         #endregion
 
         #region Problems
         [OperationContract]
-        public int CreateProblem(string token, FullProblem problem)
+        [WebInvoke(UriTemplate = "Problems", Method = "POST")]
+        public Guid CreateProblem(FullProblem problem)
         {
-            Security.Authenticate(token);
-            Problem newProblem = new Problem()
+            using (MooDB db = new MooDB())
             {
-                Name = problem.Name,
-                Type = problem.Type,
-            };
-            Problems.Create(newProblem);
-            return newProblem.ID;
+                Security.RequirePermission(db, Guid.Empty, null, "problem.create");
+                if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
+                {
+                    throw new ArgumentException("不支持的题目类型：" + problem.Type);
+                }
+                Problem newProblem = new Problem()
+                {
+                    Name = problem.Name,
+                    Type = problem.Type,
+                };
+                db.Problems.AddObject(newProblem);
+                db.SaveChanges();
+                return newProblem.ID;
+            }
         }
 
-        public List<BriefProblem> ListProblem(string token)
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/Count")]
+        public int CountProblems()
         {
-            Security.Authenticate(token);
-            return (from p in Problems.List()
-                    select new BriefProblem()
+            using (MooDB db = new MooDB())
+            {
+                return db.Problems.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems")]
+        public List<FullProblem> ListProblem()
+        {
+            int? start = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? count = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            string nameLike = QueryParameters["nameLike"] == null ? null : QueryParameters["nameLike"];
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Problem> problems = from p in db.Problems
+                                               orderby p.ID descending
+                                               select p;
+                if (start != null)
+                {
+                    problems = problems.Skip((int)start);
+                }
+                if (count != null)
+                {
+                    problems = problems.Take((int)count);
+                }
+                if (nameLike != null)
+                {
+                    problems = problems.Where(p => p.Name.Contains(nameLike));
+                }
+                return problems.ToList().Select(p => p.ToFullProblem(db)).Where(p => Security.CheckPermission(db, (Guid)p.ID, "Problem", "problem.read")).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/{id}")]
+        public FullProblem GetProblem(string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Problem problem = (from p in db.Problems
+                                   where p.ID == gid
+                                   select p).SingleOrDefault<Problem>();
+                if (problem == null) throw new ArgumentException("无此题目");
+
+                Security.RequirePermission(db, problem.ID, "Problem", "problem.read");
+
+                return problem.ToFullProblem(db);
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{id}", Method = "DELETE")]
+        public void DeleteProblem(string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Problem problem = (from p in db.Problems
+                                   where p.ID == gid
+                                   select p).SingleOrDefault<Problem>();
+                if (problem == null) throw new ArgumentException("无此题目");
+
+                Security.RequirePermission(db, problem.ID, "Problem", "problem.delete");
+
+                if (problem.Contest.Any()) throw new InvalidOperationException("尚有比赛使用此题目");
+
+                db.Problems.DeleteObject(problem);
+                db.SaveChanges();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{id}", Method = "PUT")]
+        public void ModifyProblem(string id, FullProblem problem)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Problem theProblem = (from p in db.Problems
+                                      where p.ID == gid
+                                      select p).SingleOrDefault<Problem>();
+                if (theProblem == null) throw new ArgumentException("无此题目");
+                Security.RequirePermission(db, theProblem.ID, "Problem", "problem.modify");
+                if (problem.Name != null)
+                {
+                    theProblem.Name = problem.Name;
+                }
+                if (problem.Type != null)
+                {
+                    if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
                     {
-                        ID = p.ID,
-                        Name = p.Name
-                    }).ToList<BriefProblem>();
+                        throw new ArgumentException("不支持的题目类型：" + problem.Type);
+                    }
+                    theProblem.Type = problem.Type;
+                }
+                db.SaveChanges();
+            }
         }
-
-        [OperationContract]
-        public FullProblem GetProblem(string token, int id)
-        {
-            Security.Authenticate(token);
-            Problem problem = Problems.Get(id);
-            return new FullProblem()
-            {
-                ID = problem.ID,
-                Name = problem.Name,
-                Type = problem.Type,
-                Lock = problem.Lock,
-                LockPost = problem.LockPost,
-                LockRecord = problem.LockRecord,
-                LockSolution = problem.LockSolution,
-                LockTestCase = problem.LockTestCase,
-                AllowTesting = problem.AllowTesting,
-                Hidden = problem.Hidden,
-                TestCaseHidden = problem.TestCaseHidden,
-                MaximumScore = problem.MaximumScore,
-                ScoreSum = problem.ScoreSum,
-                SubmissionCount = problem.SubmissionCount,
-                SubmissionUser = problem.SubmissionUser,
-                LatestRevision = problem.LatestRevision == null ? null : (int?)problem.LatestRevision.ID,
-                LatestSolution = problem.LatestSolution == null ? null : (int?)problem.LatestSolution.ID
-            };
-        }
-
-        [OperationContract]
-        public void DeleteProblem(string token, int id)
-        {
-            Security.Authenticate(token);
-            Problems.Delete(id);
-        }
-
-        [OperationContract]
-        public void UpdateProblem(string token, FullProblem problem)
-        {
-            Security.Authenticate(token);
-            Problems.Update(new Problem()
-            {
-                ID = problem.ID,
-                Name = problem.Name,
-                AllowTesting = problem.AllowTesting,
-                Hidden = problem.Hidden,
-                Lock = problem.Lock,
-                LockPost = problem.LockPost,
-                LockRecord = problem.LockRecord,
-                LockSolution = problem.LockSolution,
-                LockTestCase = problem.LockTestCase,
-                TestCaseHidden = problem.TestCaseHidden,
-                Type = problem.Type
-            });
-        }
-
-        [OperationContract]
-        public FullProblemRevision GetProblemRevision(string token, int id)
-        {
-            Security.Authenticate(token);
-            ProblemRevision revision = Problems.GetRevision(id);
-            return new FullProblemRevision()
-            {
-                ID = revision.ID,
-                Content = revision.Content,
-                Reason = revision.Reason,
-                CreatedBy = revision.CreatedBy.ID,
-                Problem = revision.Problem.ID
-            };
-        }
-
-        [OperationContract]
-        public int CreateProblemRevision(string token, FullProblemRevision revision)
-        {
-            Security.Authenticate(token);
-            ProblemRevision problemRevision = new ProblemRevision()
-            {
-                Content = revision.Content,
-                Problem = new Problem() { ID = revision.Problem },
-                Reason = revision.Reason,
-            };
-            Problems.CreateRevision(problemRevision);
-            return problemRevision.ID;
-        }
-
-        [OperationContract]
-        public void DeleteProblemRevision(string token, int id)
-        {
-            Security.Authenticate(token);
-            Problems.DeleteRevision(id);
-        }
-
         #endregion
+
+        #region ProblemRevisions
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/{problemID}/Revisions")]
+        public List<BriefProblemRevision> ListProblemRevision(string problemID)
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            Guid gproblemID = Guid.Parse(problemID);
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<ProblemRevision> revisions = from r in db.ProblemRevisions
+                                                        where r.Problem.ID == gproblemID
+                                                        orderby r.ID descending
+                                                        select r;
+                if (skip != null)
+                {
+                    revisions = revisions.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    revisions = revisions.Take((int)top);
+                }
+
+                return revisions.ToList().Select(r => r.ToBriefProblemRevision()).Where(r => Security.CheckPermission(db, (Guid)r.ID, "ProblemRevision", "problem.revision.read")).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/{problemID}/Revisions/{id}")]
+        public FullProblemRevision GetProblemRevision(string problemID, string id)
+        {
+            Guid gprolemID = Guid.Parse(problemID);
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                ProblemRevision revision = (from r in db.ProblemRevisions
+                                            where r.ID == gid
+                                            select r).SingleOrDefault<ProblemRevision>();
+
+                if (revision == null) throw new ArgumentException("无此题目版本");
+                if (revision.Problem.ID != gprolemID) throw new ArgumentException("题目与题目版本不匹配");
+
+                Security.RequirePermission(db, revision.ID, "ProblemRevision", "problem.revision.read");
+
+                return revision.ToFullProblemRevision();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/Revisions", Method = "POST")]
+        public Guid CreateProblemRevision(string problemID, FullProblemRevision revision)
+        {
+            Guid gproblemID = Guid.Parse(problemID);
+            using (MooDB db = new MooDB())
+            {
+                Problem problem = (from p in db.Problems
+                                   where p.ID == gproblemID
+                                   select p).SingleOrDefault<Problem>();
+                if (problem == null) throw new ArgumentException("无此题目");
+
+                Security.RequirePermission(db, problem.ID, "Problem", "problem.revision.create");
+
+                ProblemRevision problemRevision = new ProblemRevision()
+                {
+                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    Content = revision.Content,
+                    Problem = problem,
+                    Reason = revision.Reason,
+                };
+                db.ProblemRevisions.AddObject(problemRevision);
+                problem.LatestRevision = problemRevision;
+                db.SaveChanges();
+                return problemRevision.ID;
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problem/{problemID}/Revisions/{id}", Method = "DELETE")]
+        public void DeleteProblemRevision(string problemID, string id)
+        {
+            Guid gproblemID = Guid.Parse(problemID);
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                ProblemRevision revision = (from r in db.ProblemRevisions
+                                            where r.ID == gproblemID
+                                            select r).SingleOrDefault<ProblemRevision>();
+                if (revision == null) throw new ArgumentException("无此题目版本");
+                if (revision.Problem.ID != gproblemID) throw new ArgumentException("题目与题目版本不匹配");
+
+                Security.RequirePermission(db, revision.ID, "ProblemRevision", "problem.revision.delete");
+
+                if (revision.Problem.LatestRevision.ID == revision.ID)
+                {
+                    revision.Problem.LatestRevision = null;
+                }
+                db.ProblemRevisions.DeleteObject(revision);
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
     }
 }

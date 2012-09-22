@@ -9,7 +9,7 @@ namespace Moo.API.API
     public class FullProblemRevision
     {
         [DataMember]
-        public int ID { get; set; }
+        public Guid? ID { get; set; }
 
         [DataMember]
         public string Content { get; set; }
@@ -18,9 +18,9 @@ namespace Moo.API.API
         public string Reason { get; set; }
 
         [DataMember]
-        public int CreatedBy { get; set; }
+        public Guid? CreatedBy { get; set; }
 
         [DataMember]
-        public int Problem { get; set; }
+        public Guid? Problem { get; set; }
     }
 }

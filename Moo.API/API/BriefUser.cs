@@ -9,7 +9,7 @@ namespace Moo.API.API
     public class BriefUser
     {
         [DataMember]
-        public int ID { get; set; }
+        public Guid ID { get; set; }
 
         [DataMember]
         public string Name { get; set; }

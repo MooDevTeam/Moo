@@ -7,7 +7,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 namespace Moo.API.API
 {
-    public class ErrorHandlerExtension:BehaviorExtensionElement,IServiceBehavior
+    public class CustomBehavior : BehaviorExtensionElement, IServiceBehavior
     {
         public override Type BehaviorType
         {
@@ -26,9 +26,13 @@ namespace Moo.API.API
         public void ApplyDispatchBehavior(ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase)
         {
             IErrorHandler handler = new ErrorHandler();
-            foreach (ChannelDispatcher dispatcher in serviceHostBase.ChannelDispatchers)
+            foreach (ChannelDispatcher chDisp in serviceHostBase.ChannelDispatchers)
             {
-                dispatcher.ErrorHandlers.Add(handler);
+                chDisp.ErrorHandlers.Add(handler);
+                foreach (EndpointDispatcher epDisp in chDisp.Endpoints)
+                {
+                    epDisp.DispatchRuntime.MessageInspectors.Add(new Authenticator());
+                }
             }
         }
 
