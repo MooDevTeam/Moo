@@ -40,6 +40,11 @@ namespace Moo.Core.Security
                     select f).Single<Function>();
         }
 
+        public static bool Authenticated
+        {
+            get { return Thread.CurrentPrincipal.Identity.IsAuthenticated; }
+        }
+
         public static SiteUser CurrentUser
         {
             get { return Thread.CurrentPrincipal.Identity as SiteUser; }

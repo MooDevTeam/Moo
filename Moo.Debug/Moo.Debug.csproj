@@ -56,6 +56,12 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Moo.Core\Moo.Core.csproj">
+      <Project>{4E9C3A2E-4239-4E6E-9BA7-6BD46EBB9E4E}</Project>
+      <Name>Moo.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

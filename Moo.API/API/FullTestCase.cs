@@ -6,6 +6,10 @@ using System.Runtime.Serialization;
 namespace Moo.API.API
 {
     [DataContract]
+    [KnownType(typeof(FullTranditionalTestCase))]
+    [KnownType(typeof(FullSpecialJudgedTestCase))]
+    [KnownType(typeof(FullInteractiveTestCase))]
+    [KnownType(typeof(FullAnswerOnlyTestCase))]
     public class FullTestCase
     {
         [DataMember]

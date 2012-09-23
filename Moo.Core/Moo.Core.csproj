@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB\DatabaseInstaller.cs" />
+    <Compile Include="DB\ExtRecord.cs" />
     <Compile Include="DB\MooDB.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

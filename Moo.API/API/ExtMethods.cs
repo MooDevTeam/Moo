@@ -61,10 +61,7 @@ namespace Moo.API.API
             {
                 ID = record.ID,
                 CreateTime = record.CreateTime,
-                PublicCode = (from a in db.ACL
-                              where a.Allowed && a.Object == record.ID
-                                  && a.Subject == new SiteRoles(db).Reader.ID && a.Function.ID == Security.GetFunctionID("record.code.read")
-                              select a).Any(),
+                PublicCode = record.IsPublicCode(db),
                 JudgeInfo = record.JudgeInfo == null ? null : (Guid?)record.JudgeInfo.ID,
                 Language = record.Language,
                 Problem = record.Problem.ID,
@@ -78,10 +75,7 @@ namespace Moo.API.API
             {
                 ID = record.ID,
                 CreateTime = record.CreateTime,
-                PublicCode = (from a in db.ACL
-                              where a.Allowed && a.Object == record.ID
-                                  && a.Subject == new SiteRoles(db).Reader.ID && a.Function.ID == Security.GetFunctionID("record.code.read")
-                              select a).Any(),
+                PublicCode = record.IsPublicCode(db),
                 Code = Security.CheckPermission(db, record.ID, "Record", "record.code.read") ? record.Code : null,
                 JudgeInfo = record.JudgeInfo == null ? null : (Guid?)record.JudgeInfo.ID,
                 Language = record.Language,
@@ -164,6 +158,30 @@ namespace Moo.API.API
                 Judger = testCase.Judger.ID,
                 Problem = testCase.Problem.ID,
                 TestData = testCase.TestData,
+            };
+        }
+
+        public static FullUser ToFullUser(this User user)
+        {
+            return new FullUser()
+            {
+                BriefDescription = user.BriefDescription,
+                Description = user.Description,
+                Email = user.Email,
+                ID = user.ID,
+                Name = user.Name,
+                PreferredLanguage = user.PreferredLanguage,
+                Role = user.Role.Select(r => r.ID).ToList(),
+                Score = user.Score
+            };
+        }
+
+        public static BriefUser ToBriefUser(this User user)
+        {
+            return new BriefUser()
+            {
+                ID=user.ID,
+                Name=user.Name
             };
         }
     }

@@ -213,7 +213,7 @@ namespace Moo.Core.DB
             owner.Role.Add(Reader);
             db.Users.AddObject(owner);
             db.SaveChanges();
-            db.ACL.AddObject(new ACE() { Subject = owner.ID, Object = owner.ID, Function = ModifyUser });
+            db.ACL.AddObject(new ACE() { Subject = owner.ID, Object = owner.ID, Function = ModifyUser, Allowed = true });
             db.SaveChanges();
         }
 

@@ -10,13 +10,13 @@ using System.Text;
 using Moo.Core.DB;
 using Moo.Core.Security;
 using Moo.Core.Text;
-
+using Moo.Core.Utility;
 namespace Moo.API.API
 {
     [ServiceContract]
     public class JsonAPI
     {
-        #region Util
+        #region Utility
         NameValueCollection QueryParameters
         {
             get
@@ -70,14 +70,9 @@ namespace Moo.API.API
 
         [OperationContract]
         [WebGet(UriTemplate = "CurrentUser")]
-        public BriefUser GetCurrentUser()
+        public Guid GetCurrentUser()
         {
-            SiteUser currentUser = Security.CurrentUser;
-            return new BriefUser()
-            {
-                ID = currentUser.ID,
-                Name = currentUser.Name
-            };
+            return Security.CurrentUser.ID;
         }
 
         [OperationContract]
@@ -94,6 +89,54 @@ namespace Moo.API.API
         #endregion
 
         #region Problems
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems/Count")]
+        public int CountProblem()
+        {
+            string nameContains = QueryParameters["nameContains"];
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Problem> problems = db.Problems;
+                if (nameContains != null)
+                {
+                    problems = problems.Where(p => p.Name.Contains(nameContains));
+                }
+
+                return problems.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Problems")]
+        public List<FullProblem> ListProblem()
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            string nameContains = QueryParameters["nameContains"];
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Problem> problems = db.Problems;
+
+                if (nameContains != null)
+                {
+                    problems = problems.Where(p => p.Name.Contains(nameContains));
+                }
+
+                problems = problems.OrderByDescending(p => p.CreateTime);
+
+                if (skip != null)
+                {
+                    problems = problems.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    problems = problems.Take((int)top);
+                }
+
+                return problems.ToList().Select(p => p.ToFullProblem(db)).ToList();
+            }
+        }
+
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems", Method = "POST")]
         public Guid CreateProblem(FullProblem problem)
@@ -138,54 +181,6 @@ namespace Moo.API.API
         }
 
         [OperationContract]
-        [WebGet(UriTemplate = "Problems/Count")]
-        public int CountProblem()
-        {
-            string nameContains = QueryParameters["nameContains"] == null ? null : QueryParameters["nameContains"];
-            using (MooDB db = new MooDB())
-            {
-                IQueryable<Problem> problems = db.Problems;
-                if (nameContains != null)
-                {
-                    problems = problems.Where(p => p.Name.Contains(nameContains));
-                }
-
-                return problems.Count();
-            }
-        }
-
-        [OperationContract]
-        [WebGet(UriTemplate = "Problems")]
-        public List<FullProblem> ListProblem()
-        {
-            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
-            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            string nameContains = QueryParameters["nameContains"] == null ? null : QueryParameters["nameContains"];
-            using (MooDB db = new MooDB())
-            {
-                IQueryable<Problem> problems = db.Problems;
-
-                if (nameContains != null)
-                {
-                    problems = problems.Where(p => p.Name.Contains(nameContains));
-                }
-
-                problems = problems.OrderByDescending(p => p.CreateTime);
-
-                if (skip != null)
-                {
-                    problems = problems.Skip((int)skip);
-                }
-                if (top != null)
-                {
-                    problems = problems.Take((int)top);
-                }
-
-                return problems.ToList().Select(p => p.ToFullProblem(db)).ToList();
-            }
-        }
-
-        [OperationContract]
         [WebGet(UriTemplate = "Problems/{id}")]
         public FullProblem GetProblem(string id)
         {
@@ -200,6 +195,34 @@ namespace Moo.API.API
                 Security.RequirePermission(db, problem.ID, "Problem", "problem.read");
 
                 return problem.ToFullProblem(db);
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{id}", Method = "PUT")]
+        public void ModifyProblem(string id, FullProblem problem)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Problem theProblem = (from p in db.Problems
+                                      where p.ID == gid
+                                      select p).SingleOrDefault<Problem>();
+                if (theProblem == null) throw new ArgumentException("无此题目");
+                Security.RequirePermission(db, theProblem.ID, "Problem", "problem.modify");
+                if (problem.Name != null)
+                {
+                    theProblem.Name = problem.Name;
+                }
+                if (problem.Type != null)
+                {
+                    if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
+                    {
+                        throw new NotSupportedException("不支持的题目类型：" + problem.Type);
+                    }
+                    theProblem.Type = problem.Type;
+                }
+                db.SaveChanges();
             }
         }
 
@@ -244,34 +267,6 @@ namespace Moo.API.API
                 DeleteACEs(db, problem.ID);
 
                 db.Problems.DeleteObject(problem);
-                db.SaveChanges();
-            }
-        }
-
-        [OperationContract]
-        [WebInvoke(UriTemplate = "Problems/{id}", Method = "PUT")]
-        public void ModifyProblem(string id, FullProblem problem)
-        {
-            Guid gid = Guid.Parse(id);
-            using (MooDB db = new MooDB())
-            {
-                Problem theProblem = (from p in db.Problems
-                                      where p.ID == gid
-                                      select p).SingleOrDefault<Problem>();
-                if (theProblem == null) throw new ArgumentException("无此题目");
-                Security.RequirePermission(db, theProblem.ID, "Problem", "problem.modify");
-                if (problem.Name != null)
-                {
-                    theProblem.Name = problem.Name;
-                }
-                if (problem.Type != null)
-                {
-                    if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
-                    {
-                        throw new NotSupportedException("不支持的题目类型：" + problem.Type);
-                    }
-                    theProblem.Type = problem.Type;
-                }
                 db.SaveChanges();
             }
         }
@@ -526,14 +521,18 @@ namespace Moo.API.API
 
                 Security.RequirePermission(db, problem.ID, "Problem", "record.create");
 
+                User currentUser = Security.CurrentUser.GetDBUser(db);
+
                 Record newRecord = new Record()
                 {
                     Code = record.Code,
                     CreateTime = DateTime.Now,
                     Language = record.Language,
                     Problem = problem,
-                    User = Security.CurrentUser.GetDBUser(db),
+                    User = currentUser,
                 };
+
+                currentUser.PreferredLanguage = record.Language;
 
                 problem.SubmissionCount++;
                 if (!(from r in db.Records
@@ -592,27 +591,9 @@ namespace Moo.API.API
 
                 Security.RequirePermission(db, theRecord.ID, "Record", "record.modify");
 
-                if (record.PublicCode != null)
+                if (record.PublicCode != null && theRecord.IsPublicCode(db) != (bool)record.PublicCode)
                 {
-                    if ((bool)record.PublicCode)
-                    {
-                        if ((bool)theRecord.ToBriefRecord(db).PublicCode) throw new ArgumentException("代码早已公开");
-                        db.ACL.AddObject(new ACE()
-                        {
-                            Subject = new SiteRoles(db).Reader.ID,
-                            Object = theRecord.ID,
-                            Allowed = true,
-                            Function = Security.GetFunction(db, "record.code.read")
-                        });
-                    }
-                    else
-                    {
-                        if (!(bool)theRecord.ToBriefRecord(db).PublicCode) throw new ArgumentException("代码本就私有");
-                        db.ACL.DeleteObject((from a in db.ACL
-                                             where a.Function.ID == Security.GetFunctionID("record.code.read") && a.Allowed
-                                                  && a.Object == theRecord.ID && a.Subject == new SiteRoles(db).Reader.ID
-                                             select a).Single());
-                    }
+                    theRecord.TogglePublicCode(db, (bool)record.PublicCode);
                 }
 
                 db.SaveChanges();
@@ -745,7 +726,7 @@ namespace Moo.API.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Problems/{problemID}/TestCases")]
-        public int ListTestCase(string problemID)
+        public List<FullTestCase> ListTestCase(string problemID)
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
@@ -764,7 +745,7 @@ namespace Moo.API.API
                     testCases = testCases.Take((int)top);
                 }
 
-                return testCases.ToList().Select(t => t.T);
+                return testCases.ToList().Select(t => t.ToFullTestCase()).ToList();
             }
         }
 
@@ -802,6 +783,475 @@ namespace Moo.API.API
                 {
                     throw new NotSupportedException("不支持的测试数据类型");
                 }
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases", Method = "POST")]
+        public Guid CreateTestCase(string problemID, FullTestCase testCase)
+        {
+            Guid gproblemID = Guid.Parse(problemID);
+            using (MooDB db = new MooDB())
+            {
+                Problem problem = (from p in db.Problems
+                                   where p.ID == gproblemID
+                                   select p).SingleOrDefault<Problem>();
+                if (problem == null) throw new ArgumentException("无此题目");
+
+                Security.RequirePermission(db, problem.ID, "Problem", "testcase.create");
+
+                TestCase newTestCase;
+                if (testCase is FullTranditionalTestCase)
+                {
+                    if (problem.Type != "Tranditional") throw new InvalidOperationException("题目类型不匹配");
+                    FullTranditionalTestCase asTranditional = testCase as FullTranditionalTestCase;
+                    newTestCase = new TranditionalTestCase()
+                    {
+                        Answer = asTranditional.Answer,
+                        CreatedBy = Security.CurrentUser.GetDBUser(db),
+                        Input = asTranditional.Input,
+                        MemoryLimit = (int)asTranditional.MemoryLimit,
+                        Problem = problem,
+                        Score = (int)asTranditional.Score,
+                        TimeLimit = (int)asTranditional.TimeLimit,
+                    };
+                }
+                else if (testCase is FullSpecialJudgedTestCase)
+                {
+                    if (problem.Type != "SpecialJudged") throw new InvalidOperationException("题目类型不匹配");
+                    FullSpecialJudgedTestCase asSpecialJudged = testCase as FullSpecialJudgedTestCase;
+                    UploadedFile judger = (from f in db.UploadedFiles
+                                           where f.ID == asSpecialJudged.Judger
+                                           select f).SingleOrDefault<UploadedFile>();
+                    if (judger == null) throw new ArgumentException("无此文件");
+                    newTestCase = new SpecialJudgedTestCase()
+                    {
+                        Answer = asSpecialJudged.Answer,
+                        CreatedBy = Security.CurrentUser.GetDBUser(db),
+                        Input = asSpecialJudged.Input,
+                        MemoryLimit = (int)asSpecialJudged.MemoryLimit,
+                        Problem = problem,
+                        Judger = judger,
+                        TimeLimit = (int)asSpecialJudged.TimeLimit,
+                    };
+                }
+                else if (testCase is FullInteractiveTestCase)
+                {
+                    if (problem.Type != "Interactive") throw new InvalidOperationException("题目类型不匹配");
+                    FullInteractiveTestCase asInteractive = testCase as FullInteractiveTestCase;
+                    UploadedFile invoker = (from f in db.UploadedFiles
+                                            where f.ID == asInteractive.Invoker
+                                            select f).SingleOrDefault<UploadedFile>();
+                    if (invoker == null) throw new ArgumentException("无此文件");
+                    newTestCase = new InteractiveTestCase()
+                    {
+                        CreatedBy = Security.CurrentUser.GetDBUser(db),
+                        MemoryLimit = (int)asInteractive.MemoryLimit,
+                        Problem = problem,
+                        Invoker = invoker,
+                        TestData = asInteractive.TestData,
+                        TimeLimit = (int)asInteractive.TimeLimit,
+                    };
+                }
+                else if (testCase is FullAnswerOnlyTestCase)
+                {
+                    if (problem.Type != "AnswerOnly") throw new InvalidOperationException("题目类型不匹配");
+                    FullAnswerOnlyTestCase asAnswerOnly = testCase as FullAnswerOnlyTestCase;
+                    UploadedFile judger = (from f in db.UploadedFiles
+                                           where f.ID == asAnswerOnly.Judger
+                                           select f).SingleOrDefault<UploadedFile>();
+                    if (judger == null) throw new ArgumentException("无此文件");
+                    newTestCase = new AnswerOnlyTestCase()
+                    {
+                        TestData = asAnswerOnly.TestData,
+                        CreatedBy = Security.CurrentUser.GetDBUser(db),
+                        Problem = problem,
+                        Judger = judger,
+                    };
+                }
+                else
+                {
+                    throw new NotSupportedException("不支持的测试数据类型");
+                }
+                db.TestCases.AddObject(newTestCase);
+                db.SaveChanges();
+
+                db.ACL.AddObject(new ACE()
+                {
+                    Subject = Security.CurrentUser.ID,
+                    Allowed = true,
+                    Function = Security.GetFunction(db, "testcase.modify"),
+                    Object = newTestCase.ID,
+                });
+
+                db.ACL.AddObject(new ACE()
+                {
+                    Subject = Security.CurrentUser.ID,
+                    Allowed = true,
+                    Function = Security.GetFunction(db, "testcase.delete"),
+                    Object = newTestCase.ID,
+                });
+                db.SaveChanges();
+                return newTestCase.ID;
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Tranditional", Method = "POST")]
+        public Guid CreateTranditionalTestCase(string problemID, FullTranditionalTestCase testCase)
+        {
+            return CreateTestCase(problemID, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/SpecialJudged", Method = "POST")]
+        public Guid CreateSpecialJudgedTestCase(string problemID, FullSpecialJudgedTestCase testCase)
+        {
+            return CreateTestCase(problemID, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Interactive", Method = "POST")]
+        public Guid CreateInteractiveTestCase(string problemID, FullInteractiveTestCase testCase)
+        {
+            return CreateTestCase(problemID, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/AnswerOnly", Method = "POST")]
+        public Guid CreateAnswerOnlyTestCase(string problemID, FullAnswerOnlyTestCase testCase)
+        {
+            return CreateTestCase(problemID, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/{id}", Method = "PUT")]
+        public void ModifyTestCase(string problemID, string id, FullTestCase testCase)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                TestCase theTestCase = (from t in db.TestCases
+                                        where t.ID == gid
+                                        select t).SingleOrDefault<TestCase>();
+                if (theTestCase == null) throw new ArgumentException("无此测试数据");
+
+                Security.RequirePermission(db, theTestCase.ID, "TestCase", "testcase.modify");
+
+                if (theTestCase is TranditionalTestCase && testCase is FullTranditionalTestCase)
+                {
+                    TranditionalTestCase oldT = theTestCase as TranditionalTestCase;
+                    FullTranditionalTestCase newT = testCase as FullTranditionalTestCase;
+                    if (newT.Answer != null)
+                    {
+                        oldT.Answer = newT.Answer;
+                    }
+                    if (newT.Input != null)
+                    {
+                        oldT.Input = newT.Input;
+                    }
+                    if (newT.MemoryLimit != null)
+                    {
+                        oldT.MemoryLimit = (int)newT.MemoryLimit;
+                    }
+                    if (newT.TimeLimit != null)
+                    {
+                        oldT.TimeLimit = (int)newT.TimeLimit;
+                    }
+                    if (newT.Score != null)
+                    {
+                        oldT.Score = (int)newT.Score;
+                    }
+                }
+                else if (theTestCase is SpecialJudgedTestCase && testCase is FullSpecialJudgedTestCase)
+                {
+                    SpecialJudgedTestCase oldT = theTestCase as SpecialJudgedTestCase;
+                    FullSpecialJudgedTestCase newT = testCase as FullSpecialJudgedTestCase;
+                    if (newT.Answer != null)
+                    {
+                        oldT.Answer = newT.Answer;
+                    }
+                    if (newT.Input != null)
+                    {
+                        oldT.Input = newT.Input;
+                    }
+                    if (newT.MemoryLimit != null)
+                    {
+                        oldT.MemoryLimit = (int)newT.MemoryLimit;
+                    }
+                    if (newT.TimeLimit != null)
+                    {
+                        oldT.TimeLimit = (int)newT.TimeLimit;
+                    }
+                    if (newT.Judger != null)
+                    {
+                        UploadedFile judger = (from f in db.UploadedFiles
+                                               where f.ID == newT.Judger
+                                               select f).SingleOrDefault<UploadedFile>();
+                        if (judger == null) throw new ArgumentException("无此文件");
+                        oldT.Judger = judger;
+                    }
+                }
+                else if (theTestCase is InteractiveTestCase && testCase is FullInteractiveTestCase)
+                {
+                    InteractiveTestCase oldT = theTestCase as InteractiveTestCase;
+                    FullInteractiveTestCase newT = testCase as FullInteractiveTestCase;
+                    if (newT.TestData != null)
+                    {
+                        oldT.TestData = newT.TestData;
+                    }
+                    if (newT.MemoryLimit != null)
+                    {
+                        oldT.MemoryLimit = (int)newT.MemoryLimit;
+                    }
+                    if (newT.TimeLimit != null)
+                    {
+                        oldT.TimeLimit = (int)newT.TimeLimit;
+                    }
+                    if (newT.Invoker != null)
+                    {
+                        UploadedFile invoker = (from f in db.UploadedFiles
+                                                where f.ID == newT.Invoker
+                                                select f).SingleOrDefault<UploadedFile>();
+                        if (invoker == null) throw new ArgumentException("无此文件");
+                        oldT.Invoker = invoker;
+                    }
+                }
+                else if (theTestCase is AnswerOnlyTestCase && testCase is FullAnswerOnlyTestCase)
+                {
+                    AnswerOnlyTestCase oldT = theTestCase as AnswerOnlyTestCase;
+                    FullAnswerOnlyTestCase newT = testCase as FullAnswerOnlyTestCase;
+                    if (newT.TestData != null)
+                    {
+                        oldT.TestData = newT.TestData;
+                    }
+                    if (newT.Judger != null)
+                    {
+                        UploadedFile judger = (from f in db.UploadedFiles
+                                               where f.ID == newT.Judger
+                                               select f).SingleOrDefault<UploadedFile>();
+                        if (judger == null) throw new ArgumentException("无此文件");
+                        oldT.Judger = judger;
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("类型未知或不匹配");
+                }
+                db.SavingChanges();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Tranditional/{id}", Method = "PUT")]
+        public void ModifyTranditionalTestCase(string problemID, string id, FullTranditionalTestCase testCase)
+        {
+            ModifyTestCase(problemID, id, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/SpecialJudged/{id}", Method = "PUT")]
+        public void ModifySpecialJudgedTestCase(string problemID, string id, FullSpecialJudgedTestCase testCase)
+        {
+            ModifyTestCase(problemID, id, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Interactive/{id}", Method = "PUT")]
+        public void ModifyInteractiveTestCase(string problemID, string id, FullInteractiveTestCase testCase)
+        {
+            ModifyTestCase(problemID, id, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/AnswerOnly/{id}", Method = "PUT")]
+        public void ModifyAnswerOnlyTestCase(string problemID, string id, FullAnswerOnlyTestCase testCase)
+        {
+            ModifyTestCase(problemID, id, testCase);
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/{id}", Method = "DELETE")]
+        public void DeleteTestCase(string problemID, string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                TestCase testCase = (from t in db.TestCases
+                                     where t.ID == gid
+                                     select t).SingleOrDefault<TestCase>();
+                if (testCase == null) throw new ArgumentException("无此测试数据");
+
+                Security.RequirePermission(db, testCase.ID, "TestCase", "testcase.delete");
+
+                DeleteACEs(db, testCase.ID);
+
+                db.TestCases.DeleteObject(testCase);
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region User
+        [OperationContract]
+        [WebGet(UriTemplate = "Users/Count")]
+        public int CountUser()
+        {
+            string nameContains = QueryParameters["nameContains"];
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<User> users = db.Users;
+                if (nameContains != null)
+                {
+                    users = users.Where(u => u.Name.Contains(nameContains));
+                }
+                users = users.OrderByDescending(u => u.Score);
+                return users.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Users")]
+        public List<BriefUser> ListUser()
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            string nameContains = QueryParameters["nameContains"];
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<User> users = db.Users;
+                if (nameContains != null)
+                {
+                    users = users.Where(u => u.Name.Contains(nameContains));
+                }
+                users = users.OrderByDescending(u => u.Score);
+                if (skip != null)
+                {
+                    users = users.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    users = users.Take((int)top);
+                }
+                return users.ToList().Select(u => u.ToBriefUser()).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Users/{id}")]
+        public FullUser GetUser(string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                User user = (from u in db.Users
+                             where u.ID == gid
+                             select u).SingleOrDefault<User>();
+                if (user == null) throw new ArgumentException("无此用户");
+
+                Security.RequirePermission(db, user.ID, "User", "user.read");
+
+                return user.ToFullUser();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Users", Method = "POST")]
+        public Guid CreateUser(FullUser user)
+        {
+            using (MooDB db = new MooDB())
+            {
+                if (Security.Authenticated)
+                {
+                    Security.RequirePermission(db, Guid.Empty, null, "user.create");
+                }
+
+                User newUser = new User()
+                {
+                    BriefDescription = user.BriefDescription,
+                    Description = user.Description,
+                    Email = user.Email,
+                    Name = user.Name,
+                    Password = Converter.ToSHA256Hash(user.Password),
+                    PreferredLanguage = user.PreferredLanguage,
+                    Score = 0,
+                };
+
+                SiteRoles siteRoles = new SiteRoles(db);
+                new List<Role>()
+                {
+                    siteRoles.Reader,
+                    siteRoles.Contributor
+                }.ForEach(r => newUser.Role.Add(r));
+
+                db.Users.AddObject(newUser);
+                db.SaveChanges();
+
+                db.ACL.AddObject(new ACE()
+                {
+                    Subject = newUser.ID,
+                    Object = newUser.ID,
+                    Allowed = true,
+                    Function = Security.GetFunction(db, "user.modify"),
+                });
+
+                db.SaveChanges();
+                return newUser.ID;
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Users/{id}", Method = "PUT")]
+        public void ModifyUser(string id, FullUser user)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                User theUser = (from u in db.Users
+                                where u.ID == gid
+                                select u).SingleOrDefault<User>();
+                if (theUser == null) throw new ArgumentException("无此用户");
+
+                Security.RequirePermission(db, theUser.ID, "User", "user.modify");
+
+                if (user.BriefDescription != null)
+                {
+                    theUser.BriefDescription = user.BriefDescription;
+                }
+                if (user.Description != null)
+                {
+                    theUser.Description = user.Description;
+                }
+                if (user.Email != null)
+                {
+                    theUser.Email = user.Email;
+                }
+                if (user.Name != null)
+                {
+                    theUser.Name = user.Name;
+                }
+                if (user.Password != null)
+                {
+                    theUser.Password = Converter.ToSHA256Hash(user.Password);
+                }
+                if (user.PreferredLanguage != null)
+                {
+                    theUser.PreferredLanguage = user.PreferredLanguage;
+                }
+                if (user.Role != null)
+                {
+                    Security.RequirePermission(db, theUser.ID, "User", "user.role.modify");
+                    theUser.Role.Clear();
+                    foreach (Guid roleID in user.Role)
+                    {
+                        Role role = (from r in db.Roles
+                                     where r.ID == roleID
+                                     select r).SingleOrDefault<Role>();
+                        if (role == null) throw new ArgumentException("无此角色");
+                        theUser.Role.Add(role);
+                    }
+                }
+                db.SaveChanges();
             }
         }
         #endregion

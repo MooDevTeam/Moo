@@ -7,6 +7,21 @@ namespace Moo.Core.Security
 {
     public class SiteRoles
     {
+        public static Guid ACLManagerID,RoleManagerID,SiteManagerID,ContributorID,ReaderID;
+
+        static SiteRoles()
+        {
+            using (MooDB db = new MooDB())
+            {
+                SiteRoles siteRoles = new SiteRoles(db);
+                ACLManagerID = siteRoles.ACLManger.ID;
+                RoleManagerID = siteRoles.RoleManger.ID;
+                SiteManagerID = siteRoles.SiteManger.ID;
+                ContributorID = siteRoles.Contributor.ID;
+                ReaderID = siteRoles.Reader.ID;
+            }
+        }
+
         MooDB db;
 
         Role aclManager, roleManager, siteManager, contributor, reader;

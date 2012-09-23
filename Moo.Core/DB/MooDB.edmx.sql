@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 09/22/2012 21:27:02
+-- Date Created: 09/23/2012 11:02:13
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -94,6 +94,9 @@ IF OBJECT_ID(N'[dbo].[FK_UploadedFileUser]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_ACEFunction]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ACL] DROP CONSTRAINT [FK_ACEFunction];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UserCreateProblem]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Problems] DROP CONSTRAINT [FK_UserCreateProblem];
 GO
 IF OBJECT_ID(N'[dbo].[FK_SpecialJudgedTestCase_inherits_TestCase]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TestCases_SpecialJudgedTestCase] DROP CONSTRAINT [FK_SpecialJudgedTestCase_inherits_TestCase];
