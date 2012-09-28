@@ -1,4 +1,6 @@
 Moo.API/PublicWeb
+Moo.API/bin
+Moo.API/obj
 Moo.Core/bin
 Moo.Core/obj
 Moo.Debug/bin

@@ -1,7 +1,0 @@
-D:\VSProject\Moo\Moo.API\bin\Moo.API.dll
-D:\VSProject\Moo\Moo.API\bin\Moo.API.pdb
-D:\VSProject\Moo\Moo.API\bin\Moo.Core.dll
-D:\VSProject\Moo\Moo.API\bin\Moo.Core.pdb
-D:\VSProject\Moo\Moo.API\obj\Debug\ResolveAssemblyReference.cache
-D:\VSProject\Moo\Moo.API\obj\Debug\Moo.API.dll
-D:\VSProject\Moo\Moo.API\obj\Debug\Moo.API.pdb
