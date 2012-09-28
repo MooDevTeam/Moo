@@ -30,7 +30,7 @@ namespace Moo.Core.Security
         {
             ID = user.ID;
             Name = user.Name;
-            Role = Enum.Parse(typeof(SiteRole), user.Role.Name);
+            Role = (SiteRole)Enum.Parse(typeof(SiteRole), user.Role.Name);
         }
     }
 }

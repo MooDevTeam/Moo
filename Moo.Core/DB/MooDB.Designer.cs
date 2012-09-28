@@ -2028,13 +2028,15 @@ namespace Moo.Core.DB
         /// <param name="name">Name 属性的初始值。</param>
         /// <param name="onTop">OnTop 属性的初始值。</param>
         /// <param name="replyTime">ReplyTime 属性的初始值。</param>
-        public static Post CreatePost(global::System.Guid id, global::System.String name, global::System.Boolean onTop, global::System.DateTime replyTime)
+        /// <param name="locked">Locked 属性的初始值。</param>
+        public static Post CreatePost(global::System.Guid id, global::System.String name, global::System.Boolean onTop, global::System.DateTime replyTime, global::System.Boolean locked)
         {
             Post post = new Post();
             post.ID = id;
             post.Name = name;
             post.OnTop = onTop;
             post.ReplyTime = replyTime;
+            post.Locked = locked;
             return post;
         }
 
@@ -2139,6 +2141,30 @@ namespace Moo.Core.DB
         private global::System.DateTime _ReplyTime;
         partial void OnReplyTimeChanging(global::System.DateTime value);
         partial void OnReplyTimeChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean Locked
+        {
+            get
+            {
+                return _Locked;
+            }
+            set
+            {
+                OnLockedChanging(value);
+                ReportPropertyChanging("Locked");
+                _Locked = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Locked");
+                OnLockedChanged();
+            }
+        }
+        private global::System.Boolean _Locked;
+        partial void OnLockedChanging(global::System.Boolean value);
+        partial void OnLockedChanged();
 
         #endregion
     
@@ -2391,7 +2417,15 @@ namespace Moo.Core.DB
         /// <param name="scoreSum">ScoreSum 属性的初始值。</param>
         /// <param name="submissionUser">SubmissionUser 属性的初始值。</param>
         /// <param name="createTime">CreateTime 属性的初始值。</param>
-        public static Problem CreateProblem(global::System.Guid id, global::System.String name, global::System.String type, global::System.Int32 submissionCount, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime)
+        /// <param name="hidden">Hidden 属性的初始值。</param>
+        /// <param name="locked">Locked 属性的初始值。</param>
+        /// <param name="recordLocked">RecordLocked 属性的初始值。</param>
+        /// <param name="postLocked">PostLocked 属性的初始值。</param>
+        /// <param name="articleLocked">ArticleLocked 属性的初始值。</param>
+        /// <param name="testCaseLocked">TestCaseLocked 属性的初始值。</param>
+        /// <param name="enableTesting">EnableTesting 属性的初始值。</param>
+        /// <param name="testCaseHidden">TestCaseHidden 属性的初始值。</param>
+        public static Problem CreateProblem(global::System.Guid id, global::System.String name, global::System.String type, global::System.Int32 submissionCount, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime, global::System.Boolean hidden, global::System.Boolean locked, global::System.Boolean recordLocked, global::System.Boolean postLocked, global::System.Boolean articleLocked, global::System.Boolean testCaseLocked, global::System.Boolean enableTesting, global::System.Boolean testCaseHidden)
         {
             Problem problem = new Problem();
             problem.ID = id;
@@ -2401,6 +2435,14 @@ namespace Moo.Core.DB
             problem.ScoreSum = scoreSum;
             problem.SubmissionUser = submissionUser;
             problem.CreateTime = createTime;
+            problem.Hidden = hidden;
+            problem.Locked = locked;
+            problem.RecordLocked = recordLocked;
+            problem.PostLocked = postLocked;
+            problem.ArticleLocked = articleLocked;
+            problem.TestCaseLocked = testCaseLocked;
+            problem.EnableTesting = enableTesting;
+            problem.TestCaseHidden = testCaseHidden;
             return problem;
         }
 
@@ -2601,6 +2643,198 @@ namespace Moo.Core.DB
         private global::System.DateTime _CreateTime;
         partial void OnCreateTimeChanging(global::System.DateTime value);
         partial void OnCreateTimeChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean Hidden
+        {
+            get
+            {
+                return _Hidden;
+            }
+            set
+            {
+                OnHiddenChanging(value);
+                ReportPropertyChanging("Hidden");
+                _Hidden = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Hidden");
+                OnHiddenChanged();
+            }
+        }
+        private global::System.Boolean _Hidden;
+        partial void OnHiddenChanging(global::System.Boolean value);
+        partial void OnHiddenChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean Locked
+        {
+            get
+            {
+                return _Locked;
+            }
+            set
+            {
+                OnLockedChanging(value);
+                ReportPropertyChanging("Locked");
+                _Locked = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Locked");
+                OnLockedChanged();
+            }
+        }
+        private global::System.Boolean _Locked;
+        partial void OnLockedChanging(global::System.Boolean value);
+        partial void OnLockedChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean RecordLocked
+        {
+            get
+            {
+                return _RecordLocked;
+            }
+            set
+            {
+                OnRecordLockedChanging(value);
+                ReportPropertyChanging("RecordLocked");
+                _RecordLocked = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("RecordLocked");
+                OnRecordLockedChanged();
+            }
+        }
+        private global::System.Boolean _RecordLocked;
+        partial void OnRecordLockedChanging(global::System.Boolean value);
+        partial void OnRecordLockedChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean PostLocked
+        {
+            get
+            {
+                return _PostLocked;
+            }
+            set
+            {
+                OnPostLockedChanging(value);
+                ReportPropertyChanging("PostLocked");
+                _PostLocked = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("PostLocked");
+                OnPostLockedChanged();
+            }
+        }
+        private global::System.Boolean _PostLocked;
+        partial void OnPostLockedChanging(global::System.Boolean value);
+        partial void OnPostLockedChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean ArticleLocked
+        {
+            get
+            {
+                return _ArticleLocked;
+            }
+            set
+            {
+                OnArticleLockedChanging(value);
+                ReportPropertyChanging("ArticleLocked");
+                _ArticleLocked = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ArticleLocked");
+                OnArticleLockedChanged();
+            }
+        }
+        private global::System.Boolean _ArticleLocked;
+        partial void OnArticleLockedChanging(global::System.Boolean value);
+        partial void OnArticleLockedChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean TestCaseLocked
+        {
+            get
+            {
+                return _TestCaseLocked;
+            }
+            set
+            {
+                OnTestCaseLockedChanging(value);
+                ReportPropertyChanging("TestCaseLocked");
+                _TestCaseLocked = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("TestCaseLocked");
+                OnTestCaseLockedChanged();
+            }
+        }
+        private global::System.Boolean _TestCaseLocked;
+        partial void OnTestCaseLockedChanging(global::System.Boolean value);
+        partial void OnTestCaseLockedChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean EnableTesting
+        {
+            get
+            {
+                return _EnableTesting;
+            }
+            set
+            {
+                OnEnableTestingChanging(value);
+                ReportPropertyChanging("EnableTesting");
+                _EnableTesting = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("EnableTesting");
+                OnEnableTestingChanged();
+            }
+        }
+        private global::System.Boolean _EnableTesting;
+        partial void OnEnableTestingChanging(global::System.Boolean value);
+        partial void OnEnableTestingChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean TestCaseHidden
+        {
+            get
+            {
+                return _TestCaseHidden;
+            }
+            set
+            {
+                OnTestCaseHiddenChanging(value);
+                ReportPropertyChanging("TestCaseHidden");
+                _TestCaseHidden = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("TestCaseHidden");
+                OnTestCaseHiddenChanged();
+            }
+        }
+        private global::System.Boolean _TestCaseHidden;
+        partial void OnTestCaseHiddenChanging(global::System.Boolean value);
+        partial void OnTestCaseHiddenChanged();
 
         #endregion
     
@@ -2974,13 +3208,15 @@ namespace Moo.Core.DB
         /// <param name="code">Code 属性的初始值。</param>
         /// <param name="createTime">CreateTime 属性的初始值。</param>
         /// <param name="language">Language 属性的初始值。</param>
-        public static Record CreateRecord(global::System.Guid id, global::System.String code, global::System.DateTime createTime, global::System.String language)
+        /// <param name="publicCode">PublicCode 属性的初始值。</param>
+        public static Record CreateRecord(global::System.Guid id, global::System.String code, global::System.DateTime createTime, global::System.String language, global::System.Boolean publicCode)
         {
             Record record = new Record();
             record.ID = id;
             record.Code = code;
             record.CreateTime = createTime;
             record.Language = language;
+            record.PublicCode = publicCode;
             return record;
         }
 
@@ -3085,6 +3321,30 @@ namespace Moo.Core.DB
         private global::System.String _Language;
         partial void OnLanguageChanging(global::System.String value);
         partial void OnLanguageChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean PublicCode
+        {
+            get
+            {
+                return _PublicCode;
+            }
+            set
+            {
+                OnPublicCodeChanging(value);
+                ReportPropertyChanging("PublicCode");
+                _PublicCode = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("PublicCode");
+                OnPublicCodeChanged();
+            }
+        }
+        private global::System.Boolean _PublicCode;
+        partial void OnPublicCodeChanging(global::System.Boolean value);
+        partial void OnPublicCodeChanged();
 
         #endregion
     
