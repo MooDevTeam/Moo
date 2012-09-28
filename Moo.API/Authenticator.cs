@@ -8,7 +8,7 @@ using System.ServiceModel.Channels;
 using System.Threading;
 using System.ServiceModel.Web;
 using Moo.Core.Security;
-namespace Moo.API.API
+namespace Moo.API
 {
 
     public class Authenticator : IDispatchMessageInspector
@@ -24,7 +24,7 @@ namespace Moo.API.API
                     {
                         string sToken = WebOperationContext.Current.IncomingRequest.Headers["Auth"];
                         string[] splited = sToken.Split(',');
-                        Guid userID = Guid.Parse(splited[0]);
+                        int userID = int.Parse(splited[0]);
                         int iToken = int.Parse(splited[1]);
 
                         if (SiteUsers.ByID[userID].Token != iToken) throw new Exception();

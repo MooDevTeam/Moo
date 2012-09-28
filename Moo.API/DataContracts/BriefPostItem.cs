@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     [DataContract]
-    public class FullJudgeInfo
+    public class BriefPostItem
     {
         [DataMember]
-        public Guid? ID { get; set; }
+        public int? ID { get; set; }
 
         [DataMember]
-        public int? Score { get; set; }
+        public DateTime? CreateTime { get; set; }
 
         [DataMember]
-        public string Info { get; set; }
+        public int? CreatedBy { get; set; }
 
         [DataMember]
-        public Guid? Record { get; set; }
+        public int? Post { get; set; }
     }
 }

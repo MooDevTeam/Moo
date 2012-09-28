@@ -3,24 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     [DataContract]
-    public class FullPostItem
+    public class FullProblemRevision
     {
         [DataMember]
-        public Guid? ID { get; set; }
+        public int? ID { get; set; }
 
         [DataMember]
         public string Content { get; set; }
 
         [DataMember]
+        public string Reason { get; set; }
+
+        [DataMember]
         public DateTime? CreateTime { get; set; }
 
         [DataMember]
-        public Guid? CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
 
         [DataMember]
-        public Guid? Post { get; set; }
+        public int? Problem { get; set; }
     }
 }

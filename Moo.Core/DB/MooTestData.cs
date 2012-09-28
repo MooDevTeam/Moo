@@ -28,17 +28,10 @@ namespace Moo.Core.DB
                 BriefDescription = "我觉得我写这么多应该够两行了",
                 Description = "我是--屌丝--我骄傲，我为国家省钞票!",
                 Email = "onetwogoo@live.com",
+                Role = siteRoles.Organizer,
                 Score = 256,
                 PreferredLanguage = "c++"
             };
-            new List<Role>
-            {
-                siteRoles.ACLManger,
-                siteRoles.Contributor,
-                siteRoles.Reader,
-                siteRoles.RoleManger,
-                siteRoles.SiteManger
-            }.ForEach(role => MrPhone.Role.Add(role));
             db.Users.AddObject(MrPhone);
 
             User ShaBi = new User()
@@ -48,15 +41,10 @@ namespace Moo.Core.DB
                 BriefDescription = "我觉得我写这么多应该够两行了",
                 Description = "Moo*真*他妈的好！",
                 Email = "sunjiayu_2006@126.com",
+                Role = siteRoles.Worker,
                 Score = 128,
                 PreferredLanguage = "c++"
             };
-            new List<Role>
-            {
-                siteRoles.Contributor,
-                siteRoles.Reader,
-                siteRoles.SiteManger
-            }.ForEach(role => ShaBi.Role.Add(role));
             db.Users.AddObject(ShaBi);
 
             User Baby = new User()
@@ -66,14 +54,10 @@ namespace Moo.Core.DB
                 BriefDescription = "我啥都不懂",
                 Description = "真不懂",
                 Email = "helloyuhao@gmail.com",
+                Role = siteRoles.NormalUser,
                 Score = 1000,
                 PreferredLanguage = "pascal"
             };
-            new List<Role>
-            {
-                siteRoles.Contributor,
-                siteRoles.Reader,
-            }.ForEach(role => Baby.Role.Add(role));
             db.Users.AddObject(Baby);
 
             db.Users.AddObject(new User()
@@ -83,6 +67,7 @@ namespace Moo.Core.DB
                 BriefDescription = "冤枉啊!啥都没干就被封了！",
                 Description = "太他妈冤枉了！",
                 Email = "",
+                Role = siteRoles.Reader,
                 Score = 0,
                 PreferredLanguage = "c"
             });
@@ -362,7 +347,7 @@ namespace Moo.Core.DB
             {
                 Name = "讨论一下出题人心理",
                 Problem = APlusB,
-                ReplyTime=DateTime.Now,
+                ReplyTime = DateTime.Now,
                 OnTop = true,
             };
             db.Posts.AddObject(post);

@@ -7,95 +7,43 @@ namespace Moo.Core.Security
 {
     public class SiteRoles
     {
-        public static Guid ACLManagerID,RoleManagerID,SiteManagerID,ContributorID,ReaderID;
-
-        static SiteRoles()
-        {
-            using (MooDB db = new MooDB())
-            {
-                SiteRoles siteRoles = new SiteRoles(db);
-                ACLManagerID = siteRoles.ACLManger.ID;
-                RoleManagerID = siteRoles.RoleManger.ID;
-                SiteManagerID = siteRoles.SiteManger.ID;
-                ContributorID = siteRoles.Contributor.ID;
-                ReaderID = siteRoles.Reader.ID;
-            }
-        }
-
         MooDB db;
-
-        Role aclManager, roleManager, siteManager, contributor, reader;
-
-        public Role ACLManger
+        public Role Organizer
         {
             get
             {
-                if (aclManager == null)
-                {
-                    aclManager = (from r in db.Roles
-                                  where r.Name == "ACLManager"
-                                  select r).Single<Role>();
-                }
-                return aclManager;
+                return (from r in db.Roles
+                        where r.Name == "Organizer"
+                        select r).Single<Role>();
             }
         }
-
-        public Role RoleManger
+        public Role Worker
         {
             get
             {
-                if (roleManager == null)
-                {
-                    roleManager = (from r in db.Roles
-                                   where r.Name == "RoleManager"
-                                   select r).Single<Role>();
-                }
-                return roleManager;
+                return (from r in db.Roles
+                        where r.Name == "Worker"
+                        select r).Single<Role>();
             }
         }
-
-        public Role SiteManger
+        public Role NormalUser
         {
             get
             {
-                if (siteManager == null)
-                {
-                    siteManager = (from r in db.Roles
-                                   where r.Name == "SiteManager"
-                                   select r).Single<Role>();
-                }
-                return siteManager;
+                return (from r in db.Roles
+                        where r.Name == "NormalUser"
+                        select r).Single<Role>();
             }
         }
-
-        public Role Contributor
-        {
-            get
-            {
-                if (contributor == null)
-                {
-                    contributor = (from r in db.Roles
-                                   where r.Name == "Contributor"
-                                   select r).Single<Role>();
-                }
-                return contributor;
-            }
-        }
-
         public Role Reader
         {
             get
             {
-                if (reader == null)
-                {
-                    reader = (from r in db.Roles
-                              where r.Name == "Reader"
-                              select r).Single<Role>();
-                }
-                return reader;
+                return (from r in db.Roles
+                        where r.Name == "Reader"
+                        select r).Single<Role>();
             }
         }
-
         public SiteRoles(MooDB db)
         {
             this.db = db;

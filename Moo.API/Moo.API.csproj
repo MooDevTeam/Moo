@@ -54,7 +54,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="API\JsonAPI.svc" />
+    <Content Include="JsonAPI.svc" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -67,28 +67,29 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Authenticator.cs" />
-    <Compile Include="API\BriefProblemRevision.cs" />
-    <Compile Include="API\BriefUser.cs" />
-    <Compile Include="API\ErrorHandler.cs" />
-    <Compile Include="API\CustomBehavior.cs" />
-    <Compile Include="API\ExtMethods.cs" />
-    <Compile Include="API\FullAnswerOnlyTestCase.cs" />
-    <Compile Include="API\FullInteractiveTestCase.cs" />
-    <Compile Include="API\FullJudgeInfo.cs" />
-    <Compile Include="API\FullPost.cs" />
-    <Compile Include="API\FullPostItem.cs" />
-    <Compile Include="API\FullProblem.cs" />
-    <Compile Include="API\FullProblemRevision.cs" />
-    <Compile Include="API\FullRecord.cs" />
-    <Compile Include="API\FullSpecialJudgedTestCase.cs" />
-    <Compile Include="API\FullTestCase.cs" />
-    <Compile Include="API\FullTranditionalTestCase.cs" />
-    <Compile Include="API\FullUser.cs" />
-    <Compile Include="API\JsonAPI.svc.cs">
+    <Compile Include="Authenticator.cs" />
+    <Compile Include="DataContracts\BriefPostItem.cs" />
+    <Compile Include="DataContracts\BriefProblemRevision.cs" />
+    <Compile Include="DataContracts\BriefUser.cs" />
+    <Compile Include="ErrorHandler.cs" />
+    <Compile Include="CustomBehavior.cs" />
+    <Compile Include="DataContracts\ExtMethods.cs" />
+    <Compile Include="DataContracts\FullAnswerOnlyTestCase.cs" />
+    <Compile Include="DataContracts\FullInteractiveTestCase.cs" />
+    <Compile Include="DataContracts\FullJudgeInfo.cs" />
+    <Compile Include="DataContracts\FullPost.cs" />
+    <Compile Include="DataContracts\FullPostItem.cs" />
+    <Compile Include="DataContracts\FullProblem.cs" />
+    <Compile Include="DataContracts\FullProblemRevision.cs" />
+    <Compile Include="DataContracts\FullRecord.cs" />
+    <Compile Include="DataContracts\FullSpecialJudgedTestCase.cs" />
+    <Compile Include="DataContracts\FullTestCase.cs" />
+    <Compile Include="DataContracts\FullTranditionalTestCase.cs" />
+    <Compile Include="DataContracts\FullUser.cs" />
+    <Compile Include="JsonAPI.svc.cs">
       <DependentUpon>JsonAPI.svc</DependentUpon>
     </Compile>
-    <Compile Include="API\BriefRecord.cs" />
+    <Compile Include="DataContracts\BriefRecord.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
