@@ -22,7 +22,7 @@ using System.Runtime.Serialization;
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "TestDataProblem", "TestData", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.TestCase), "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Problem))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ProblemProblemRevision", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Problem), "ProblemRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ProblemRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserProblemRevision", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "ProblemRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ProblemRevision))]
-[assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserRole", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.User), "Role", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Role))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserRole", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.User), "Role", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Role))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreatePostItem", "PostItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.PostItem), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "PostItemPost", "PostItem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.PostItem), "Post", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Post))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "PostProblem", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Problem), "Post", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Post))]
@@ -40,7 +40,6 @@ using System.Runtime.Serialization;
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserTestCase", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "TestCase", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.TestCase))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "LogUser", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.User), "Log", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Log))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UploadedFileUser", "UploadedFile", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.UploadedFile), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
-[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ACEFunction", "Function", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Function), "ACE", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ACE))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateProblem", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Problem), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
 
 #endregion
@@ -124,22 +123,6 @@ namespace Moo.Core.DB
             }
         }
         private ObjectSet<Role> _Roles;
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        public ObjectSet<Function> Functions
-        {
-            get
-            {
-                if ((_Functions == null))
-                {
-                    _Functions = base.CreateObjectSet<Function>("Functions");
-                }
-                return _Functions;
-            }
-        }
-        private ObjectSet<Function> _Functions;
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -332,22 +315,6 @@ namespace Moo.Core.DB
             }
         }
         private ObjectSet<Log> _Logs;
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        public ObjectSet<ACE> ACL
-        {
-            get
-            {
-                if ((_ACL == null))
-                {
-                    _ACL = base.CreateObjectSet<ACE>("ACL");
-                }
-                return _ACL;
-            }
-        }
-        private ObjectSet<ACE> _ACL;
 
         #endregion
         #region AddTo 方法
@@ -366,14 +333,6 @@ namespace Moo.Core.DB
         public void AddToRoles(Role role)
         {
             base.AddObject("Roles", role);
-        }
-    
-        /// <summary>
-        /// 用于向 Functions EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
-        /// </summary>
-        public void AddToFunctions(Function function)
-        {
-            base.AddObject("Functions", function);
         }
     
         /// <summary>
@@ -471,14 +430,6 @@ namespace Moo.Core.DB
         {
             base.AddObject("Logs", log);
         }
-    
-        /// <summary>
-        /// 用于向 ACL EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
-        /// </summary>
-        public void AddToACL(ACE aCE)
-        {
-            base.AddObject("ACL", aCE);
-        }
 
         #endregion
     }
@@ -487,180 +438,6 @@ namespace Moo.Core.DB
     #endregion
     
     #region 实体
-    
-    /// <summary>
-    /// 没有元数据文档可用。
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="ACE")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class ACE : EntityObject
-    {
-        #region 工厂方法
-    
-        /// <summary>
-        /// 创建新的 ACE 对象。
-        /// </summary>
-        /// <param name="id">ID 属性的初始值。</param>
-        /// <param name="object">Object 属性的初始值。</param>
-        /// <param name="subject">Subject 属性的初始值。</param>
-        /// <param name="allowed">Allowed 属性的初始值。</param>
-        public static ACE CreateACE(global::System.Guid id, global::System.Guid @object, global::System.Guid subject, global::System.Boolean allowed)
-        {
-            ACE aCE = new ACE();
-            aCE.ID = id;
-            aCE.Object = @object;
-            aCE.Subject = subject;
-            aCE.Allowed = allowed;
-            return aCE;
-        }
-
-        #endregion
-        #region 基元属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Guid ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Guid Object
-        {
-            get
-            {
-                return _Object;
-            }
-            set
-            {
-                OnObjectChanging(value);
-                ReportPropertyChanging("Object");
-                _Object = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("Object");
-                OnObjectChanged();
-            }
-        }
-        private global::System.Guid _Object;
-        partial void OnObjectChanging(global::System.Guid value);
-        partial void OnObjectChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Guid Subject
-        {
-            get
-            {
-                return _Subject;
-            }
-            set
-            {
-                OnSubjectChanging(value);
-                ReportPropertyChanging("Subject");
-                _Subject = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("Subject");
-                OnSubjectChanged();
-            }
-        }
-        private global::System.Guid _Subject;
-        partial void OnSubjectChanging(global::System.Guid value);
-        partial void OnSubjectChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Boolean Allowed
-        {
-            get
-            {
-                return _Allowed;
-            }
-            set
-            {
-                OnAllowedChanging(value);
-                ReportPropertyChanging("Allowed");
-                _Allowed = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("Allowed");
-                OnAllowedChanged();
-            }
-        }
-        private global::System.Boolean _Allowed;
-        partial void OnAllowedChanging(global::System.Boolean value);
-        partial void OnAllowedChanged();
-
-        #endregion
-    
-        #region 导航属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ACEFunction", "Function")]
-        public Function Function
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Function>("Moo.Core.DB.ACEFunction", "Function").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Function>("Moo.Core.DB.ACEFunction", "Function").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Function> FunctionReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Function>("Moo.Core.DB.ACEFunction", "Function");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Function>("Moo.Core.DB.ACEFunction", "Function", value);
-                }
-            }
-        }
-
-        #endregion
-    }
     
     /// <summary>
     /// 没有元数据文档可用。
@@ -1351,113 +1128,6 @@ namespace Moo.Core.DB
         }
 
         #endregion
-    }
-    
-    /// <summary>
-    /// 没有元数据文档可用。
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="Function")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class Function : EntityObject
-    {
-        #region 工厂方法
-    
-        /// <summary>
-        /// 创建新的 Function 对象。
-        /// </summary>
-        /// <param name="id">ID 属性的初始值。</param>
-        /// <param name="name">Name 属性的初始值。</param>
-        /// <param name="displayName">DisplayName 属性的初始值。</param>
-        public static Function CreateFunction(global::System.Guid id, global::System.String name, global::System.String displayName)
-        {
-            Function function = new Function();
-            function.ID = id;
-            function.Name = name;
-            function.DisplayName = displayName;
-            return function;
-        }
-
-        #endregion
-        #region 基元属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Guid ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Name
-        {
-            get
-            {
-                return _Name;
-            }
-            set
-            {
-                OnNameChanging(value);
-                ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("Name");
-                OnNameChanged();
-            }
-        }
-        private global::System.String _Name;
-        partial void OnNameChanging(global::System.String value);
-        partial void OnNameChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String DisplayName
-        {
-            get
-            {
-                return _DisplayName;
-            }
-            set
-            {
-                OnDisplayNameChanging(value);
-                ReportPropertyChanging("DisplayName");
-                _DisplayName = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("DisplayName");
-                OnDisplayNameChanged();
-            }
-        }
-        private global::System.String _DisplayName;
-        partial void OnDisplayNameChanging(global::System.String value);
-        partial void OnDisplayNameChanged();
-
-        #endregion
-    
     }
     
     /// <summary>
@@ -4517,17 +4187,33 @@ namespace Moo.Core.DB
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
         [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "UserRole", "Role")]
-        public EntityCollection<Role> Role
+        public Role Role
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Role>("Moo.Core.DB.UserRole", "Role");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Role>("Moo.Core.DB.UserRole", "Role").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Role>("Moo.Core.DB.UserRole", "Role").Value = value;
+            }
+        }
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Role> RoleReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Role>("Moo.Core.DB.UserRole", "Role");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Role>("Moo.Core.DB.UserRole", "Role", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Role>("Moo.Core.DB.UserRole", "Role", value);
                 }
             }
         }

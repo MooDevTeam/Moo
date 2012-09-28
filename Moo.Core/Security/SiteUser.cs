@@ -17,7 +17,7 @@ namespace Moo.Core.Security
         public Guid ID { get; set; }
         public int Token { get; set; }
         public string Name { get; set; }
-        public List<Guid> Subjects { get; set; }
+        public SiteRole Role { get; set; }
 
         public User GetDBUser(MooDB db)
         {
@@ -30,14 +30,7 @@ namespace Moo.Core.Security
         {
             ID = user.ID;
             Name = user.Name;
-            Subjects = new List<Guid>()
-            {
-                user.ID
-            };
-            foreach (Role role in user.Role)
-            {
-                Subjects.Add(role.ID);
-            }
+            Role = Enum.Parse(typeof(SiteRole), user.Role.Name);
         }
     }
 }
