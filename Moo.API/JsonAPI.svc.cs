@@ -1273,7 +1273,7 @@ namespace Moo.API
 
         #region PostItem
         [OperationContract]
-        [WebGet(UriTemplate = "Posts/{postID}/Count")]
+        [WebGet(UriTemplate = "Posts/{postID}/Items/Count")]
         public int CountPostItem(string postID)
         {
             int ipostID = int.Parse(postID);
@@ -1287,7 +1287,7 @@ namespace Moo.API
         }
 
         [OperationContract]
-        [WebGet(UriTemplate = "Posts/{postID}")]
+        [WebGet(UriTemplate = "Posts/{postID}/Items")]
         public List<BriefPostItem> ListPostItem(string postID)
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
@@ -1312,7 +1312,7 @@ namespace Moo.API
         }
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "Posts/{postID}", Method = "POST")]
+        [WebInvoke(UriTemplate = "Posts/{postID}/Items", Method = "POST")]
         public int CreatePostItem(string postID, FullPostItem postItem)
         {
             int ipostID = int.Parse(postID);
@@ -1341,7 +1341,7 @@ namespace Moo.API
         }
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "Posts/{postID}/{id}", Method = "PUT")]
+        [WebInvoke(UriTemplate = "Posts/{postID}/Items/{id}", Method = "PUT")]
         public void ModifyPostItem(string postID, string id, FullPostItem postItem)
         {
             int iid = int.Parse(id);
@@ -1364,7 +1364,7 @@ namespace Moo.API
         }
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "Posts/{postID}/{id}", Method = "DELETE")]
+        [WebInvoke(UriTemplate = "Posts/{postID}/Items/{id}", Method = "DELETE")]
         public void DeletePostItem(string postID, string id)
         {
             int iid = int.Parse(id);
