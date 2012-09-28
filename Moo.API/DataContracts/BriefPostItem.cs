@@ -6,21 +6,18 @@ using System.Runtime.Serialization;
 namespace Moo.API.DataContracts
 {
     [DataContract]
-    public class FullPost
+    public class BriefPostItem
     {
         [DataMember]
         public int? ID { get; set; }
 
         [DataMember]
-        public string Name { get; set; }
+        public DateTime? CreateTime { get; set; }
 
         [DataMember]
-        public bool? OnTop { get; set; }
+        public int? CreatedBy { get; set; }
 
         [DataMember]
-        public DateTime? ReplyTime { get; set; }
-
-        [DataMember]
-        public int? Problem { get; set; }
+        public int? Post { get; set; }
     }
 }

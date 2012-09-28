@@ -24,7 +24,7 @@ namespace Moo.API
                     {
                         string sToken = WebOperationContext.Current.IncomingRequest.Headers["Auth"];
                         string[] splited = sToken.Split(',');
-                        Guid userID = Guid.Parse(splited[0]);
+                        int userID = int.Parse(splited[0]);
                         int iToken = int.Parse(splited[1]);
 
                         if (SiteUsers.ByID[userID].Token != iToken) throw new Exception();

@@ -197,6 +197,17 @@ namespace Moo.API.DataContracts
             };
         }
 
+        public static BriefPostItem ToBriefPostItem(this PostItem postItem)
+        {
+            return new BriefPostItem()
+            {
+                ID = postItem.ID,
+                CreatedBy = postItem.CreatedBy.ID,
+                Post = postItem.Post.ID,
+                CreateTime = postItem.CreateTime
+            };
+        }
+
         public static FullPostItem ToFullPostItem(this PostItem postItem)
         {
             return new FullPostItem()

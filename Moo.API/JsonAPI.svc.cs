@@ -64,15 +64,9 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "CurrentUser")]
-        public Guid GetCurrentUser()
+        public int GetCurrentUser()
         {
             return Security.CurrentUser.ID;
-        }
-
-        [OperationContract]
-        public bool CheckPermission(Guid obj, string type, string permission)
-        {
-            return Security.CheckPermission(Security.CurrentUser.Subjects, obj, type, permission);
         }
 
         [OperationContract]
@@ -116,7 +110,7 @@ namespace Moo.API
                     problems = problems.Where(p => p.Name.Contains(nameContains));
                 }
 
-                problems = problems.OrderByDescending(p => p.CreateTime);
+                problems = problems.OrderByDescending(p => p.ID);
 
                 if (skip != null)
                 {
@@ -133,11 +127,10 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems", Method = "POST")]
-        public Guid CreateProblem(FullProblem problem)
+        public int CreateProblem(FullProblem problem)
         {
             using (MooDB db = new MooDB())
             {
-                Security.RequirePermission(db, Guid.Empty, null, "problem.create");
                 if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
                 {
                     throw new NotSupportedException("不支持的题目类型：" + problem.Type);
@@ -149,27 +142,9 @@ namespace Moo.API
                     CreateTime = DateTime.Now,
                     CreatedBy = Security.CurrentUser.GetDBUser(db)
                 };
+                Access.Required(db, newProblem, Function.CreateProblem);
                 db.Problems.AddObject(newProblem);
                 db.SaveChanges();
-
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Object = newProblem.ID,
-                    Function = Security.GetFunction(db, "problem.modify"),
-                    Allowed = true
-                });
-
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Object = newProblem.ID,
-                    Function = Security.GetFunction(db, "problem.delete"),
-                    Allowed = true
-                });
-
-                db.SaveChanges();
-
                 return newProblem.ID;
             }
         }
@@ -186,7 +161,7 @@ namespace Moo.API
                                    select p).SingleOrDefault<Problem>();
                 if (problem == null) throw new ArgumentException("无此题目");
 
-                Security.RequirePermission(db, problem.ID, "Problem", "problem.read");
+                Access.Required(db, problem, Function.ReadProblem);
 
                 return problem.ToFullProblem(db);
             }
@@ -196,14 +171,16 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Problems/{id}", Method = "PUT")]
         public void ModifyProblem(string id, FullProblem problem)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Problem theProblem = (from p in db.Problems
-                                      where p.ID == gid
+                                      where p.ID == iid
                                       select p).SingleOrDefault<Problem>();
                 if (theProblem == null) throw new ArgumentException("无此题目");
-                Security.RequirePermission(db, theProblem.ID, "Problem", "problem.modify");
+
+                Access.Required(db, theProblem, Function.ModifyProblem);
+
                 if (problem.Name != null)
                 {
                     theProblem.Name = problem.Name;
@@ -224,41 +201,17 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Problems/{id}", Method = "DELETE")]
         public void DeleteProblem(string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Problem problem = (from p in db.Problems
-                                   where p.ID == gid
+                                   where p.ID == iid
                                    select p).SingleOrDefault<Problem>();
                 if (problem == null) throw new ArgumentException("无此题目");
 
-                Security.RequirePermission(db, problem.ID, "Problem", "problem.delete");
+                Access.Required(db, problem, Function.DeleteProblem);
 
                 if (problem.Contest.Any()) throw new InvalidOperationException("尚有比赛使用此题目");
-
-                (from r in db.ProblemRevisions
-                 where r.Problem.ID == problem.ID
-                 select r).ToList().ForEach(r => DeleteACEs(db, r.ID));
-
-                (from p in db.Posts
-                 where p.Problem.ID == problem.ID
-                 select p).ToList().ForEach(post =>
-                {
-                    (from p in db.PostItems
-                     where p.Post.ID == post.ID
-                     select p).ToList().ForEach(item => DeleteACEs(db, item.ID));
-                    DeleteACEs(db, post.ID);
-                });
-
-                (from r in db.Records
-                 where r.Problem.ID == problem.ID
-                 select r).ToList().ForEach(r => DeleteACEs(db, r.ID));
-
-                (from t in db.TestCases
-                 where t.Problem.ID == problem.ID
-                 select t).ToList().ForEach(t => DeleteACEs(db, t.ID));
-
-                DeleteACEs(db, problem.ID);
 
                 db.Problems.DeleteObject(problem);
                 db.SaveChanges();
@@ -271,11 +224,11 @@ namespace Moo.API
         [WebGet(UriTemplate = "Problems/{problemID}/Revisions/Count")]
         public int CountProblemRevision(string problemID)
         {
-            Guid gproblemID = Guid.Parse(problemID);
+            int iproblemID = int.Parse(problemID);
             using (MooDB db = new MooDB())
             {
                 return (from r in db.ProblemRevisions
-                        where r.Problem.ID == gproblemID
+                        where r.Problem.ID == iproblemID
                         select r).Count();
             }
         }
@@ -286,12 +239,12 @@ namespace Moo.API
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            Guid gproblemID = Guid.Parse(problemID);
+            int iproblemID = int.Parse(problemID);
             using (MooDB db = new MooDB())
             {
                 IQueryable<ProblemRevision> revisions = from r in db.ProblemRevisions
-                                                        where r.Problem.ID == gproblemID
-                                                        orderby r.CreateTime descending
+                                                        where r.Problem.ID == iproblemID
+                                                        orderby r.ID descending
                                                         select r;
                 if (skip != null)
                 {
@@ -310,16 +263,16 @@ namespace Moo.API
         [WebGet(UriTemplate = "Problems/{problemID}/Revisions/{id}")]
         public FullProblemRevision GetProblemRevision(string problemID, string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 ProblemRevision revision = (from r in db.ProblemRevisions
-                                            where r.ID == gid
+                                            where r.ID == iid
                                             select r).SingleOrDefault<ProblemRevision>();
 
                 if (revision == null) throw new ArgumentException("无此题目版本");
 
-                Security.RequirePermission(db, revision.ID, "ProblemRevision", "problem.revision.read");
+                Access.Required(db, revision, Function.ReadProblemRevision);
 
                 return revision.ToFullProblemRevision();
             }
@@ -327,17 +280,15 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/Revisions", Method = "POST")]
-        public Guid CreateProblemRevision(string problemID, FullProblemRevision revision)
+        public int CreateProblemRevision(string problemID, FullProblemRevision revision)
         {
-            Guid gproblemID = Guid.Parse(problemID);
+            int iproblemID = int.Parse(problemID);
             using (MooDB db = new MooDB())
             {
                 Problem problem = (from p in db.Problems
-                                   where p.ID == gproblemID
+                                   where p.ID == iproblemID
                                    select p).SingleOrDefault<Problem>();
                 if (problem == null) throw new ArgumentException("无此题目");
-
-                Security.RequirePermission(db, problem.ID, "Problem", "problem.revision.create");
 
                 ProblemRevision problemRevision = new ProblemRevision()
                 {
@@ -347,17 +298,11 @@ namespace Moo.API
                     Reason = revision.Reason,
                     CreateTime = DateTime.Now
                 };
-                db.ProblemRevisions.AddObject(problemRevision);
                 problem.LatestRevision = problemRevision;
-                db.SaveChanges();
 
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Object = problemRevision.ID,
-                    Function = Security.GetFunction(db, "problem.revision.delete"),
-                    Allowed = true
-                });
+                Access.Required(db, problemRevision, Function.CreateProblemRevision);
+
+                db.ProblemRevisions.AddObject(problemRevision);
                 db.SaveChanges();
                 return problemRevision.ID;
             }
@@ -367,15 +312,15 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Problems/{problemID}/Revisions/{id}", Method = "DELETE")]
         public void DeleteProblemRevision(string problemID, string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 ProblemRevision revision = (from r in db.ProblemRevisions
-                                            where r.ID == gid
+                                            where r.ID == iid
                                             select r).SingleOrDefault<ProblemRevision>();
                 if (revision == null) throw new ArgumentException("无此题目版本");
 
-                Security.RequirePermission(db, revision.ID, "ProblemRevision", "problem.revision.delete");
+                Access.Required(db, revision, Function.DeleteProblemRevision);
 
                 Problem problem = revision.Problem;
                 if (problem.LatestRevision.ID == revision.ID)
@@ -394,8 +339,6 @@ namespace Moo.API
                     }
                 }
 
-                DeleteACEs(db, revision.ID);
-
                 db.ProblemRevisions.DeleteObject(revision);
                 db.SaveChanges();
             }
@@ -407,9 +350,9 @@ namespace Moo.API
         [WebGet(UriTemplate = "Records/Count")]
         public int CountRecord()
         {
-            Guid? problemID = QueryParameters["problemID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["problemID"]);
-            Guid? userID = QueryParameters["userID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["userID"]);
-            Guid? contestID = QueryParameters["contestID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["contestID"]);
+            int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
+            int? userID = QueryParameters["userID"] == null ? null : (int?)int.Parse(QueryParameters["userID"]);
+            int? contestID = QueryParameters["contestID"] == null ? null : (int?)int.Parse(QueryParameters["contestID"]);
 
             using (MooDB db = new MooDB())
             {
@@ -440,9 +383,9 @@ namespace Moo.API
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            Guid? problemID = QueryParameters["problemID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["problemID"]);
-            Guid? userID = QueryParameters["userID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["userID"]);
-            Guid? contestID = QueryParameters["contestID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["contestID"]);
+            int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
+            int? userID = QueryParameters["userID"] == null ? null : (int?)int.Parse(QueryParameters["userID"]);
+            int? contestID = QueryParameters["contestID"] == null ? null : (int?)int.Parse(QueryParameters["contestID"]);
 
             using (MooDB db = new MooDB())
             {
@@ -464,7 +407,7 @@ namespace Moo.API
                     records = records.Where(r => contest.Problem.Contains(r.Problem));
                 }
 
-                records = records.OrderByDescending(r => r.CreateTime);
+                records = records.OrderByDescending(r => r.ID);
 
                 if (skip != null)
                 {
@@ -483,15 +426,15 @@ namespace Moo.API
         [WebGet(UriTemplate = "Records/{id}")]
         public FullRecord GetRecord(string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Record record = (from r in db.Records
-                                 where r.ID == gid
+                                 where r.ID == iid
                                  select r).SingleOrDefault<Record>();
                 if (record == null) throw new ArgumentException("无此记录");
 
-                Security.RequirePermission(db, record.ID, "Record", "record.read");
+                Access.Required(db, record, Function.ReadRecord);
 
                 return record.ToFullRecord(db);
             }
@@ -499,7 +442,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Records", Method = "POST")]
-        public Guid CreateRecord(FullRecord record)
+        public int CreateRecord(FullRecord record)
         {
             if (!new[] { "c", "c++", "pascal", "java", "plaintext" }.Contains(record.Language))
             {
@@ -513,19 +456,16 @@ namespace Moo.API
 
                 if (problem == null) throw new ArgumentException("无此题目");
 
-                Security.RequirePermission(db, problem.ID, "Problem", "record.create");
-
                 User currentUser = Security.CurrentUser.GetDBUser(db);
-
                 Record newRecord = new Record()
                 {
                     Code = record.Code,
                     CreateTime = DateTime.Now,
                     Language = record.Language,
                     Problem = problem,
+                    PublicCode = (bool)record.PublicCode,
                     User = currentUser,
                 };
-
                 currentUser.PreferredLanguage = record.Language;
 
                 problem.SubmissionCount++;
@@ -536,37 +476,10 @@ namespace Moo.API
                     problem.SubmissionUser++;
                 }
 
+                Access.Required(db, newRecord, Function.CreateRecord);
+
                 db.Records.AddObject(newRecord);
                 db.SaveChanges();
-
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Object = newRecord.ID,
-                    Function = Security.GetFunction(db, "record.modify"),
-                    Allowed = true
-                });
-
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Object = newRecord.ID,
-                    Function = Security.GetFunction(db, "record.delete"),
-                    Allowed = true
-                });
-
-                if (record.PublicCode != null && (bool)record.PublicCode)
-                {
-                    db.ACL.AddObject(new ACE()
-                    {
-                        Subject = new SiteRoles(db).Reader.ID,
-                        Object = newRecord.ID,
-                        Allowed = true,
-                        Function = Security.GetFunction(db, "record.code.read"),
-                    });
-                }
-                db.SaveChanges();
-
                 return newRecord.ID;
             }
         }
@@ -575,19 +488,19 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Records/{id}", Method = "PUT")]
         public void ModifyRecord(string id, FullRecord record)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Record theRecord = (from r in db.Records
-                                    where r.ID == gid
+                                    where r.ID == iid
                                     select r).SingleOrDefault<Record>();
                 if (record == null) throw new ArgumentException("无此记录");
 
-                Security.RequirePermission(db, theRecord.ID, "Record", "record.modify");
+                Access.Required(db, theRecord, Function.ModifyRecord);
 
-                if (record.PublicCode != null && theRecord.IsPublicCode(db) != (bool)record.PublicCode)
+                if (record.PublicCode != null)
                 {
-                    theRecord.TogglePublicCode(db, (bool)record.PublicCode);
+                    theRecord.PublicCode = (bool)record.PublicCode;
                 }
 
                 db.SaveChanges();
@@ -598,24 +511,21 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Records/{id}", Method = "DELETE")]
         public void DeleteRecord(string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
 
             using (MooDB db = new MooDB())
             {
                 Record record = (from r in db.Records
-                                 where r.ID == gid
+                                 where r.ID == iid
                                  select r).SingleOrDefault<Record>();
                 if (record == null) throw new ArgumentException("无此记录");
 
-                Security.RequirePermission(db, record.ID, "Record", "record.delete");
+                Access.Required(db, record, Function.DeleteRecord);
 
                 if (record.JudgeInfo != null)
                 {
                     DeleteJudgeInfoScore(db, record, record.JudgeInfo);
-                    DeleteACEs(db, record.JudgeInfo.ID);
                 }
-
-                DeleteACEs(db, record.ID);
 
                 db.Records.DeleteObject(record);
                 db.SaveChanges();
@@ -628,7 +538,7 @@ namespace Moo.API
         [WebGet(UriTemplate = "Records/{recordID}/JudgeInfo")]
         public FullJudgeInfo GetJudgeInfo(string recordID)
         {
-            Guid grecordID = Guid.Parse(recordID);
+            int grecordID = int.Parse(recordID);
             using (MooDB db = new MooDB())
             {
                 Record record = (from r in db.Records
@@ -637,7 +547,7 @@ namespace Moo.API
                 if (record == null) throw new ArgumentException("无此记录");
                 if (record.JudgeInfo == null) throw new ArgumentException("记录无测评信息");
 
-                Security.RequirePermission(db, record.JudgeInfo.ID, "JudgeInfo", "record.judgeinfo.read");
+                Access.Required(db, record, Function.ReadRecord);
 
                 return record.JudgeInfo.ToFullJudgeInfo();
             }
@@ -683,20 +593,19 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Records/{recordID}/JudgeInfo", Method = "DELETE")]
         public void DeleteJudgeInfo(string recordID)
         {
-            Guid grecordID = Guid.Parse(recordID);
+            int irecordID = int.Parse(recordID);
             using (MooDB db = new MooDB())
             {
                 Record record = (from r in db.Records
-                                 where r.ID == grecordID
+                                 where r.ID == irecordID
                                  select r).SingleOrDefault<Record>();
                 if (record == null) throw new ArgumentException("无此记录");
                 if (record.JudgeInfo == null) throw new ArgumentException("记录无测评信息");
 
                 JudgeInfo info = record.JudgeInfo;
 
-                Security.RequirePermission(db, record.JudgeInfo.ID, "JudgeInfo", "record.judgeinfo.delete");
+                Access.Required(db, info, Function.DeleteJudgeInfo);
 
-                DeleteACEs(db, info.ID);
                 record.JudgeInfo = null;
                 db.JudgeInfos.DeleteObject(info);
                 db.SaveChanges();
@@ -709,11 +618,11 @@ namespace Moo.API
         [WebGet(UriTemplate = "Problems/{problemID}/TestCases/Count")]
         public int CountTestCase(string problemID)
         {
-            Guid gproblemID = Guid.Parse(problemID);
+            int iproblemID = int.Parse(problemID);
             using (MooDB db = new MooDB())
             {
                 return (from t in db.TestCases
-                        where t.Problem.ID == gproblemID
+                        where t.Problem.ID == iproblemID
                         select t).Count();
             }
         }
@@ -724,11 +633,11 @@ namespace Moo.API
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            Guid gproblemID = Guid.Parse(problemID);
+            int iproblemID = int.Parse(problemID);
             using (MooDB db = new MooDB())
             {
                 IQueryable<TestCase> testCases = from t in db.TestCases
-                                                 where t.Problem.ID == gproblemID
+                                                 where t.Problem.ID == iproblemID
                                                  orderby t.ID
                                                  select t;
                 if (skip != null)
@@ -748,15 +657,15 @@ namespace Moo.API
         [WebGet(UriTemplate = "Problems/{problemID}/TestCases/{id}")]
         public FullTestCase GetTestCase(string problemID, string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 TestCase testCase = (from t in db.TestCases
-                                     where t.ID == gid
+                                     where t.ID == iid
                                      select t).SingleOrDefault<TestCase>();
                 if (testCase == null) throw new ArgumentException("无此测试数据");
 
-                Security.RequirePermission(db, testCase.ID, "TestCase", "testcase.read");
+                Access.Required(db, testCase, Function.ReadTestCase);
 
                 if (testCase is TranditionalTestCase)
                 {
@@ -783,17 +692,15 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases", Method = "POST")]
-        public Guid CreateTestCase(string problemID, FullTestCase testCase)
+        public int CreateTestCase(string problemID, FullTestCase testCase)
         {
-            Guid gproblemID = Guid.Parse(problemID);
+            int iproblemID = int.Parse(problemID);
             using (MooDB db = new MooDB())
             {
                 Problem problem = (from p in db.Problems
-                                   where p.ID == gproblemID
+                                   where p.ID == iproblemID
                                    select p).SingleOrDefault<Problem>();
                 if (problem == null) throw new ArgumentException("无此题目");
-
-                Security.RequirePermission(db, problem.ID, "Problem", "testcase.create");
 
                 TestCase newTestCase;
                 if (testCase is FullTranditionalTestCase)
@@ -868,24 +775,10 @@ namespace Moo.API
                 {
                     throw new NotSupportedException("不支持的测试数据类型");
                 }
+
+                Access.Required(db, newTestCase, Function.CreateTestCase);
+
                 db.TestCases.AddObject(newTestCase);
-                db.SaveChanges();
-
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Allowed = true,
-                    Function = Security.GetFunction(db, "testcase.modify"),
-                    Object = newTestCase.ID,
-                });
-
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Allowed = true,
-                    Function = Security.GetFunction(db, "testcase.delete"),
-                    Object = newTestCase.ID,
-                });
                 db.SaveChanges();
                 return newTestCase.ID;
             }
@@ -893,28 +786,28 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Tranditional", Method = "POST")]
-        public Guid CreateTranditionalTestCase(string problemID, FullTranditionalTestCase testCase)
+        public int CreateTranditionalTestCase(string problemID, FullTranditionalTestCase testCase)
         {
             return CreateTestCase(problemID, testCase);
         }
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/SpecialJudged", Method = "POST")]
-        public Guid CreateSpecialJudgedTestCase(string problemID, FullSpecialJudgedTestCase testCase)
+        public int CreateSpecialJudgedTestCase(string problemID, FullSpecialJudgedTestCase testCase)
         {
             return CreateTestCase(problemID, testCase);
         }
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Interactive", Method = "POST")]
-        public Guid CreateInteractiveTestCase(string problemID, FullInteractiveTestCase testCase)
+        public int CreateInteractiveTestCase(string problemID, FullInteractiveTestCase testCase)
         {
             return CreateTestCase(problemID, testCase);
         }
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/AnswerOnly", Method = "POST")]
-        public Guid CreateAnswerOnlyTestCase(string problemID, FullAnswerOnlyTestCase testCase)
+        public int CreateAnswerOnlyTestCase(string problemID, FullAnswerOnlyTestCase testCase)
         {
             return CreateTestCase(problemID, testCase);
         }
@@ -923,15 +816,15 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/{id}", Method = "PUT")]
         public void ModifyTestCase(string problemID, string id, FullTestCase testCase)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 TestCase theTestCase = (from t in db.TestCases
-                                        where t.ID == gid
+                                        where t.ID == iid
                                         select t).SingleOrDefault<TestCase>();
                 if (theTestCase == null) throw new ArgumentException("无此测试数据");
 
-                Security.RequirePermission(db, theTestCase.ID, "TestCase", "testcase.modify");
+                Access.Required(db, theTestCase, Function.ModifyTestCase);
 
                 if (theTestCase is TranditionalTestCase && testCase is FullTranditionalTestCase)
                 {
@@ -1069,17 +962,15 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/{id}", Method = "DELETE")]
         public void DeleteTestCase(string problemID, string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 TestCase testCase = (from t in db.TestCases
-                                     where t.ID == gid
+                                     where t.ID == iid
                                      select t).SingleOrDefault<TestCase>();
                 if (testCase == null) throw new ArgumentException("无此测试数据");
 
-                Security.RequirePermission(db, testCase.ID, "TestCase", "testcase.delete");
-
-                DeleteACEs(db, testCase.ID);
+                Access.Required(db, testCase, Function.DeleteTestCase);
 
                 db.TestCases.DeleteObject(testCase);
                 db.SaveChanges();
@@ -1135,15 +1026,15 @@ namespace Moo.API
         [WebGet(UriTemplate = "Users/{id}")]
         public FullUser GetUser(string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 User user = (from u in db.Users
-                             where u.ID == gid
+                             where u.ID == iid
                              select u).SingleOrDefault<User>();
                 if (user == null) throw new ArgumentException("无此用户");
 
-                Security.RequirePermission(db, user.ID, "User", "user.read");
+                Access.Required(db, user, Function.ReadUser);
 
                 return user.ToFullUser();
             }
@@ -1151,15 +1042,10 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Users", Method = "POST")]
-        public Guid CreateUser(FullUser user)
+        public int CreateUser(FullUser user)
         {
             using (MooDB db = new MooDB())
             {
-                if (Security.Authenticated)
-                {
-                    Security.RequirePermission(db, Guid.Empty, null, "user.create");
-                }
-
                 User newUser = new User()
                 {
                     BriefDescription = user.BriefDescription,
@@ -1168,28 +1054,18 @@ namespace Moo.API
                     Name = user.Name,
                     Password = Converter.ToSHA256Hash(user.Password),
                     PreferredLanguage = user.PreferredLanguage,
+                    Role = new SiteRoles(db).NormalUser,
                     Score = 0,
                 };
 
-                SiteRoles siteRoles = new SiteRoles(db);
-                new List<Role>()
+                if (Security.Authenticated)
                 {
-                    siteRoles.Reader,
-                    siteRoles.Contributor
-                }.ForEach(r => newUser.Role.Add(r));
+                    Access.Required(db, newUser, Function.CreateUser);
+                }
 
                 db.Users.AddObject(newUser);
                 db.SaveChanges();
 
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = newUser.ID,
-                    Object = newUser.ID,
-                    Allowed = true,
-                    Function = Security.GetFunction(db, "user.modify"),
-                });
-
-                db.SaveChanges();
                 return newUser.ID;
             }
         }
@@ -1198,15 +1074,15 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Users/{id}", Method = "PUT")]
         public void ModifyUser(string id, FullUser user)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 User theUser = (from u in db.Users
-                                where u.ID == gid
+                                where u.ID == iid
                                 select u).SingleOrDefault<User>();
                 if (theUser == null) throw new ArgumentException("无此用户");
 
-                Security.RequirePermission(db, theUser.ID, "User", "user.modify");
+                Access.Required(db, theUser, Function.ModifyUser);
 
                 if (user.BriefDescription != null)
                 {
@@ -1234,16 +1110,12 @@ namespace Moo.API
                 }
                 if (user.Role != null)
                 {
-                    Security.RequirePermission(db, theUser.ID, "User", "user.role.modify");
-                    theUser.Role.Clear();
-                    foreach (Guid roleID in user.Role)
-                    {
-                        Role role = (from r in db.Roles
-                                     where r.ID == roleID
-                                     select r).SingleOrDefault<Role>();
-                        if (role == null) throw new ArgumentException("无此角色");
-                        theUser.Role.Add(role);
-                    }
+                    Access.Required(db, theUser, Function.ModifyUserRole);
+                    Role role = (from r in db.Roles
+                                 where r.ID == user.Role
+                                 select r).SingleOrDefault<Role>();
+                    if (role == null) throw new ArgumentException("无此角色");
+                    theUser.Role = role;
                 }
                 db.SaveChanges();
             }
@@ -1255,7 +1127,7 @@ namespace Moo.API
         [WebGet(UriTemplate = "Posts/Count")]
         public int CountPost()
         {
-            Guid? problemID = QueryParameters["problemID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["problemID"]);
+            int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
             using (MooDB db = new MooDB())
             {
                 IQueryable<Post> posts = db.Posts;
@@ -1273,7 +1145,7 @@ namespace Moo.API
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            Guid? problemID = QueryParameters["problemID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["problemID"]);
+            int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
             using (MooDB db = new MooDB())
             {
                 IQueryable<Post> posts = db.Posts;
@@ -1298,15 +1170,15 @@ namespace Moo.API
         [WebGet(UriTemplate = "Posts/{id}")]
         public FullPost GetPost(string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Post post = (from p in db.Posts
-                             where p.ID == gid
+                             where p.ID == iid
                              select p).SingleOrDefault<Post>();
                 if (post == null) throw new ArgumentException("无此帖子");
 
-                Security.RequirePermission(db, post.ID, "Post", "post.read");
+                Access.Required(db, post, Function.ReadPost);
 
                 return post.ToFullPost();
             }
@@ -1314,7 +1186,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Posts", Method = "POST")]
-        public Guid CreatePost(FullPost post)
+        public int CreatePost(FullPost post)
         {
             using (MooDB db = new MooDB())
             {
@@ -1322,7 +1194,6 @@ namespace Moo.API
                 if (post.Problem == null)
                 {
                     problem = null;
-                    Security.RequirePermission(db, Guid.Empty, null, "post.create");
                 }
                 else
                 {
@@ -1330,7 +1201,6 @@ namespace Moo.API
                                where p.ID == post.Problem
                                select p).SingleOrDefault<Problem>();
                     if (problem == null) throw new ArgumentException("无此题目");
-                    Security.RequirePermission(db, problem.ID, "Problem", "post.create");
                 }
 
                 Post newPost = new Post()
@@ -1338,8 +1208,12 @@ namespace Moo.API
                     Name = post.Name,
                     OnTop = false,
                     Problem = problem,
+                    Locked = false,
                     ReplyTime = DateTime.Now
                 };
+
+                Access.Required(db, newPost, Function.CreatePost);
+
                 db.Posts.AddObject(newPost);
                 db.SaveChanges();
                 return newPost.ID;
@@ -1350,15 +1224,15 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Posts/{id}", Method = "PUT")]
         public void ModifyPost(string id, FullPost post)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Post thePost = (from p in db.Posts
-                                where p.ID == gid
+                                where p.ID == iid
                                 select p).SingleOrDefault<Post>();
                 if (thePost == null) throw new ArgumentException("无此帖子");
 
-                Security.RequirePermission(db, thePost.ID, "Post", "post.modify");
+                Access.Required(db, thePost, Function.ModifyPost);
 
                 if (post.Name != null)
                 {
@@ -1367,6 +1241,10 @@ namespace Moo.API
                 if (post.OnTop != null)
                 {
                     thePost.OnTop = (bool)post.OnTop;
+                }
+                if (post.Locked != null)
+                {
+                    thePost.Locked = (bool)post.Locked;
                 }
 
                 db.SaveChanges();
@@ -1377,21 +1255,16 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Posts/{id}", Method = "DELETE")]
         public void DeletePost(string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Post post = (from p in db.Posts
-                             where p.ID == gid
+                             where p.ID == iid
                              select p).SingleOrDefault<Post>();
                 if (post == null) throw new ArgumentException("无此帖子");
 
-                Security.RequirePermission(db, post.ID, "Post", "post.delete");
+                Access.Required(db, post, Function.DeletePost);
 
-                (from i in db.PostItems
-                 where i.Post.ID == post.ID
-                 select i).ToList().ForEach(i => DeleteACEs(db, i.ID));
-
-                DeleteACEs(db, post.ID);
                 db.Posts.DeleteObject(post);
                 db.SaveChanges();
             }
@@ -1403,11 +1276,11 @@ namespace Moo.API
         [WebGet(UriTemplate = "Posts/{postID}/Count")]
         public int CountPostItem(string postID)
         {
-            Guid gpostID = Guid.Parse(postID);
+            int ipostID = int.Parse(postID);
             using (MooDB db = new MooDB())
             {
                 IQueryable<PostItem> postItems = from i in db.PostItems
-                                                 where i.Post.ID == gpostID
+                                                 where i.Post.ID == ipostID
                                                  select i;
                 return postItems.Count();
             }
@@ -1415,23 +1288,16 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Posts/{postID}")]
-        public List<FullPostItem> ListPostItem(string postID)
+        public List<BriefPostItem> ListPostItem(string postID)
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            Guid gpostID = Guid.Parse(postID);
+            int ipostID = int.Parse(postID);
             using (MooDB db = new MooDB())
             {
-                Post post = (from p in db.Posts
-                             where p.ID == gpostID
-                             select p).SingleOrDefault<Post>();
-                if (post == null) throw new ArgumentException("无此帖子");
-
-                Security.RequirePermission(db, post.ID, "Post", "post.item.read");
-
                 IQueryable<PostItem> postItems = from i in db.PostItems
-                                                 where i.Post.ID == gpostID
-                                                 orderby i.CreateTime
+                                                 where i.Post.ID == ipostID
+                                                 orderby i.ID
                                                  select i;
                 if (skip != null)
                 {
@@ -1441,50 +1307,34 @@ namespace Moo.API
                 {
                     postItems = postItems.Take((int)top);
                 }
-                return postItems.ToList().Select(i => i.ToFullPostItem()).ToList();
+                return postItems.ToList().Select(i => i.ToBriefPostItem()).ToList();
             }
         }
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Posts/{postID}", Method = "POST")]
-        public Guid CreatePostItem(string postID, FullPostItem postItem)
+        public int CreatePostItem(string postID, FullPostItem postItem)
         {
-            Guid gpostID = Guid.Parse(postID);
+            int ipostID = int.Parse(postID);
             using (MooDB db = new MooDB())
             {
                 Post post = (from p in db.Posts
-                             where p.ID == gpostID
+                             where p.ID == ipostID
                              select p).SingleOrDefault<Post>();
                 if (post == null) throw new ArgumentException("无此帖子");
 
-                Security.RequirePermission(db, post.ID, "Post", "post.item.create");
-
                 PostItem newPostItem = new PostItem()
                 {
-                   Content=postItem.Content,
-                   CreateTime=DateTime.Now,
-                   CreatedBy=Security.CurrentUser.GetDBUser(db),
-                   Post=post,
+                    Content = postItem.Content,
+                    CreateTime = DateTime.Now,
+                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    Post = post,
                 };
-                db.PostItems.AddObject(newPostItem);
                 post.ReplyTime = DateTime.Now;
-                db.SaveChanges();
 
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject=Security.CurrentUser.ID,
-                    Object=newPostItem.ID,
-                    Allowed=true,
-                    Function=Security.GetFunction(db,"post.item.modify")
-                });
+                Access.Required(db, newPostItem, Function.CreatePostItem);
 
-                db.ACL.AddObject(new ACE()
-                {
-                    Subject = Security.CurrentUser.ID,
-                    Object = newPostItem.ID,
-                    Allowed = true,
-                    Function = Security.GetFunction(db, "post.item.delete")
-                });
+                db.PostItems.AddObject(newPostItem);
                 db.SaveChanges();
                 return newPostItem.ID;
             }
@@ -1494,15 +1344,15 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Posts/{postID}/{id}", Method = "PUT")]
         public void ModifyPostItem(string postID, string id, FullPostItem postItem)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 PostItem thePostItem = (from i in db.PostItems
-                                        where i.ID == gid
+                                        where i.ID == iid
                                         select i).SingleOrDefault<PostItem>();
                 if (thePostItem == null) throw new ArgumentException("无此帖子楼层");
 
-                Security.RequirePermission(db, thePostItem.ID, "PostItem", "post.item.modify");
+                Access.Required(db, thePostItem, Function.ModifyPostItem);
 
                 if (postItem.Content != null)
                 {
@@ -1517,20 +1367,17 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Posts/{postID}/{id}", Method = "DELETE")]
         public void DeletePostItem(string postID, string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 PostItem postItem = (from i in db.PostItems
-                                        where i.ID == gid
-                                        select i).SingleOrDefault<PostItem>();
+                                     where i.ID == iid
+                                     select i).SingleOrDefault<PostItem>();
                 if (postItem == null) throw new ArgumentException("无此帖子楼层");
 
-                Security.RequirePermission(db, postItem.ID, "PostItem", "post.item.delete");
-
-                DeleteACEs(db, postItem.ID);
+                Access.Required(db, postItem, Function.DeletePostItem);
 
                 db.PostItems.DeleteObject(postItem);
-
                 db.SaveChanges();
             }
         }

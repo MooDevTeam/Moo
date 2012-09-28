@@ -68,7 +68,7 @@ namespace Moo.Core.Security
                 return new Dictionary<Function, List<Func<User, bool?>>>()
                 {
                     {Function.CreateUser,new List<Func<User,bool?>>(){
-                        u=>true
+                        u=>me.Role>=SiteRole.Worker?(bool?)true:null
                     }},
                     {Function.ReadUser,new List<Func<User,bool?>>(){
                         u=>me.Role>=SiteRole.Reader?(bool?)true:null
@@ -216,6 +216,14 @@ namespace Moo.Core.Security
             }.Check(@object, function);
         }
 
+        public static void Required(MooDB dbContext, object @object, Function function)
+        {
+            if (!Check(dbContext, @object, function))
+            {
+                throw new UnauthorizedAccessException("缺少权限：" + function.ToString());
+            }
+        }
+
         public bool Check(object @object, Function function)
         {
             if (@object is Problem)
@@ -236,9 +244,9 @@ namespace Moo.Core.Security
             }
             else if (@object is TestCase)
             {
-                return CheckRules(@object as TestCase ,TestCaseRules,function);
+                return CheckRules(@object as TestCase, TestCaseRules, function);
             }
-            else if(@object is Post)
+            else if (@object is Post)
             {
                 return CheckRules(@object as Post, PostRules, function);
             }
