@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Moo.Core.DB;
 using Moo.Core.Security;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     public static class ExtMethods
     {
@@ -26,7 +26,7 @@ namespace Moo.API.API
                 MyScore = myRecords.Any() ? (int?)myRecords.Max(r => r.JudgeInfo.Score) : null,
                 SubmissionCount = problem.SubmissionCount,
                 SubmissionUser = problem.SubmissionUser,
-                LatestRevision = problem.LatestRevision == null ? null : (Guid?)problem.LatestRevision.ID,
+                LatestRevision = problem.LatestRevision == null ? null : (int?)problem.LatestRevision.ID,
             };
         }
 
@@ -61,8 +61,8 @@ namespace Moo.API.API
             {
                 ID = record.ID,
                 CreateTime = record.CreateTime,
-                PublicCode = record.IsPublicCode(db),
-                JudgeInfo = record.JudgeInfo == null ? null : (Guid?)record.JudgeInfo.ID,
+                PublicCode = record.PublicCode,
+                JudgeInfo = record.JudgeInfo == null ? null : (int?)record.JudgeInfo.ID,
                 Language = record.Language,
                 Problem = record.Problem.ID,
                 User = record.User.ID
@@ -75,9 +75,9 @@ namespace Moo.API.API
             {
                 ID = record.ID,
                 CreateTime = record.CreateTime,
-                PublicCode = record.IsPublicCode(db),
-                Code = Security.CheckPermission(db, record.ID, "Record", "record.code.read") ? record.Code : null,
-                JudgeInfo = record.JudgeInfo == null ? null : (Guid?)record.JudgeInfo.ID,
+                PublicCode = record.PublicCode,
+                Code = Access.Check(db, record, Function.ReadRecordCode) ? record.Code : null,
+                JudgeInfo = record.JudgeInfo == null ? null : (int?)record.JudgeInfo.ID,
                 Language = record.Language,
                 Problem = record.Problem.ID,
                 User = record.User.ID
@@ -171,7 +171,7 @@ namespace Moo.API.API
                 ID = user.ID,
                 Name = user.Name,
                 PreferredLanguage = user.PreferredLanguage,
-                Role = user.Role.Select(r => r.ID).ToList(),
+                Role = user.Role.ID,
                 Score = user.Score
             };
         }
@@ -192,7 +192,7 @@ namespace Moo.API.API
                 ID = post.ID,
                 Name = post.Name,
                 OnTop = post.OnTop,
-                Problem = post.Problem == null ? null : (Guid?)post.Problem.ID,
+                Problem = post.Problem == null ? null : (int?)post.Problem.ID,
                 ReplyTime = post.ReplyTime
             };
         }
@@ -201,11 +201,11 @@ namespace Moo.API.API
         {
             return new FullPostItem()
             {
-                ID=postItem.ID,
-                Content=postItem.Content,
-                CreateTime=postItem.CreateTime,
-                CreatedBy=postItem.CreatedBy.ID,
-                Post=postItem.Post.ID,
+                ID = postItem.ID,
+                Content = postItem.Content,
+                CreateTime = postItem.CreateTime,
+                CreatedBy = postItem.CreatedBy.ID,
+                Post = postItem.Post.ID,
             };
         }
     }

@@ -5,7 +5,7 @@ using System.Web;
 using System.ServiceModel.Configuration;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
-namespace Moo.API.API
+namespace Moo.API
 {
     public class CustomBehavior : BehaviorExtensionElement, IServiceBehavior
     {

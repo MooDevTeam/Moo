@@ -68,27 +68,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Authenticator.cs" />
-    <Compile Include="API\BriefProblemRevision.cs" />
-    <Compile Include="API\BriefUser.cs" />
+    <Compile Include="API\DataContracts\BriefProblemRevision.cs" />
+    <Compile Include="API\DataContracts\BriefUser.cs" />
     <Compile Include="API\ErrorHandler.cs" />
     <Compile Include="API\CustomBehavior.cs" />
-    <Compile Include="API\ExtMethods.cs" />
-    <Compile Include="API\FullAnswerOnlyTestCase.cs" />
-    <Compile Include="API\FullInteractiveTestCase.cs" />
-    <Compile Include="API\FullJudgeInfo.cs" />
-    <Compile Include="API\FullPost.cs" />
-    <Compile Include="API\FullPostItem.cs" />
-    <Compile Include="API\FullProblem.cs" />
-    <Compile Include="API\FullProblemRevision.cs" />
-    <Compile Include="API\FullRecord.cs" />
-    <Compile Include="API\FullSpecialJudgedTestCase.cs" />
-    <Compile Include="API\FullTestCase.cs" />
-    <Compile Include="API\FullTranditionalTestCase.cs" />
-    <Compile Include="API\FullUser.cs" />
+    <Compile Include="API\DataContracts\ExtMethods.cs" />
+    <Compile Include="API\DataContracts\FullAnswerOnlyTestCase.cs" />
+    <Compile Include="API\DataContracts\FullInteractiveTestCase.cs" />
+    <Compile Include="API\DataContracts\FullJudgeInfo.cs" />
+    <Compile Include="API\DataContracts\FullPost.cs" />
+    <Compile Include="API\DataContracts\FullPostItem.cs" />
+    <Compile Include="API\DataContracts\FullProblem.cs" />
+    <Compile Include="API\DataContracts\FullProblemRevision.cs" />
+    <Compile Include="API\DataContracts\FullRecord.cs" />
+    <Compile Include="API\DataContracts\FullSpecialJudgedTestCase.cs" />
+    <Compile Include="API\DataContracts\FullTestCase.cs" />
+    <Compile Include="API\DataContracts\FullTranditionalTestCase.cs" />
+    <Compile Include="API\DataContracts\FullUser.cs" />
     <Compile Include="API\JsonAPI.svc.cs">
       <DependentUpon>JsonAPI.svc</DependentUpon>
     </Compile>
-    <Compile Include="API\BriefRecord.cs" />
+    <Compile Include="API\DataContracts\BriefRecord.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

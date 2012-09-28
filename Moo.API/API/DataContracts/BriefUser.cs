@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
-    public class FullAnswerOnlyTestCase:FullTestCase
+    [DataContract]
+    public class BriefUser
     {
         [DataMember]
-        public byte[] TestData { get; set; }
+        public int ID { get; set; }
 
         [DataMember]
-        public Guid? Judger { get; set; }
+        public string Name { get; set; }
     }
 }

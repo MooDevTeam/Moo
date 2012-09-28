@@ -454,7 +454,7 @@ namespace Moo.Core.DB
         /// </summary>
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="testData">TestData 属性的初始值。</param>
-        public static AnswerOnlyTestCase CreateAnswerOnlyTestCase(global::System.Guid id, global::System.Byte[] testData)
+        public static AnswerOnlyTestCase CreateAnswerOnlyTestCase(global::System.Int32 id, global::System.Byte[] testData)
         {
             AnswerOnlyTestCase answerOnlyTestCase = new AnswerOnlyTestCase();
             answerOnlyTestCase.ID = id;
@@ -567,7 +567,7 @@ namespace Moo.Core.DB
         /// <param name="allowTestingOnEnd">AllowTestingOnEnd 属性的初始值。</param>
         /// <param name="hideProblemOnEnd">HideProblemOnEnd 属性的初始值。</param>
         /// <param name="hideTestCaseOnEnd">HideTestCaseOnEnd 属性的初始值。</param>
-        public static Contest CreateContest(global::System.Guid id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean allowTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean allowTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd)
+        public static Contest CreateContest(global::System.Int32 id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean allowTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean allowTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd)
         {
             Contest contest = new Contest();
             contest.ID = id;
@@ -601,7 +601,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -619,8 +619,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -1321,7 +1321,7 @@ namespace Moo.Core.DB
         /// <param name="testData">TestData 属性的初始值。</param>
         /// <param name="timeLimit">TimeLimit 属性的初始值。</param>
         /// <param name="memoryLimit">MemoryLimit 属性的初始值。</param>
-        public static InteractiveTestCase CreateInteractiveTestCase(global::System.Guid id, global::System.Byte[] testData, global::System.Int32 timeLimit, global::System.Int32 memoryLimit)
+        public static InteractiveTestCase CreateInteractiveTestCase(global::System.Int32 id, global::System.Byte[] testData, global::System.Int32 timeLimit, global::System.Int32 memoryLimit)
         {
             InteractiveTestCase interactiveTestCase = new InteractiveTestCase();
             interactiveTestCase.ID = id;
@@ -1467,7 +1467,7 @@ namespace Moo.Core.DB
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="score">Score 属性的初始值。</param>
         /// <param name="info">Info 属性的初始值。</param>
-        public static JudgeInfo CreateJudgeInfo(global::System.Guid id, global::System.Int32 score, global::System.String info)
+        public static JudgeInfo CreateJudgeInfo(global::System.Int32 id, global::System.Int32 score, global::System.String info)
         {
             JudgeInfo judgeInfo = new JudgeInfo();
             judgeInfo.ID = id;
@@ -1484,7 +1484,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -1502,8 +1502,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -1617,7 +1617,7 @@ namespace Moo.Core.DB
         /// <param name="level">Level 属性的初始值。</param>
         /// <param name="info">Info 属性的初始值。</param>
         /// <param name="remoteAddress">RemoteAddress 属性的初始值。</param>
-        public static Log CreateLog(global::System.Guid id, global::System.DateTime createTime, global::System.Byte level, global::System.String info, global::System.String remoteAddress)
+        public static Log CreateLog(global::System.Int32 id, global::System.DateTime createTime, global::System.Byte level, global::System.String info, global::System.String remoteAddress)
         {
             Log log = new Log();
             log.ID = id;
@@ -1636,7 +1636,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -1654,8 +1654,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -1816,7 +1816,7 @@ namespace Moo.Core.DB
         /// <param name="title">Title 属性的初始值。</param>
         /// <param name="content">Content 属性的初始值。</param>
         /// <param name="isRead">IsRead 属性的初始值。</param>
-        public static Mail CreateMail(global::System.Guid id, global::System.String title, global::System.String content, global::System.Boolean isRead)
+        public static Mail CreateMail(global::System.Int32 id, global::System.String title, global::System.String content, global::System.Boolean isRead)
         {
             Mail mail = new Mail();
             mail.ID = id;
@@ -1834,7 +1834,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -1852,8 +1852,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -2029,7 +2029,7 @@ namespace Moo.Core.DB
         /// <param name="onTop">OnTop 属性的初始值。</param>
         /// <param name="replyTime">ReplyTime 属性的初始值。</param>
         /// <param name="locked">Locked 属性的初始值。</param>
-        public static Post CreatePost(global::System.Guid id, global::System.String name, global::System.Boolean onTop, global::System.DateTime replyTime, global::System.Boolean locked)
+        public static Post CreatePost(global::System.Int32 id, global::System.String name, global::System.Boolean onTop, global::System.DateTime replyTime, global::System.Boolean locked)
         {
             Post post = new Post();
             post.ID = id;
@@ -2048,7 +2048,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -2066,8 +2066,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -2227,7 +2227,7 @@ namespace Moo.Core.DB
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="content">Content 属性的初始值。</param>
         /// <param name="createTime">CreateTime 属性的初始值。</param>
-        public static PostItem CreatePostItem(global::System.Guid id, global::System.String content, global::System.DateTime createTime)
+        public static PostItem CreatePostItem(global::System.Int32 id, global::System.String content, global::System.DateTime createTime)
         {
             PostItem postItem = new PostItem();
             postItem.ID = id;
@@ -2244,7 +2244,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -2262,8 +2262,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -2425,7 +2425,7 @@ namespace Moo.Core.DB
         /// <param name="testCaseLocked">TestCaseLocked 属性的初始值。</param>
         /// <param name="enableTesting">EnableTesting 属性的初始值。</param>
         /// <param name="testCaseHidden">TestCaseHidden 属性的初始值。</param>
-        public static Problem CreateProblem(global::System.Guid id, global::System.String name, global::System.String type, global::System.Int32 submissionCount, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime, global::System.Boolean hidden, global::System.Boolean locked, global::System.Boolean recordLocked, global::System.Boolean postLocked, global::System.Boolean articleLocked, global::System.Boolean testCaseLocked, global::System.Boolean enableTesting, global::System.Boolean testCaseHidden)
+        public static Problem CreateProblem(global::System.Int32 id, global::System.String name, global::System.String type, global::System.Int32 submissionCount, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime, global::System.Boolean hidden, global::System.Boolean locked, global::System.Boolean recordLocked, global::System.Boolean postLocked, global::System.Boolean articleLocked, global::System.Boolean testCaseLocked, global::System.Boolean enableTesting, global::System.Boolean testCaseHidden)
         {
             Problem problem = new Problem();
             problem.ID = id;
@@ -2454,7 +2454,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -2472,8 +2472,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -2958,7 +2958,7 @@ namespace Moo.Core.DB
         /// <param name="content">Content 属性的初始值。</param>
         /// <param name="reason">Reason 属性的初始值。</param>
         /// <param name="createTime">CreateTime 属性的初始值。</param>
-        public static ProblemRevision CreateProblemRevision(global::System.Guid id, global::System.String content, global::System.String reason, global::System.DateTime createTime)
+        public static ProblemRevision CreateProblemRevision(global::System.Int32 id, global::System.String content, global::System.String reason, global::System.DateTime createTime)
         {
             ProblemRevision problemRevision = new ProblemRevision();
             problemRevision.ID = id;
@@ -2976,7 +2976,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -2994,8 +2994,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -3209,7 +3209,7 @@ namespace Moo.Core.DB
         /// <param name="createTime">CreateTime 属性的初始值。</param>
         /// <param name="language">Language 属性的初始值。</param>
         /// <param name="publicCode">PublicCode 属性的初始值。</param>
-        public static Record CreateRecord(global::System.Guid id, global::System.String code, global::System.DateTime createTime, global::System.String language, global::System.Boolean publicCode)
+        public static Record CreateRecord(global::System.Int32 id, global::System.String code, global::System.DateTime createTime, global::System.String language, global::System.Boolean publicCode)
         {
             Record record = new Record();
             record.ID = id;
@@ -3228,7 +3228,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -3246,8 +3246,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -3483,7 +3483,7 @@ namespace Moo.Core.DB
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="name">Name 属性的初始值。</param>
         /// <param name="displayName">DisplayName 属性的初始值。</param>
-        public static Role CreateRole(global::System.Guid id, global::System.String name, global::System.String displayName)
+        public static Role CreateRole(global::System.Int32 id, global::System.String name, global::System.String displayName)
         {
             Role role = new Role();
             role.ID = id;
@@ -3500,7 +3500,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -3518,8 +3518,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -3592,7 +3592,7 @@ namespace Moo.Core.DB
         /// <param name="answer">Answer 属性的初始值。</param>
         /// <param name="timeLimit">TimeLimit 属性的初始值。</param>
         /// <param name="memoryLimit">MemoryLimit 属性的初始值。</param>
-        public static SpecialJudgedTestCase CreateSpecialJudgedTestCase(global::System.Guid id, global::System.Byte[] input, global::System.Byte[] answer, global::System.Int32 timeLimit, global::System.Int32 memoryLimit)
+        public static SpecialJudgedTestCase CreateSpecialJudgedTestCase(global::System.Int32 id, global::System.Byte[] input, global::System.Byte[] answer, global::System.Int32 timeLimit, global::System.Int32 memoryLimit)
         {
             SpecialJudgedTestCase specialJudgedTestCase = new SpecialJudgedTestCase();
             specialJudgedTestCase.ID = id;
@@ -3766,7 +3766,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -3784,8 +3784,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
 
         #endregion
@@ -3890,7 +3890,7 @@ namespace Moo.Core.DB
         /// <param name="timeLimit">TimeLimit 属性的初始值。</param>
         /// <param name="memoryLimit">MemoryLimit 属性的初始值。</param>
         /// <param name="score">Score 属性的初始值。</param>
-        public static TranditionalTestCase CreateTranditionalTestCase(global::System.Guid id, global::System.Byte[] input, global::System.Byte[] answer, global::System.Int32 timeLimit, global::System.Int32 memoryLimit, global::System.Int32 score)
+        public static TranditionalTestCase CreateTranditionalTestCase(global::System.Int32 id, global::System.Byte[] input, global::System.Byte[] answer, global::System.Int32 timeLimit, global::System.Int32 memoryLimit, global::System.Int32 score)
         {
             TranditionalTestCase tranditionalTestCase = new TranditionalTestCase();
             tranditionalTestCase.ID = id;
@@ -4046,7 +4046,7 @@ namespace Moo.Core.DB
         /// <param name="name">Name 属性的初始值。</param>
         /// <param name="path">Path 属性的初始值。</param>
         /// <param name="description">Description 属性的初始值。</param>
-        public static UploadedFile CreateUploadedFile(global::System.Guid id, global::System.String name, global::System.String path, global::System.String description)
+        public static UploadedFile CreateUploadedFile(global::System.Int32 id, global::System.String name, global::System.String path, global::System.String description)
         {
             UploadedFile uploadedFile = new UploadedFile();
             uploadedFile.ID = id;
@@ -4064,7 +4064,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -4082,8 +4082,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>
@@ -4224,7 +4224,7 @@ namespace Moo.Core.DB
         /// <param name="description">Description 属性的初始值。</param>
         /// <param name="score">Score 属性的初始值。</param>
         /// <param name="preferredLanguage">PreferredLanguage 属性的初始值。</param>
-        public static User CreateUser(global::System.Guid id, global::System.String name, global::System.String password, global::System.String briefDescription, global::System.String email, global::System.String description, global::System.Int32 score, global::System.String preferredLanguage)
+        public static User CreateUser(global::System.Int32 id, global::System.String name, global::System.String password, global::System.String briefDescription, global::System.String email, global::System.String description, global::System.Int32 score, global::System.String preferredLanguage)
         {
             User user = new User();
             user.ID = id;
@@ -4246,7 +4246,7 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Guid ID
+        public global::System.Int32 ID
         {
             get
             {
@@ -4264,8 +4264,8 @@ namespace Moo.Core.DB
                 }
             }
         }
-        private global::System.Guid _ID;
-        partial void OnIDChanging(global::System.Guid value);
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
     
         /// <summary>

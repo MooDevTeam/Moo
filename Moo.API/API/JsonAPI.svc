@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="Moo.API.API.JsonAPI" CodeBehind="JsonAPI.svc.cs" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="Moo.API.JsonAPI" CodeBehind="JsonAPI.svc.cs" %>

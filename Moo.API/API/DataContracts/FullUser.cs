@@ -4,13 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
 using Moo.Core.DB;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     [DataContract]
     public class FullUser
     {
         [DataMember]
-        public Guid? ID { get; set; }
+        public int? ID { get; set; }
 
         [DataMember]
         public string Name { get; set; }
@@ -34,6 +34,6 @@ namespace Moo.API.API
         public string PreferredLanguage { get; set; }
 
         [DataMember]
-        public List<Guid> Role { get; set; }
+        public int? Role { get; set; }
     }
 }

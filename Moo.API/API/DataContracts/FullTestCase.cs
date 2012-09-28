@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     [DataContract]
     [KnownType(typeof(FullTranditionalTestCase))]
@@ -13,12 +13,12 @@ namespace Moo.API.API
     public class FullTestCase
     {
         [DataMember]
-        public Guid? ID { get; set; }
+        public int? ID { get; set; }
 
         [DataMember]
-        public Guid? CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
 
         [DataMember]
-        public Guid? Problem { get; set; }
+        public int? Problem { get; set; }
     }
 }

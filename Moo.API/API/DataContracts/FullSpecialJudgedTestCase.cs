@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
-    public class FullTranditionalTestCase : FullTestCase
+    public class FullSpecialJudgedTestCase:FullTestCase
     {
         [DataMember]
         public byte[] Input { get; set; }
@@ -20,6 +20,6 @@ namespace Moo.API.API
         public int? MemoryLimit { get; set; }
 
         [DataMember]
-        public int? Score { get; set; }
+        public int? Judger { get; set; }
     }
 }

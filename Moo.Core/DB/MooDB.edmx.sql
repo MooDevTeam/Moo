@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 09/23/2012 11:02:13
+-- Date Created: 09/28/2012 15:07:44
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -92,9 +92,6 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_UploadedFileUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[UploadedFiles] DROP CONSTRAINT [FK_UploadedFileUser];
 GO
-IF OBJECT_ID(N'[dbo].[FK_ACEFunction]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[ACL] DROP CONSTRAINT [FK_ACEFunction];
-GO
 IF OBJECT_ID(N'[dbo].[FK_UserCreateProblem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Problems] DROP CONSTRAINT [FK_UserCreateProblem];
 GO
@@ -120,9 +117,6 @@ IF OBJECT_ID(N'[dbo].[Users]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[Roles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Roles];
-GO
-IF OBJECT_ID(N'[dbo].[Functions]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Functions];
 GO
 IF OBJECT_ID(N'[dbo].[Problems]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Problems];
@@ -160,9 +154,6 @@ GO
 IF OBJECT_ID(N'[dbo].[Logs]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Logs];
 GO
-IF OBJECT_ID(N'[dbo].[ACL]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[ACL];
-GO
 IF OBJECT_ID(N'[dbo].[TestCases_SpecialJudgedTestCase]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TestCases_SpecialJudgedTestCase];
 GO
@@ -191,36 +182,29 @@ GO
 
 -- Creating table 'Users'
 CREATE TABLE [dbo].[Users] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(20)  NOT NULL,
     [Password] char(64)  NOT NULL,
     [BriefDescription] nvarchar(40)  NOT NULL,
     [Email] nvarchar(max)  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
     [Score] int  NOT NULL,
-    [PreferredLanguage] nvarchar(12)  NOT NULL
+    [PreferredLanguage] nvarchar(12)  NOT NULL,
+    [Role_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'Roles'
 CREATE TABLE [dbo].[Roles] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Name] varchar(12)  NOT NULL,
-    [DisplayName] nvarchar(12)  NOT NULL
-);
-GO
-
--- Creating table 'Functions'
-CREATE TABLE [dbo].[Functions] (
-    [ID] uniqueidentifier  NOT NULL,
-    [Name] varchar(40)  NOT NULL,
     [DisplayName] nvarchar(12)  NOT NULL
 );
 GO
 
 -- Creating table 'Problems'
 CREATE TABLE [dbo].[Problems] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(40)  NOT NULL,
     [Type] varchar(20)  NOT NULL,
     [SubmissionCount] int  NOT NULL,
@@ -228,83 +212,94 @@ CREATE TABLE [dbo].[Problems] (
     [SubmissionUser] int  NOT NULL,
     [MaximumScore] int  NULL,
     [CreateTime] datetime  NOT NULL,
-    [CreatedBy_ID] uniqueidentifier  NOT NULL
+    [Hidden] bit  NOT NULL,
+    [Locked] bit  NOT NULL,
+    [RecordLocked] bit  NOT NULL,
+    [PostLocked] bit  NOT NULL,
+    [ArticleLocked] bit  NOT NULL,
+    [TestCaseLocked] bit  NOT NULL,
+    [EnableTesting] bit  NOT NULL,
+    [TestCaseHidden] bit  NOT NULL,
+    [CreatedBy_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'Records'
 CREATE TABLE [dbo].[Records] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Code] nvarchar(max)  NOT NULL,
     [CreateTime] datetime  NOT NULL,
     [Language] varchar(12)  NOT NULL,
-    [Problem_ID] uniqueidentifier  NOT NULL,
-    [User_ID] uniqueidentifier  NOT NULL
+    [PublicCode] bit  NOT NULL,
+    [Problem_ID] int  NOT NULL,
+    [User_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'TestCases'
 CREATE TABLE [dbo].[TestCases] (
-    [ID] uniqueidentifier  NOT NULL,
-    [Problem_ID] uniqueidentifier  NOT NULL,
-    [CreatedBy_ID] uniqueidentifier  NOT NULL
+    [ID] int IDENTITY(1,1) NOT NULL,
+    [Problem_ID] int  NOT NULL,
+    [CreatedBy_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'ProblemRevisions'
 CREATE TABLE [dbo].[ProblemRevisions] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Content] nvarchar(max)  NOT NULL,
     [Reason] nvarchar(40)  NOT NULL,
     [CreateTime] datetime  NOT NULL,
-    [Problem_ID] uniqueidentifier  NOT NULL,
-    [CreatedBy_ID] uniqueidentifier  NOT NULL,
-    [LatestRevisionOf_ID] uniqueidentifier  NULL
+    [Problem_ID] int  NOT NULL,
+    [CreatedBy_ID] int  NOT NULL,
+    [LatestRevisionOf_ID] int  NULL
 );
 GO
 
 -- Creating table 'Posts'
 CREATE TABLE [dbo].[Posts] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(40)  NOT NULL,
-    [Lock] bit  NOT NULL,
     [OnTop] bit  NOT NULL,
-    [Problem_ID] uniqueidentifier  NULL
+    [ReplyTime] datetime  NOT NULL,
+    [Locked] bit  NOT NULL,
+    [Problem_ID] int  NULL
 );
 GO
 
 -- Creating table 'PostItems'
 CREATE TABLE [dbo].[PostItems] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Content] nvarchar(max)  NOT NULL,
-    [CreatedBy_ID] uniqueidentifier  NOT NULL,
-    [Post_ID] uniqueidentifier  NOT NULL
+    [CreateTime] datetime  NOT NULL,
+    [CreatedBy_ID] int  NOT NULL,
+    [Post_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'JudgeInfos'
 CREATE TABLE [dbo].[JudgeInfos] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Score] int  NOT NULL,
     [Info] nvarchar(max)  NOT NULL,
-    [Record_ID] uniqueidentifier  NOT NULL
+    [Record_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'Mails'
 CREATE TABLE [dbo].[Mails] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Title] nvarchar(40)  NOT NULL,
     [Content] nvarchar(max)  NOT NULL,
     [IsRead] bit  NOT NULL,
-    [From_ID] uniqueidentifier  NOT NULL,
-    [To_ID] uniqueidentifier  NOT NULL
+    [From_ID] int  NOT NULL,
+    [To_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'Contests'
 CREATE TABLE [dbo].[Contests] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [StartTime] datetime  NOT NULL,
     [EndTime] datetime  NOT NULL,
     [Title] nvarchar(40)  NOT NULL,
@@ -329,11 +324,11 @@ GO
 
 -- Creating table 'UploadedFiles'
 CREATE TABLE [dbo].[UploadedFiles] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(40)  NOT NULL,
     [Path] nvarchar(max)  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
-    [CreatedBy_ID] uniqueidentifier  NOT NULL
+    [CreatedBy_ID] int  NOT NULL
 );
 GO
 
@@ -343,28 +338,18 @@ CREATE TABLE [dbo].[HomepageRevisions] (
     [Title] nvarchar(40)  NOT NULL,
     [Content] nvarchar(max)  NOT NULL,
     [Reason] nvarchar(40)  NOT NULL,
-    [CreatedBy_ID] uniqueidentifier  NOT NULL
+    [CreatedBy_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'Logs'
 CREATE TABLE [dbo].[Logs] (
-    [ID] uniqueidentifier  NOT NULL,
+    [ID] int IDENTITY(1,1) NOT NULL,
     [CreateTime] datetime  NOT NULL,
     [Level] tinyint  NOT NULL,
     [Info] nvarchar(max)  NOT NULL,
     [RemoteAddress] nvarchar(max)  NOT NULL,
-    [User_ID] uniqueidentifier  NULL
-);
-GO
-
--- Creating table 'ACL'
-CREATE TABLE [dbo].[ACL] (
-    [ID] uniqueidentifier  NOT NULL,
-    [Object] uniqueidentifier  NOT NULL,
-    [Subject] uniqueidentifier  NOT NULL,
-    [Allowed] bit  NOT NULL,
-    [Function_ID] uniqueidentifier  NOT NULL
+    [User_ID] int  NULL
 );
 GO
 
@@ -374,8 +359,8 @@ CREATE TABLE [dbo].[TestCases_SpecialJudgedTestCase] (
     [Answer] varbinary(max)  NOT NULL,
     [TimeLimit] int  NOT NULL,
     [MemoryLimit] int  NOT NULL,
-    [ID] uniqueidentifier  NOT NULL,
-    [Judger_ID] uniqueidentifier  NOT NULL
+    [ID] int  NOT NULL,
+    [Judger_ID] int  NOT NULL
 );
 GO
 
@@ -384,16 +369,16 @@ CREATE TABLE [dbo].[TestCases_InteractiveTestCase] (
     [TestData] varbinary(max)  NOT NULL,
     [TimeLimit] int  NOT NULL,
     [MemoryLimit] int  NOT NULL,
-    [ID] uniqueidentifier  NOT NULL,
-    [Invoker_ID] uniqueidentifier  NOT NULL
+    [ID] int  NOT NULL,
+    [Invoker_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'TestCases_AnswerOnlyTestCase'
 CREATE TABLE [dbo].[TestCases_AnswerOnlyTestCase] (
     [TestData] varbinary(max)  NOT NULL,
-    [ID] uniqueidentifier  NOT NULL,
-    [Judger_ID] uniqueidentifier  NOT NULL
+    [ID] int  NOT NULL,
+    [Judger_ID] int  NOT NULL
 );
 GO
 
@@ -404,28 +389,21 @@ CREATE TABLE [dbo].[TestCases_TranditionalTestCase] (
     [TimeLimit] int  NOT NULL,
     [MemoryLimit] int  NOT NULL,
     [Score] int  NOT NULL,
-    [ID] uniqueidentifier  NOT NULL
-);
-GO
-
--- Creating table 'UserRole'
-CREATE TABLE [dbo].[UserRole] (
-    [UserRole_Role_ID] uniqueidentifier  NOT NULL,
-    [Role_ID] uniqueidentifier  NOT NULL
+    [ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'UserAttendContest'
 CREATE TABLE [dbo].[UserAttendContest] (
-    [User_ID] uniqueidentifier  NOT NULL,
-    [UserAttendContest_User_ID] uniqueidentifier  NOT NULL
+    [User_ID] int  NOT NULL,
+    [UserAttendContest_User_ID] int  NOT NULL
 );
 GO
 
 -- Creating table 'ContestProblem'
 CREATE TABLE [dbo].[ContestProblem] (
-    [Contest_ID] uniqueidentifier  NOT NULL,
-    [Problem_ID] uniqueidentifier  NOT NULL
+    [Contest_ID] int  NOT NULL,
+    [Problem_ID] int  NOT NULL
 );
 GO
 
@@ -442,12 +420,6 @@ GO
 -- Creating primary key on [ID] in table 'Roles'
 ALTER TABLE [dbo].[Roles]
 ADD CONSTRAINT [PK_Roles]
-    PRIMARY KEY CLUSTERED ([ID] ASC);
-GO
-
--- Creating primary key on [ID] in table 'Functions'
-ALTER TABLE [dbo].[Functions]
-ADD CONSTRAINT [PK_Functions]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
@@ -523,12 +495,6 @@ ADD CONSTRAINT [PK_Logs]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
--- Creating primary key on [ID] in table 'ACL'
-ALTER TABLE [dbo].[ACL]
-ADD CONSTRAINT [PK_ACL]
-    PRIMARY KEY CLUSTERED ([ID] ASC);
-GO
-
 -- Creating primary key on [ID] in table 'TestCases_SpecialJudgedTestCase'
 ALTER TABLE [dbo].[TestCases_SpecialJudgedTestCase]
 ADD CONSTRAINT [PK_TestCases_SpecialJudgedTestCase]
@@ -551,12 +517,6 @@ GO
 ALTER TABLE [dbo].[TestCases_TranditionalTestCase]
 ADD CONSTRAINT [PK_TestCases_TranditionalTestCase]
     PRIMARY KEY CLUSTERED ([ID] ASC);
-GO
-
--- Creating primary key on [UserRole_Role_ID], [Role_ID] in table 'UserRole'
-ALTER TABLE [dbo].[UserRole]
-ADD CONSTRAINT [PK_UserRole]
-    PRIMARY KEY NONCLUSTERED ([UserRole_Role_ID], [Role_ID] ASC);
 GO
 
 -- Creating primary key on [User_ID], [UserAttendContest_User_ID] in table 'UserAttendContest'
@@ -631,26 +591,17 @@ ON [dbo].[ProblemRevisions]
     ([CreatedBy_ID]);
 GO
 
--- Creating foreign key on [UserRole_Role_ID] in table 'UserRole'
-ALTER TABLE [dbo].[UserRole]
-ADD CONSTRAINT [FK_UserRole_User]
-    FOREIGN KEY ([UserRole_Role_ID])
-    REFERENCES [dbo].[Users]
-        ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating foreign key on [Role_ID] in table 'UserRole'
-ALTER TABLE [dbo].[UserRole]
-ADD CONSTRAINT [FK_UserRole_Role]
+-- Creating foreign key on [Role_ID] in table 'Users'
+ALTER TABLE [dbo].[Users]
+ADD CONSTRAINT [FK_UserRole]
     FOREIGN KEY ([Role_ID])
     REFERENCES [dbo].[Roles]
         ([ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 
--- Creating non-clustered index for FOREIGN KEY 'FK_UserRole_Role'
-CREATE INDEX [IX_FK_UserRole_Role]
-ON [dbo].[UserRole]
+-- Creating non-clustered index for FOREIGN KEY 'FK_UserRole'
+CREATE INDEX [IX_FK_UserRole]
+ON [dbo].[Users]
     ([Role_ID]);
 GO
 
@@ -684,14 +635,14 @@ GO
 
 -- Creating foreign key on [Problem_ID] in table 'Posts'
 ALTER TABLE [dbo].[Posts]
-ADD CONSTRAINT [FK_ProblemPost]
+ADD CONSTRAINT [FK_PostProblem]
     FOREIGN KEY ([Problem_ID])
     REFERENCES [dbo].[Problems]
         ([ID])
     ON DELETE CASCADE ON UPDATE NO ACTION;
 
--- Creating non-clustered index for FOREIGN KEY 'FK_ProblemPost'
-CREATE INDEX [IX_FK_ProblemPost]
+-- Creating non-clustered index for FOREIGN KEY 'FK_PostProblem'
+CREATE INDEX [IX_FK_PostProblem]
 ON [dbo].[Posts]
     ([Problem_ID]);
 GO
@@ -908,20 +859,6 @@ ADD CONSTRAINT [FK_UploadedFileUser]
 CREATE INDEX [IX_FK_UploadedFileUser]
 ON [dbo].[UploadedFiles]
     ([CreatedBy_ID]);
-GO
-
--- Creating foreign key on [Function_ID] in table 'ACL'
-ALTER TABLE [dbo].[ACL]
-ADD CONSTRAINT [FK_ACEFunction]
-    FOREIGN KEY ([Function_ID])
-    REFERENCES [dbo].[Functions]
-        ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ACEFunction'
-CREATE INDEX [IX_FK_ACEFunction]
-ON [dbo].[ACL]
-    ([Function_ID]);
 GO
 
 -- Creating foreign key on [CreatedBy_ID] in table 'Problems'

@@ -12,7 +12,7 @@ using System.ServiceModel.Configuration;
 using System.Runtime.Serialization.Json;
 using System.Runtime.Serialization;
 
-namespace Moo.API.API
+namespace Moo.API
 {
     public class ErrorHandler : IErrorHandler
     {

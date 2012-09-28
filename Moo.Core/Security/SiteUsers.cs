@@ -8,10 +8,10 @@ namespace Moo.Core.Security
     /// </summary>
     public static class SiteUsers
     {
-        public static Dictionary<Guid, SiteUser> ByID { get; set; }
+        public static Dictionary<int, SiteUser> ByID { get; set; }
 
         static SiteUsers(){
-            ByID = new Dictionary<Guid, SiteUser>();
+            ByID = new Dictionary<int, SiteUser>();
         }
     }
 }

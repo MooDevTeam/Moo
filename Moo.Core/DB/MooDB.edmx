@@ -24,7 +24,6 @@
     <EntitySet Name="TestCases_InteractiveTestCase" EntityType="Moo.Core.DB.Store.TestCases_InteractiveTestCase" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TestCases_AnswerOnlyTestCase" EntityType="Moo.Core.DB.Store.TestCases_AnswerOnlyTestCase" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="TestCases_TranditionalTestCase" EntityType="Moo.Core.DB.Store.TestCases_TranditionalTestCase" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="UserRole" EntityType="Moo.Core.DB.Store.UserRole" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UserAttendContest" EntityType="Moo.Core.DB.Store.UserAttendContest" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ContestProblem" EntityType="Moo.Core.DB.Store.ContestProblem" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="RecordProblem" Association="Moo.Core.DB.Store.RecordProblem">
@@ -43,13 +42,9 @@
       <End Role="User" EntitySet="Users" />
       <End Role="ProblemRevision" EntitySet="ProblemRevisions" />
     </AssociationSet>
-    <AssociationSet Name="FK_UserRole_User" Association="Moo.Core.DB.Store.FK_UserRole_User">
+    <AssociationSet Name="UserRole" Association="Moo.Core.DB.Store.UserRole">
       <End Role="User" EntitySet="Users" />
-      <End Role="UserRole" EntitySet="UserRole" />
-    </AssociationSet>
-    <AssociationSet Name="FK_UserRole_Role" Association="Moo.Core.DB.Store.FK_UserRole_Role">
       <End Role="Role" EntitySet="Roles" />
-      <End Role="UserRole" EntitySet="UserRole" />
     </AssociationSet>
     <AssociationSet Name="UserCreatePostItem" Association="Moo.Core.DB.Store.UserCreatePostItem">
       <End Role="PostItem" EntitySet="PostItems" />
@@ -59,7 +54,7 @@
       <End Role="PostItem" EntitySet="PostItems" />
       <End Role="Post" EntitySet="Posts" />
     </AssociationSet>
-    <AssociationSet Name="ProblemPost" Association="Moo.Core.DB.Store.ProblemPost">
+    <AssociationSet Name="PostProblem" Association="Moo.Core.DB.Store.PostProblem">
       <End Role="Problem" EntitySet="Problems" />
       <End Role="Post" EntitySet="Posts" />
     </AssociationSet>
@@ -152,7 +147,7 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="20" />
     <Property Name="Password" Type="char" Nullable="false" MaxLength="64" />
     <Property Name="BriefDescription" Type="nvarchar" Nullable="false" MaxLength="40" />
@@ -160,12 +155,13 @@
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Score" Type="int" Nullable="false" />
     <Property Name="PreferredLanguage" Type="nvarchar" Nullable="false" MaxLength="12" />
+    <Property Name="Role_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Roles">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="varchar" Nullable="false" MaxLength="12" />
     <Property Name="DisplayName" Type="nvarchar" Nullable="false" MaxLength="12" />
   </EntityType>
@@ -173,7 +169,7 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="Type" Type="varchar" Nullable="false" MaxLength="20" />
     <Property Name="SubmissionCount" Type="int" Nullable="false" />
@@ -181,83 +177,94 @@
     <Property Name="SubmissionUser" Type="int" Nullable="false" />
     <Property Name="MaximumScore" Type="int" Nullable="true" />
     <Property Name="CreateTime" Type="datetime" Nullable="false" />
-    <Property Name="CreatedBy_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Hidden" Type="bit" Nullable="false" />
+    <Property Name="Locked" Type="bit" Nullable="false" />
+    <Property Name="RecordLocked" Type="bit" Nullable="false" />
+    <Property Name="PostLocked" Type="bit" Nullable="false" />
+    <Property Name="ArticleLocked" Type="bit" Nullable="false" />
+    <Property Name="TestCaseLocked" Type="bit" Nullable="false" />
+    <Property Name="EnableTesting" Type="bit" Nullable="false" />
+    <Property Name="TestCaseHidden" Type="bit" Nullable="false" />
+    <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Records">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Code" Type="nvarchar(max)" Nullable="false" />
     <Property Name="CreateTime" Type="datetime" Nullable="false" />
     <Property Name="Language" Type="varchar" Nullable="false" MaxLength="12" />
-    <Property Name="Problem_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="User_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="PublicCode" Type="bit" Nullable="false" />
+    <Property Name="Problem_ID" Type="int" Nullable="false" />
+    <Property Name="User_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="TestCases">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Problem_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="CreatedBy_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Problem_ID" Type="int" Nullable="false" />
+    <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="ProblemRevisions">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Reason" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="CreateTime" Type="datetime" Nullable="false" />
-    <Property Name="Problem_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="CreatedBy_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="LatestRevisionOf_ID" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="Problem_ID" Type="int" Nullable="false" />
+    <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
+    <Property Name="LatestRevisionOf_ID" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="Posts">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
-    <Property Name="Lock" Type="bit" Nullable="false" />
     <Property Name="OnTop" Type="bit" Nullable="false" />
-    <Property Name="Problem_ID" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="ReplyTime" Type="datetime" Nullable="false" />
+    <Property Name="Locked" Type="bit" Nullable="false" />
+    <Property Name="Problem_ID" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="PostItems">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="CreatedBy_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="Post_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CreateTime" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
+    <Property Name="Post_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="JudgeInfos">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Score" Type="int" Nullable="false" />
     <Property Name="Info" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Record_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Record_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Mails">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="IsRead" Type="bit" Nullable="false" />
-    <Property Name="From_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="To_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="From_ID" Type="int" Nullable="false" />
+    <Property Name="To_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Contests">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="StartTime" Type="datetime" Nullable="false" />
     <Property Name="EndTime" Type="datetime" Nullable="false" />
     <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="40" />
@@ -282,11 +289,11 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="CreatedBy_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="HomepageRevisions">
     <Key>
@@ -296,18 +303,18 @@
     <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Reason" Type="nvarchar" Nullable="false" MaxLength="40" />
-    <Property Name="CreatedBy_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Logs">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="uniqueidentifier" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CreateTime" Type="datetime" Nullable="false" />
     <Property Name="Level" Type="tinyint" Nullable="false" />
     <Property Name="Info" Type="nvarchar(max)" Nullable="false" />
     <Property Name="RemoteAddress" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="User_ID" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="User_ID" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="TestCases_SpecialJudgedTestCase">
     <Key>
@@ -317,8 +324,8 @@
     <Property Name="Answer" Type="varbinary(max)" Nullable="false" />
     <Property Name="TimeLimit" Type="int" Nullable="false" />
     <Property Name="MemoryLimit" Type="int" Nullable="false" />
-    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="Judger_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Judger_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="TestCases_InteractiveTestCase">
     <Key>
@@ -327,16 +334,16 @@
     <Property Name="TestData" Type="varbinary(max)" Nullable="false" />
     <Property Name="TimeLimit" Type="int" Nullable="false" />
     <Property Name="MemoryLimit" Type="int" Nullable="false" />
-    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="Invoker_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Invoker_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="TestCases_AnswerOnlyTestCase">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="TestData" Type="varbinary(max)" Nullable="false" />
-    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="Judger_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="Judger_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="TestCases_TranditionalTestCase">
     <Key>
@@ -347,31 +354,23 @@
     <Property Name="TimeLimit" Type="int" Nullable="false" />
     <Property Name="MemoryLimit" Type="int" Nullable="false" />
     <Property Name="Score" Type="int" Nullable="false" />
-    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-  </EntityType>
-  <EntityType Name="UserRole">
-    <Key>
-      <PropertyRef Name="UserRole_Role_ID" />
-      <PropertyRef Name="Role_ID" />
-    </Key>
-    <Property Name="UserRole_Role_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="Role_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="UserAttendContest">
     <Key>
       <PropertyRef Name="User_ID" />
       <PropertyRef Name="UserAttendContest_User_ID" />
     </Key>
-    <Property Name="User_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="UserAttendContest_User_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="User_ID" Type="int" Nullable="false" />
+    <Property Name="UserAttendContest_User_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="ContestProblem">
     <Key>
       <PropertyRef Name="Contest_ID" />
       <PropertyRef Name="Problem_ID" />
     </Key>
-    <Property Name="Contest_ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="Problem_ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Contest_ID" Type="int" Nullable="false" />
+    <Property Name="Problem_ID" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="RecordProblem">
     <End Role="Record" Type="Moo.Core.DB.Store.Records" Multiplicity="*" />
@@ -429,6 +428,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="UserRole">
+    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="*" />
+    <End Role="Role" Type="Moo.Core.DB.Store.Roles" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="Role_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="UserCreatePostItem">
     <End Role="PostItem" Type="Moo.Core.DB.Store.PostItems" Multiplicity="*" />
     <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="1">
@@ -457,7 +468,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="ProblemPost">
+  <Association Name="PostProblem">
     <End Role="Problem" Type="Moo.Core.DB.Store.Problems" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -626,30 +637,6 @@
       </Principal>
       <Dependent Role="Problem">
         <PropertyRef Name="CreatedBy_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_UserRole_User">
-    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="1" />
-    <End Role="UserRole" Type="Moo.Core.DB.Store.UserRole" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="User">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="UserRole">
-        <PropertyRef Name="UserRole_Role_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_UserRole_Role">
-    <End Role="UserRole" Type="Moo.Core.DB.Store.UserRole" Multiplicity="*" />
-    <End Role="Role" Type="Moo.Core.DB.Store.Roles" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="Role">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="UserRole">
-        <PropertyRef Name="Role_ID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -865,7 +852,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="20" />
           <Property Type="String" Name="Password" Nullable="false" MaxLength="64" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="Role" Relationship="Moo.Core.DB.UserRole" FromRole="User" ToRole="Role" />
@@ -880,7 +867,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="12" Unicode="false" />
           <Property Type="String" Name="DisplayName" Nullable="false" MaxLength="12" />
         </EntityType>
@@ -888,7 +875,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
           <Property Type="String" Name="Type" Nullable="false" MaxLength="20" Unicode="false" />
           <NavigationProperty Name="LatestRevision" Relationship="Moo.Core.DB.LastestRevisionOfProblem" FromRole="Problem" ToRole="ProblemRevision" />
@@ -912,7 +899,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Code" Nullable="false" />
           <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.RecordProblem" FromRole="Record" ToRole="Problem" />
           <NavigationProperty Name="JudgeInfo" Relationship="Moo.Core.DB.RecordJudgeInfo" FromRole="Record" ToRole="JudgeInfo" />
@@ -931,7 +918,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.TestDataProblem" FromRole="TestData" ToRole="Problem" />
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserTestCase" FromRole="TestCase" ToRole="User" />
         </EntityType>
@@ -946,7 +933,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.ProblemProblemRevision" FromRole="ProblemRevision" ToRole="Problem" />
           <Property Type="String" Name="Content" Nullable="false" />
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserProblemRevision" FromRole="ProblemRevision" ToRole="User" />
@@ -974,7 +961,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
           <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.PostProblem" FromRole="Post" ToRole="Problem" />
           <Property Type="Boolean" Name="OnTop" Nullable="false" />
@@ -985,7 +972,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Content" Nullable="false" />
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserCreatePostItem" FromRole="PostItem" ToRole="User" />
           <NavigationProperty Name="Post" Relationship="Moo.Core.DB.PostItemPost" FromRole="PostItem" ToRole="Post" />
@@ -1020,7 +1007,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="Int32" Name="Score" Nullable="false" />
           <Property Type="String" Name="Info" Nullable="false" />
           <NavigationProperty Name="Record" Relationship="Moo.Core.DB.RecordJudgeInfo" FromRole="JudgeInfo" ToRole="Record" />
@@ -1035,7 +1022,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="40" />
           <Property Type="String" Name="Content" Nullable="false" />
           <Property Type="Boolean" Name="IsRead" Nullable="false" />
@@ -1061,7 +1048,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="DateTime" Name="StartTime" Nullable="false" />
           <Property Type="DateTime" Name="EndTime" Nullable="false" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="40" />
@@ -1100,7 +1087,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
           <Property Type="String" Name="Path" Nullable="false" />
           <Property Type="String" Name="Description" Nullable="false" />
@@ -1157,7 +1144,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="DateTime" Name="CreateTime" Nullable="false" />
           <Property Type="Byte" Name="Level" Nullable="false" />
           <Property Type="String" Name="Info" Nullable="false" />
@@ -1216,6 +1203,14 @@
           <ScalarProperty Name="SubmissionUser" ColumnName="SubmissionUser" />
           <ScalarProperty Name="MaximumScore" ColumnName="MaximumScore" />
           <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Hidden" ColumnName="Hidden" />
+          <ScalarProperty Name="Locked" ColumnName="Locked" />
+          <ScalarProperty Name="RecordLocked" ColumnName="RecordLocked" />
+          <ScalarProperty Name="PostLocked" ColumnName="PostLocked" />
+          <ScalarProperty Name="ArticleLocked" ColumnName="ArticleLocked" />
+          <ScalarProperty Name="TestCaseLocked" ColumnName="TestCaseLocked" />
+          <ScalarProperty Name="EnableTesting" ColumnName="EnableTesting" />
+          <ScalarProperty Name="TestCaseHidden" ColumnName="TestCaseHidden" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1226,6 +1221,7 @@
           <ScalarProperty Name="Code" ColumnName="Code" />
           <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
           <ScalarProperty Name="Language" ColumnName="Language" />
+          <ScalarProperty Name="PublicCode" ColumnName="PublicCode" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1285,6 +1281,8 @@
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="OnTop" ColumnName="OnTop" />
+          <ScalarProperty Name="ReplyTime" ColumnName="ReplyTime" />
+          <ScalarProperty Name="Locked" ColumnName="Locked" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1293,6 +1291,7 @@
         <MappingFragment StoreEntitySet="PostItems">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1404,12 +1403,12 @@
         <ScalarProperty Name="ID" ColumnName="ID" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="UserRole" TypeName="Moo.Core.DB.UserRole" StoreEntitySet="UserRole">
-      <EndProperty Name="User">
-        <ScalarProperty Name="ID" ColumnName="UserRole_Role_ID" />
-      </EndProperty>
+    <AssociationSetMapping Name="UserRole" TypeName="Moo.Core.DB.UserRole" StoreEntitySet="Users">
       <EndProperty Name="Role">
         <ScalarProperty Name="ID" ColumnName="Role_ID" />
+      </EndProperty>
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="ID" />
       </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="UserCreatePostItem" TypeName="Moo.Core.DB.UserCreatePostItem" StoreEntitySet="PostItems">

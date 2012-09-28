@@ -14,7 +14,7 @@ namespace Moo.Core.Security
         public string AuthenticationType { get { return "Custom"; } }
         public bool IsAuthenticated { get { return true; } }
 
-        public Guid ID { get; set; }
+        public int ID { get; set; }
         public int Token { get; set; }
         public string Name { get; set; }
         public SiteRole Role { get; set; }

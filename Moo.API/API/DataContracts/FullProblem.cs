@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     [DataContract]
     public class FullProblem
     {
         [DataMember]
-        public Guid? ID { get; set; }
+        public int? ID { get; set; }
 
         [DataMember]
         public string Name { get; set; }
@@ -36,9 +36,9 @@ namespace Moo.API.API
         public int? MyScore { get; set; }
 
         [DataMember]
-        public Guid? LatestRevision { get; set; }
+        public int? LatestRevision { get; set; }
 
         [DataMember]
-        public Guid? CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
     }
 }

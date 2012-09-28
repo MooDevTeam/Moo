@@ -8,7 +8,7 @@ using System.ServiceModel.Channels;
 using System.Threading;
 using System.ServiceModel.Web;
 using Moo.Core.Security;
-namespace Moo.API.API
+namespace Moo.API
 {
 
     public class Authenticator : IDispatchMessageInspector

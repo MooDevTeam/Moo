@@ -7,11 +7,12 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
 using System.Text;
+using Moo.API.DataContracts;
 using Moo.Core.DB;
 using Moo.Core.Security;
 using Moo.Core.Text;
 using Moo.Core.Utility;
-namespace Moo.API.API
+namespace Moo.API
 {
     [ServiceContract]
     public class JsonAPI
@@ -23,13 +24,6 @@ namespace Moo.API.API
             {
                 return WebOperationContext.Current.IncomingRequest.UriTemplateMatch.QueryParameters;
             }
-        }
-
-        void DeleteACEs(MooDB db, Guid obj)
-        {
-            (from a in db.ACL
-             where a.Object == obj
-             select a).ToList().ForEach(a => db.ACL.DeleteObject(a));
         }
         #endregion
 
@@ -184,11 +178,11 @@ namespace Moo.API.API
         [WebGet(UriTemplate = "Problems/{id}")]
         public FullProblem GetProblem(string id)
         {
-            Guid gid = Guid.Parse(id);
+            int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
                 Problem problem = (from p in db.Problems
-                                   where p.ID == gid
+                                   where p.ID == iid
                                    select p).SingleOrDefault<Problem>();
                 if (problem == null) throw new ArgumentException("无此题目");
 

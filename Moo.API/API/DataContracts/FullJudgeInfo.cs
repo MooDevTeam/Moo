@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     [DataContract]
     public class FullJudgeInfo
     {
         [DataMember]
-        public Guid? ID { get; set; }
+        public int? ID { get; set; }
 
         [DataMember]
         public int? Score { get; set; }
@@ -18,6 +18,6 @@ namespace Moo.API.API
         public string Info { get; set; }
 
         [DataMember]
-        public Guid? Record { get; set; }
+        public int? Record { get; set; }
     }
 }

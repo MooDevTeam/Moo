@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
-namespace Moo.API.API
+namespace Moo.API.DataContracts
 {
     [DataContract]
     public class BriefRecord
     {
         [DataMember]
-        public Guid? ID;
+        public int? ID;
 
         [DataMember]
         public string Language;
@@ -21,12 +21,12 @@ namespace Moo.API.API
         public DateTime? CreateTime;
 
         [DataMember]
-        public Guid? Problem;
+        public int? Problem;
 
         [DataMember]
-        public Guid? JudgeInfo;
+        public int? JudgeInfo;
 
         [DataMember]
-        public Guid? User;
+        public int? User;
     }
 }
