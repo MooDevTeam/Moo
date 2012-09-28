@@ -827,7 +827,7 @@
             <End Role="PostItem" EntitySet="PostItems" />
             <End Role="Post" EntitySet="Posts" />
           </AssociationSet>
-          <AssociationSet Name="ProblemPost" Association="Moo.Core.DB.ProblemPost">
+          <AssociationSet Name="PostProblem" Association="Moo.Core.DB.PostProblem">
             <End Role="Problem" EntitySet="Problems" />
             <End Role="Post" EntitySet="Posts" />
           </AssociationSet>
@@ -1017,9 +1017,9 @@
           </Key>
           <Property Type="Guid" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
-          <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.ProblemPost" FromRole="Post" ToRole="Problem" />
-          <Property Type="Boolean" Name="Lock" Nullable="false" />
+          <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.PostProblem" FromRole="Post" ToRole="Problem" />
           <Property Type="Boolean" Name="OnTop" Nullable="false" />
+          <Property Type="DateTime" Name="ReplyTime" Nullable="false" />
         </EntityType>
         <EntityType Name="PostItem">
           <Key>
@@ -1029,6 +1029,7 @@
           <Property Type="String" Name="Content" Nullable="false" />
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserCreatePostItem" FromRole="PostItem" ToRole="User" />
           <NavigationProperty Name="Post" Relationship="Moo.Core.DB.PostItemPost" FromRole="PostItem" ToRole="Post" />
+          <Property Type="DateTime" Name="CreateTime" Nullable="false" />
         </EntityType>
         <Association Name="UserCreatePostItem">
           <End Type="Moo.Core.DB.PostItem" Role="PostItem" Multiplicity="*" />
@@ -1042,7 +1043,7 @@
             <OnDelete Action="Cascade" />
           </End>
         </Association>
-        <Association Name="ProblemPost">
+        <Association Name="PostProblem">
           <End Type="Moo.Core.DB.Problem" Role="Problem" Multiplicity="0..1" >
             <OnDelete Action="Cascade" />
           </End>
@@ -1346,7 +1347,6 @@
         <MappingFragment StoreEntitySet="Posts">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Lock" ColumnName="Lock" />
           <ScalarProperty Name="OnTop" ColumnName="OnTop" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -1501,7 +1501,7 @@
         <ScalarProperty Name="ID" ColumnName="ID" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="ProblemPost" TypeName="Moo.Core.DB.ProblemPost" StoreEntitySet="Posts">
+    <AssociationSetMapping Name="PostProblem" TypeName="Moo.Core.DB.PostProblem" StoreEntitySet="Posts">
       <EndProperty Name="Problem">
         <ScalarProperty Name="ID" ColumnName="Problem_ID" />
       </EndProperty>
@@ -1699,14 +1699,14 @@
           <ConnectorPoint PointX="4.3437525" PointY="20.668996582031248" />
           <ConnectorPoint PointX="8.75" PointY="20.668996582031248" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Post" Width="1.5" PointX="14" PointY="12.375" Height="1.9700325520833388" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.PostItem" Width="1.5" PointX="0.75" PointY="11" Height="1.7790128580729174" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Post" Width="1.5" PointX="14" PointY="12.375" Height="1.9700325520833317" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.PostItem" Width="1.5" PointX="0.75" PointY="11" Height="1.9700325520833335" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.UserCreatePostItem">
-          <ConnectorPoint PointX="2.25" PointY="11.889506429036459" />
-          <ConnectorPoint PointX="3" PointY="11.889506429036459" />
+          <ConnectorPoint PointX="2.25" PointY="11.985016276041666" />
+          <ConnectorPoint PointX="3" PointY="11.985016276041666" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.PostItemPost">
-          <ConnectorPoint PointX="1.5" PointY="12.779012858072917" />
+          <ConnectorPoint PointX="1.5" PointY="12.970032552083334" />
           <ConnectorPoint PointX="1.5" PointY="13.625" />
           <ConnectorPoint PointX="3.1471319791666668" PointY="13.625" />
           <ConnectorPoint PointX="3.3137986458333337" PointY="13.625" />
@@ -1729,12 +1729,12 @@
           <ConnectorPoint PointX="13.135416666666666" PointY="12.625" />
           <ConnectorPoint PointX="13.302083333333334" PointY="12.625" />
           <ConnectorPoint PointX="13.625" PointY="12.625" />
-          <ConnectorPoint PointX="13.625" PointY="13.036805185465497" />
-          <ConnectorPoint PointX="14" PointY="13.036805185465497" />
+          <ConnectorPoint PointX="13.625" PointY="13.040839303870293" />
+          <ConnectorPoint PointX="14" PointY="13.040839303870293" />
         </AssociationConnector>
-        <AssociationConnector Association="Moo.Core.DB.ProblemPost">
-          <ConnectorPoint PointX="13.25" PointY="13.791896379557295" />
-          <ConnectorPoint PointX="14" PointY="13.791896379557295" />
+        <AssociationConnector Association="Moo.Core.DB.PostProblem">
+          <ConnectorPoint PointX="13.25" PointY="13.769182607740586" />
+          <ConnectorPoint PointX="14" PointY="13.769182607740586" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Moo.Core.DB.TranditionalTestCase" Width="1.5" PointX="23.875" PointY="13.5" Height="1.9700325520833246" />
         <InheritanceConnector EntityType="Moo.Core.DB.TranditionalTestCase" ManuallyRouted="false" >
@@ -1762,8 +1762,6 @@
         <EntityTypeShape EntityType="Moo.Core.DB.Mail" Width="1.5" PointX="8.875" PointY="13.375" Height="2.161052246093746" />
         <AssociationConnector Association="Moo.Core.DB.MailFrom">
           <ConnectorPoint PointX="8.875" PointY="13.71875" />
-          <ConnectorPoint PointX="6.708333333333333" PointY="13.71875" />
-          <ConnectorPoint PointX="6.541666666666667" PointY="13.71875" />
           <ConnectorPoint PointX="4.4270858333333329" PointY="13.71875" />
           <ConnectorPoint PointX="4.2604191666666669" PointY="13.71875" />
           <ConnectorPoint PointX="4.1927095833333334" PointY="13.71875" />

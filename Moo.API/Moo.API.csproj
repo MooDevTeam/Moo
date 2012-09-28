@@ -76,6 +76,8 @@
     <Compile Include="API\FullAnswerOnlyTestCase.cs" />
     <Compile Include="API\FullInteractiveTestCase.cs" />
     <Compile Include="API\FullJudgeInfo.cs" />
+    <Compile Include="API\FullPost.cs" />
+    <Compile Include="API\FullPostItem.cs" />
     <Compile Include="API\FullProblem.cs" />
     <Compile Include="API\FullProblemRevision.cs" />
     <Compile Include="API\FullRecord.cs" />

@@ -180,8 +180,32 @@ namespace Moo.API.API
         {
             return new BriefUser()
             {
-                ID=user.ID,
-                Name=user.Name
+                ID = user.ID,
+                Name = user.Name
+            };
+        }
+
+        public static FullPost ToFullPost(this Post post)
+        {
+            return new FullPost()
+            {
+                ID = post.ID,
+                Name = post.Name,
+                OnTop = post.OnTop,
+                Problem = post.Problem == null ? null : (Guid?)post.Problem.ID,
+                ReplyTime = post.ReplyTime
+            };
+        }
+
+        public static FullPostItem ToFullPostItem(this PostItem postItem)
+        {
+            return new FullPostItem()
+            {
+                ID=postItem.ID,
+                Content=postItem.Content,
+                CreateTime=postItem.CreateTime,
+                CreatedBy=postItem.CreatedBy.ID,
+                Post=postItem.Post.ID,
             };
         }
     }

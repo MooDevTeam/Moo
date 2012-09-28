@@ -362,7 +362,7 @@ namespace Moo.Core.DB
             {
                 Name = "讨论一下出题人心理",
                 Problem = APlusB,
-                Lock = false,
+                ReplyTime=DateTime.Now,
                 OnTop = true,
             };
             db.Posts.AddObject(post);
@@ -386,7 +386,7 @@ namespace Moo.Core.DB
             {
                 Name = "认真研究一下此题变形",
                 Problem = APlusB,
-                Lock = false,
+                ReplyTime = DateTime.Now,
                 OnTop = false
             };
             db.Posts.AddObject(post);
@@ -409,7 +409,7 @@ namespace Moo.Core.DB
             post = new Post()
             {
                 Name = "讨论一下Moo好不好",
-                Lock = true,
+                ReplyTime = DateTime.Now,
                 OnTop = false
             };
             db.Posts.AddObject(post);

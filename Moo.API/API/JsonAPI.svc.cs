@@ -735,6 +735,7 @@ namespace Moo.API.API
             {
                 IQueryable<TestCase> testCases = from t in db.TestCases
                                                  where t.Problem.ID == gproblemID
+                                                 orderby t.ID
                                                  select t;
                 if (skip != null)
                 {
@@ -1038,7 +1039,7 @@ namespace Moo.API.API
                 {
                     throw new InvalidOperationException("类型未知或不匹配");
                 }
-                db.SavingChanges();
+                db.SaveChanges();
             }
         }
 
@@ -1105,7 +1106,6 @@ namespace Moo.API.API
                 {
                     users = users.Where(u => u.Name.Contains(nameContains));
                 }
-                users = users.OrderByDescending(u => u.Score);
                 return users.Count();
             }
         }
@@ -1251,6 +1251,292 @@ namespace Moo.API.API
                         theUser.Role.Add(role);
                     }
                 }
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region Post
+        [OperationContract]
+        [WebGet(UriTemplate = "Posts/Count")]
+        public int CountPost()
+        {
+            Guid? problemID = QueryParameters["problemID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["problemID"]);
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Post> posts = db.Posts;
+                if (problemID != null)
+                {
+                    posts = posts.Where(p => p.Problem.ID == problemID);
+                }
+                return posts.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Posts")]
+        public List<FullPost> ListPost()
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            Guid? problemID = QueryParameters["problemID"] == null ? null : (Guid?)Guid.Parse(QueryParameters["problemID"]);
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Post> posts = db.Posts;
+                if (problemID != null)
+                {
+                    posts = posts.Where(p => p.Problem.ID == problemID);
+                }
+                posts.OrderByDescending(p => p.OnTop).ThenByDescending(p => p.ReplyTime);
+                if (skip != null)
+                {
+                    posts = posts.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    posts = posts.Take((int)top);
+                }
+                return posts.ToList().Select(p => p.ToFullPost()).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Posts/{id}")]
+        public FullPost GetPost(string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Post post = (from p in db.Posts
+                             where p.ID == gid
+                             select p).SingleOrDefault<Post>();
+                if (post == null) throw new ArgumentException("无此帖子");
+
+                Security.RequirePermission(db, post.ID, "Post", "post.read");
+
+                return post.ToFullPost();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Posts", Method = "POST")]
+        public Guid CreatePost(FullPost post)
+        {
+            using (MooDB db = new MooDB())
+            {
+                Problem problem;
+                if (post.Problem == null)
+                {
+                    problem = null;
+                    Security.RequirePermission(db, Guid.Empty, null, "post.create");
+                }
+                else
+                {
+                    problem = (from p in db.Problems
+                               where p.ID == post.Problem
+                               select p).SingleOrDefault<Problem>();
+                    if (problem == null) throw new ArgumentException("无此题目");
+                    Security.RequirePermission(db, problem.ID, "Problem", "post.create");
+                }
+
+                Post newPost = new Post()
+                {
+                    Name = post.Name,
+                    OnTop = false,
+                    Problem = problem,
+                    ReplyTime = DateTime.Now
+                };
+                db.Posts.AddObject(newPost);
+                db.SaveChanges();
+                return newPost.ID;
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Posts/{id}", Method = "PUT")]
+        public void ModifyPost(string id, FullPost post)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Post thePost = (from p in db.Posts
+                                where p.ID == gid
+                                select p).SingleOrDefault<Post>();
+                if (thePost == null) throw new ArgumentException("无此帖子");
+
+                Security.RequirePermission(db, thePost.ID, "Post", "post.modify");
+
+                if (post.Name != null)
+                {
+                    thePost.Name = post.Name;
+                }
+                if (post.OnTop != null)
+                {
+                    thePost.OnTop = (bool)post.OnTop;
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Posts/{id}", Method = "DELETE")]
+        public void DeletePost(string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Post post = (from p in db.Posts
+                             where p.ID == gid
+                             select p).SingleOrDefault<Post>();
+                if (post == null) throw new ArgumentException("无此帖子");
+
+                Security.RequirePermission(db, post.ID, "Post", "post.delete");
+
+                (from i in db.PostItems
+                 where i.Post.ID == post.ID
+                 select i).ToList().ForEach(i => DeleteACEs(db, i.ID));
+
+                DeleteACEs(db, post.ID);
+                db.Posts.DeleteObject(post);
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region PostItem
+        [OperationContract]
+        [WebGet(UriTemplate = "Posts/{postID}/Count")]
+        public int CountPostItem(string postID)
+        {
+            Guid gpostID = Guid.Parse(postID);
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<PostItem> postItems = from i in db.PostItems
+                                                 where i.Post.ID == gpostID
+                                                 select i;
+                return postItems.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Posts/{postID}")]
+        public List<FullPostItem> ListPostItem(string postID)
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            Guid gpostID = Guid.Parse(postID);
+            using (MooDB db = new MooDB())
+            {
+                Post post = (from p in db.Posts
+                             where p.ID == gpostID
+                             select p).SingleOrDefault<Post>();
+                if (post == null) throw new ArgumentException("无此帖子");
+
+                Security.RequirePermission(db, post.ID, "Post", "post.item.read");
+
+                IQueryable<PostItem> postItems = from i in db.PostItems
+                                                 where i.Post.ID == gpostID
+                                                 orderby i.CreateTime
+                                                 select i;
+                if (skip != null)
+                {
+                    postItems = postItems.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    postItems = postItems.Take((int)top);
+                }
+                return postItems.ToList().Select(i => i.ToFullPostItem()).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Posts/{postID}", Method = "POST")]
+        public Guid CreatePostItem(string postID, FullPostItem postItem)
+        {
+            Guid gpostID = Guid.Parse(postID);
+            using (MooDB db = new MooDB())
+            {
+                Post post = (from p in db.Posts
+                             where p.ID == gpostID
+                             select p).SingleOrDefault<Post>();
+                if (post == null) throw new ArgumentException("无此帖子");
+
+                Security.RequirePermission(db, post.ID, "Post", "post.item.create");
+
+                PostItem newPostItem = new PostItem()
+                {
+                   Content=postItem.Content,
+                   CreateTime=DateTime.Now,
+                   CreatedBy=Security.CurrentUser.GetDBUser(db),
+                   Post=post,
+                };
+                db.PostItems.AddObject(newPostItem);
+                post.ReplyTime = DateTime.Now;
+                db.SaveChanges();
+
+                db.ACL.AddObject(new ACE()
+                {
+                    Subject=Security.CurrentUser.ID,
+                    Object=newPostItem.ID,
+                    Allowed=true,
+                    Function=Security.GetFunction(db,"post.item.modify")
+                });
+
+                db.ACL.AddObject(new ACE()
+                {
+                    Subject = Security.CurrentUser.ID,
+                    Object = newPostItem.ID,
+                    Allowed = true,
+                    Function = Security.GetFunction(db, "post.item.delete")
+                });
+                db.SaveChanges();
+                return newPostItem.ID;
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Posts/{postID}/{id}", Method = "PUT")]
+        public void ModifyPostItem(string postID, string id, FullPostItem postItem)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                PostItem thePostItem = (from i in db.PostItems
+                                        where i.ID == gid
+                                        select i).SingleOrDefault<PostItem>();
+                if (thePostItem == null) throw new ArgumentException("无此帖子楼层");
+
+                Security.RequirePermission(db, thePostItem.ID, "PostItem", "post.item.modify");
+
+                if (postItem.Content != null)
+                {
+                    thePostItem.Content = postItem.Content;
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Posts/{postID}/{id}", Method = "DELETE")]
+        public void DeletePostItem(string postID, string id)
+        {
+            Guid gid = Guid.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                PostItem postItem = (from i in db.PostItems
+                                        where i.ID == gid
+                                        select i).SingleOrDefault<PostItem>();
+                if (postItem == null) throw new ArgumentException("无此帖子楼层");
+
+                Security.RequirePermission(db, postItem.ID, "PostItem", "post.item.delete");
+
+                DeleteACEs(db, postItem.ID);
+
+                db.PostItems.DeleteObject(postItem);
+
                 db.SaveChanges();
             }
         }
