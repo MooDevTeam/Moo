@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 09/30/2012 14:07:05
+-- Date Created: 09/30/2012 14:48:25
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -310,9 +310,10 @@ GO
 -- Creating table 'Mails'
 CREATE TABLE [dbo].[Mails] (
     [ID] int IDENTITY(1,1) NOT NULL,
-    [Title] nvarchar(40)  NOT NULL,
+    [Name] nvarchar(40)  NOT NULL,
     [Content] nvarchar(max)  NOT NULL,
     [IsRead] bit  NOT NULL,
+    [CreateTime] datetime  NOT NULL,
     [From_ID] int  NOT NULL,
     [To_ID] int  NOT NULL
 );
@@ -323,7 +324,7 @@ CREATE TABLE [dbo].[Contests] (
     [ID] int IDENTITY(1,1) NOT NULL,
     [StartTime] datetime  NOT NULL,
     [EndTime] datetime  NOT NULL,
-    [Title] nvarchar(40)  NOT NULL,
+    [Name] nvarchar(40)  NOT NULL,
     [LockProblemOnStart] bit  NOT NULL,
     [LockTestCaseOnStart] bit  NOT NULL,
     [LockPostOnStart] bit  NOT NULL,

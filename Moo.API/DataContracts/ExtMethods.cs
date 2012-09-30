@@ -265,5 +265,32 @@ namespace Moo.API.DataContracts
                 Name = category.Name
             };
         }
+
+        public static BriefMail ToBriefMail(this Mail mail)
+        {
+            return new BriefMail()
+            {
+                CreateTime = mail.CreateTime,
+                From = mail.From.ID,
+                ID = mail.ID,
+                IsRead = mail.IsRead,
+                Name = mail.Name,
+                To = mail.To.ID
+            };
+        }
+
+        public static FullMail ToFullMail(this Mail mail)
+        {
+            return new FullMail()
+            {
+                CreateTime = mail.CreateTime,
+                From = mail.From.ID,
+                Content = mail.Content,
+                ID = mail.ID,
+                IsRead = mail.IsRead,
+                Name = mail.Name,
+                To = mail.To.ID
+            };
+        }
     }
 }

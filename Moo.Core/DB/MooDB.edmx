@@ -281,9 +281,10 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="40" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="IsRead" Type="bit" Nullable="false" />
+    <Property Name="CreateTime" Type="datetime" Nullable="false" />
     <Property Name="From_ID" Type="int" Nullable="false" />
     <Property Name="To_ID" Type="int" Nullable="false" />
   </EntityType>
@@ -294,7 +295,7 @@
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="StartTime" Type="datetime" Nullable="false" />
     <Property Name="EndTime" Type="datetime" Nullable="false" />
-    <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="40" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="LockProblemOnStart" Type="bit" Nullable="false" />
     <Property Name="LockTestCaseOnStart" Type="bit" Nullable="false" />
     <Property Name="LockPostOnStart" Type="bit" Nullable="false" />
@@ -1183,11 +1184,12 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="40" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
           <Property Type="String" Name="Content" Nullable="false" />
           <Property Type="Boolean" Name="IsRead" Nullable="false" />
           <NavigationProperty Name="From" Relationship="Moo.Core.DB.MailFrom" FromRole="Mail" ToRole="User" />
           <NavigationProperty Name="To" Relationship="Moo.Core.DB.MailTo" FromRole="Mail" ToRole="User" />
+          <Property Type="DateTime" Name="CreateTime" Nullable="false" />
         </EntityType>
         <Association Name="MailFrom">
           <End Type="Moo.Core.DB.Mail" Role="Mail" Multiplicity="*" >
@@ -1211,7 +1213,7 @@
           <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="DateTime" Name="StartTime" Nullable="false" />
           <Property Type="DateTime" Name="EndTime" Nullable="false" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="40" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
           <Property Type="Boolean" Name="LockProblemOnStart" Nullable="false" />
           <Property Type="Boolean" Name="LockTestCaseOnStart" Nullable="false" />
           <Property Type="Boolean" Name="LockPostOnStart" Nullable="false" />
@@ -1527,9 +1529,10 @@
       <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Mail)">
         <MappingFragment StoreEntitySet="Mails">
           <ScalarProperty Name="ID" ColumnName="ID" />
-          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Content" ColumnName="Content" />
           <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1539,7 +1542,7 @@
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="StartTime" ColumnName="StartTime" />
           <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="LockProblemOnStart" ColumnName="LockProblemOnStart" />
           <ScalarProperty Name="LockTestCaseOnStart" ColumnName="LockTestCaseOnStart" />
           <ScalarProperty Name="LockPostOnStart" ColumnName="LockPostOnStart" />
@@ -1952,20 +1955,20 @@
           <ConnectorPoint PointX="4.625" PointY="7.0145064290364587" />
           <ConnectorPoint PointX="6.125" PointY="7.0145064290364587" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Mail" Width="1.5" PointX="9.5" PointY="20.625" Height="2.161052246093746" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Mail" Width="1.5" PointX="9.5" PointY="20.625" Height="2.3520719401041674" />
         <AssociationConnector Association="Moo.Core.DB.MailFrom">
-          <ConnectorPoint PointX="11" PointY="21.705526123046873" />
-          <ConnectorPoint PointX="12.1562475" PointY="21.705526123046873" />
+          <ConnectorPoint PointX="11" PointY="22.055541250813803" />
+          <ConnectorPoint PointX="12.1562475" PointY="22.055541250813803" />
           <ConnectorPoint PointX="12.1562475" PointY="14.425131022135417" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.MailTo">
           <ConnectorPoint PointX="13.0937525" PointY="14.425131022135417" />
-          <ConnectorPoint PointX="13.0937525" PointY="21.134010561523436" />
-          <ConnectorPoint PointX="12.942709583333334" PointY="21.134010561523436" />
-          <ConnectorPoint PointX="12.776042916666667" PointY="21.134010561523436" />
-          <ConnectorPoint PointX="12.239580833333333" PointY="21.134010561523436" />
-          <ConnectorPoint PointX="12.072914166666665" PointY="21.134010561523436" />
-          <ConnectorPoint PointX="11" PointY="21.134010561523436" />
+          <ConnectorPoint PointX="13.0937525" PointY="21.3090181254069" />
+          <ConnectorPoint PointX="12.942709583333334" PointY="21.3090181254069" />
+          <ConnectorPoint PointX="12.776042916666667" PointY="21.3090181254069" />
+          <ConnectorPoint PointX="12.239580833333333" PointY="21.3090181254069" />
+          <ConnectorPoint PointX="12.072914166666665" PointY="21.3090181254069" />
+          <ConnectorPoint PointX="11" PointY="21.3090181254069" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.LastestRevisionOfProblem">
           <ConnectorPoint PointX="11" PointY="11.40625" />

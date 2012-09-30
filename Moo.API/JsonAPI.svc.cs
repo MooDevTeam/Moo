@@ -15,8 +15,8 @@ using Moo.Core.Text;
 using Moo.Core.Utility;
 namespace Moo.API
 {
-    [ServiceContract(SessionMode=SessionMode.NotAllowed)]
-    [ServiceBehavior(ConcurrencyMode=ConcurrencyMode.Multiple,InstanceContextMode=InstanceContextMode.Single)]
+    [ServiceContract(SessionMode = SessionMode.NotAllowed)]
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.Single)]
     public class JsonAPI
     {
         #region Utility
@@ -54,6 +54,12 @@ namespace Moo.API
         public string GenerateDiffHTML(string oldText, string newText)
         {
             return DiffGenerator.Generate(oldText, newText);
+        }
+
+        [OperationContract]
+        public void GarbageCollect()
+        {
+            GC.Collect();
         }
         #endregion
 
@@ -1315,7 +1321,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Posts/{postID}/Items/{id}")]
-        public FullPostItem GetPostItem(string postID,string id)
+        public FullPostItem GetPostItem(string postID, string id)
         {
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
@@ -1410,6 +1416,7 @@ namespace Moo.API
         {
             int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
             int? categoryID = QueryParameters["categoryID"] == null ? null : (int?)int.Parse(QueryParameters["categoryID"]);
+            string nameContains = QueryParameters["nameContains"];
             using (MooDB db = new MooDB())
             {
                 IQueryable<Article> articles = db.Articles;
@@ -1421,6 +1428,10 @@ namespace Moo.API
                 {
                     articles = articles.Where(a => a.Category.ID == categoryID);
                 }
+                if (nameContains != null)
+                {
+                    articles = articles.Where(a => a.Name.Contains(nameContains));
+                }
                 return articles.Count();
             }
         }
@@ -1431,6 +1442,7 @@ namespace Moo.API
         {
             int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
             int? categoryID = QueryParameters["categoryID"] == null ? null : (int?)int.Parse(QueryParameters["categoryID"]);
+            string nameContains = QueryParameters["nameContains"];
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
             using (MooDB db = new MooDB())
@@ -1444,9 +1456,13 @@ namespace Moo.API
                 {
                     articles = articles.Where(a => a.Category.ID == categoryID);
                 }
+                if (nameContains != null)
+                {
+                    articles = articles.Where(a => a.Name.Contains(nameContains));
+                }
 
-                articles=articles.OrderByDescending(a => a.ID);
-                
+                articles = articles.OrderByDescending(a => a.ID);
+
                 if (skip != null)
                 {
                     articles = articles.Skip((int)skip);
@@ -1503,11 +1519,11 @@ namespace Moo.API
 
                 Article newArticle = new Article()
                 {
-                    Category=category,
-                    CreatedBy=Security.CurrentUser.GetDBUser(db),
-                    CreateTime=DateTime.Now,
-                    Name=article.Name,
-                    Problem=problem,
+                    Category = category,
+                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    CreateTime = DateTime.Now,
+                    Name = article.Name,
+                    Problem = problem,
                 };
 
                 Access.Required(db, newArticle, Function.CreateArticle);
@@ -1520,7 +1536,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Articles/{id}", Method = "PUT")]
-        public void ModifyArticle(string id,FullArticle article)
+        public void ModifyArticle(string id, FullArticle article)
         {
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
@@ -1597,13 +1613,13 @@ namespace Moo.API
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            int iarticleID=int.Parse(articleID);
+            int iarticleID = int.Parse(articleID);
             using (MooDB db = new MooDB())
             {
-                IQueryable<ArticleRevision> articleRevisions=from r in db.ArticleRevisions
-                                                              where r.Article.ID==iarticleID
-                                                              orderby r.ID descending
-                                                              select r;
+                IQueryable<ArticleRevision> articleRevisions = from r in db.ArticleRevisions
+                                                               where r.Article.ID == iarticleID
+                                                               orderby r.ID descending
+                                                               select r;
                 if (skip != null)
                 {
                     articleRevisions = articleRevisions.Skip((int)skip);
@@ -1637,7 +1653,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Articles/{articleID}/Revisions", Method = "POST")]
-        public int CreateArticleRevision(string articleID,FullArticleRevision revision)
+        public int CreateArticleRevision(string articleID, FullArticleRevision revision)
         {
             int iarticleID = int.Parse(articleID);
             using (MooDB db = new MooDB())
@@ -1649,10 +1665,10 @@ namespace Moo.API
 
                 ArticleRevision newRevision = new ArticleRevision
                 {
-                    Article=article,
-                    Content=revision.Content,
-                    CreatedBy=Security.CurrentUser.GetDBUser(db),
-                    CreateTime=DateTime.Now,
+                    Article = article,
+                    Content = revision.Content,
+                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    CreateTime = DateTime.Now,
                 };
                 article.LatestRevision = newRevision;
 
@@ -1795,6 +1811,134 @@ namespace Moo.API
                 Access.Required(db, category, Function.DeleteCatagory);
 
                 db.Categories.DeleteObject(category);
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region Mails
+        [OperationContract]
+        [WebGet(UriTemplate = "Mails/Count")]
+        public int CountMail()
+        {
+            string nameContains = QueryParameters["nameContains"];
+            using (MooDB db = new MooDB())
+            {
+                int currenUserID = Security.CurrentUser.ID;
+                IQueryable<Mail> mails = from m in db.Mails
+                                         where m.To.ID == currenUserID || m.From.ID == currenUserID
+                                         select m;
+                if (nameContains != null)
+                {
+                    mails = mails.Where(m => m.Name.Contains(nameContains));
+                }
+
+                return mails.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Mails")]
+        public List<BriefMail> ListMail()
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            string nameContains = QueryParameters["nameContains"];
+            using (MooDB db = new MooDB())
+            {
+                int currenUserID = Security.CurrentUser.ID;
+                IQueryable<Mail> mails = from m in db.Mails
+                                         where m.To.ID == currenUserID || m.From.ID == currenUserID
+                                         select m;
+                if (nameContains != null)
+                {
+                    mails = mails.Where(m => m.Name.Contains(nameContains));
+                }
+
+                mails = mails.OrderByDescending(m => m.ID);
+
+                if (skip != null)
+                {
+                    mails = mails.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    mails = mails.Take((int)top);
+                }
+
+                return mails.ToList().Select(m => m.ToBriefMail()).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Mails/{id}")]
+        public FullMail GetMail(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Mail mail = (from m in db.Mails
+                             where m.ID == iid
+                             select m).SingleOrDefault<Mail>();
+                if (mail == null) throw new ArgumentException("无此邮件");
+
+                Access.Required(db, mail, Function.ReadMail);
+
+                if (mail.To.ID == Security.CurrentUser.ID)
+                {
+                    mail.IsRead = true;
+                }
+                db.SaveChanges();
+
+                return mail.ToFullMail();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Mails", Method = "POST")]
+        public int CreateMail(FullMail mail)
+        {
+            using (MooDB db = new MooDB())
+            {
+                User userTo = (from u in db.Users
+                               where u.ID == mail.To
+                               select u).SingleOrDefault<User>();
+                if (userTo != null) throw new ArgumentException("无此用户");
+                //if (userTo.ID == Security.CurrentUser.ID) throw new InvalidOperationException("不允许对自己发送邮件");
+
+                Mail newMail = new Mail
+                {
+                    Content = mail.Content,
+                    CreateTime = DateTime.Now,
+                    From = Security.CurrentUser.GetDBUser(db),
+                    IsRead = false,
+                    Name = mail.Name,
+                    To = userTo
+                };
+
+                Access.Required(db, newMail, Function.CreateMail);
+
+                db.Mails.AddObject(newMail);
+                db.SaveChanges();
+                return newMail.ID;
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Mails/{id}", Method = "DELETE")]
+        public void DeleteMail(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Mail mail = (from m in db.Mails
+                             where m.ID == iid
+                             select m).SingleOrDefault<Mail>();
+                if (mail == null) throw new ArgumentException("无此邮件");
+
+                Access.Required(db, mail, Function.DeleteMail);
+
+                db.Mails.DeleteObject(mail);
                 db.SaveChanges();
             }
         }

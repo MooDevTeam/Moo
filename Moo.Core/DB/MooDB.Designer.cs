@@ -1157,7 +1157,7 @@ namespace Moo.Core.DB
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="startTime">StartTime 属性的初始值。</param>
         /// <param name="endTime">EndTime 属性的初始值。</param>
-        /// <param name="title">Title 属性的初始值。</param>
+        /// <param name="name">Name 属性的初始值。</param>
         /// <param name="lockProblemOnStart">LockProblemOnStart 属性的初始值。</param>
         /// <param name="lockTestCaseOnStart">LockTestCaseOnStart 属性的初始值。</param>
         /// <param name="lockPostOnStart">LockPostOnStart 属性的初始值。</param>
@@ -1174,13 +1174,13 @@ namespace Moo.Core.DB
         /// <param name="allowTestingOnEnd">AllowTestingOnEnd 属性的初始值。</param>
         /// <param name="hideProblemOnEnd">HideProblemOnEnd 属性的初始值。</param>
         /// <param name="hideTestCaseOnEnd">HideTestCaseOnEnd 属性的初始值。</param>
-        public static Contest CreateContest(global::System.Int32 id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String title, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean allowTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean allowTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd)
+        public static Contest CreateContest(global::System.Int32 id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String name, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean allowTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean allowTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd)
         {
             Contest contest = new Contest();
             contest.ID = id;
             contest.StartTime = startTime;
             contest.EndTime = endTime;
-            contest.Title = title;
+            contest.Name = name;
             contest.LockProblemOnStart = lockProblemOnStart;
             contest.LockTestCaseOnStart = lockTestCaseOnStart;
             contest.LockPostOnStart = lockPostOnStart;
@@ -1283,24 +1283,24 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.String Title
+        public global::System.String Name
         {
             get
             {
-                return _Title;
+                return _Name;
             }
             set
             {
-                OnTitleChanging(value);
-                ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("Title");
-                OnTitleChanged();
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Name");
+                OnNameChanged();
             }
         }
-        private global::System.String _Title;
-        partial void OnTitleChanging(global::System.String value);
-        partial void OnTitleChanged();
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2420,16 +2420,18 @@ namespace Moo.Core.DB
         /// 创建新的 Mail 对象。
         /// </summary>
         /// <param name="id">ID 属性的初始值。</param>
-        /// <param name="title">Title 属性的初始值。</param>
+        /// <param name="name">Name 属性的初始值。</param>
         /// <param name="content">Content 属性的初始值。</param>
         /// <param name="isRead">IsRead 属性的初始值。</param>
-        public static Mail CreateMail(global::System.Int32 id, global::System.String title, global::System.String content, global::System.Boolean isRead)
+        /// <param name="createTime">CreateTime 属性的初始值。</param>
+        public static Mail CreateMail(global::System.Int32 id, global::System.String name, global::System.String content, global::System.Boolean isRead, global::System.DateTime createTime)
         {
             Mail mail = new Mail();
             mail.ID = id;
-            mail.Title = title;
+            mail.Name = name;
             mail.Content = content;
             mail.IsRead = isRead;
+            mail.CreateTime = createTime;
             return mail;
         }
 
@@ -2468,24 +2470,24 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.String Title
+        public global::System.String Name
         {
             get
             {
-                return _Title;
+                return _Name;
             }
             set
             {
-                OnTitleChanging(value);
-                ReportPropertyChanging("Title");
-                _Title = StructuralObject.SetValidValue(value, false);
-                ReportPropertyChanged("Title");
-                OnTitleChanged();
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Name");
+                OnNameChanged();
             }
         }
-        private global::System.String _Title;
-        partial void OnTitleChanging(global::System.String value);
-        partial void OnTitleChanged();
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2534,6 +2536,30 @@ namespace Moo.Core.DB
         private global::System.Boolean _IsRead;
         partial void OnIsReadChanging(global::System.Boolean value);
         partial void OnIsReadChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime CreateTime
+        {
+            get
+            {
+                return _CreateTime;
+            }
+            set
+            {
+                OnCreateTimeChanging(value);
+                ReportPropertyChanging("CreateTime");
+                _CreateTime = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CreateTime");
+                OnCreateTimeChanged();
+            }
+        }
+        private global::System.DateTime _CreateTime;
+        partial void OnCreateTimeChanging(global::System.DateTime value);
+        partial void OnCreateTimeChanged();
 
         #endregion
     

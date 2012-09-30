@@ -414,8 +414,9 @@ namespace Moo.Core.DB
             //Mail
             db.Mails.AddObject(new Mail()
             {
-                Title = "咱把Moo黑了如何？",
+                Name = "咱把Moo黑了如何？",
                 Content = "嘿！onetwogoo!把Moo--黑--了吧！",
+                CreateTime=DateTime.Now,
                 IsRead = true,
                 From = ShaBi,
                 To = MrPhone
@@ -424,8 +425,9 @@ namespace Moo.Core.DB
 
             db.Mails.AddObject(new Mail()
             {
-                Title = "找死啊！",
+                Name = "找死啊！",
                 Content = "我会去黑自己网站吗？",
+                CreateTime = DateTime.Now,
                 IsRead = true,
                 From = MrPhone,
                 To = ShaBi
@@ -434,8 +436,9 @@ namespace Moo.Core.DB
 
             db.Mails.AddObject(new Mail()
             {
-                Title = "没准嘞！",
+                Name = "没准嘞！",
                 Content = "敢说你没这想法",
+                CreateTime = DateTime.Now,
                 IsRead = true,
                 From = ShaBi,
                 To = MrPhone
@@ -444,8 +447,9 @@ namespace Moo.Core.DB
 
             db.Mails.AddObject(new Mail()
             {
-                Title = "傻逼",
+                Name = "傻逼",
                 Content = "不解释！",
+                CreateTime = DateTime.Now,
                 IsRead = false,
                 From = MrPhone,
                 To = ShaBi
@@ -454,8 +458,9 @@ namespace Moo.Core.DB
 
             db.Mails.AddObject(new Mail()
             {
-                Title = "把我弄成组织者如何啊",
+                Name = "把我弄成组织者如何啊",
                 Content = "???",
+                CreateTime = DateTime.Now,
                 IsRead = false,
                 From = Baby,
                 To = MrPhone
@@ -464,8 +469,9 @@ namespace Moo.Core.DB
 
             db.Mails.AddObject(new Mail()
             {
-                Title = "美死你",
+                Name = "美死你",
                 Content = "怎么可能",
+                CreateTime = DateTime.Now,
                 IsRead = true,
                 From = MrPhone,
                 To = Baby
@@ -478,7 +484,7 @@ namespace Moo.Core.DB
                 StartTime = DateTime.Now.AddMinutes(1),
                 EndTime = DateTime.Now.AddMinutes(2),
                 Status = "Before",
-                Title = "Moo水题大赛",
+                Name = "Moo水题大赛",
                 Description = "全是--水--题啊！",
                 LockProblemOnStart = true,
                 LockPostOnStart = true,

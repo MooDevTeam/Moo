@@ -107,6 +107,7 @@ namespace Moo.Core.Security
                     {Function.ModifyRecord,new List<Func<Record,bool?>>(){
                         r=>me.Role<=SiteRole.Reader?(bool?)false:null,
                         r=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        r=>r.Problem.RecordLocked?(bool?)false:null,
                         r=>r.User.ID==me.ID?(bool?)true:null
                     }},
                     {Function.DeleteRecord,new List<Func<Record,bool?>>(){
@@ -207,6 +208,106 @@ namespace Moo.Core.Security
             }
         }
 
+        Dictionary<Function, List<Func<Article, bool?>>> ArticleRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<Article, bool?>>>
+                {
+                    {Function.CreateArticle,new List<Func<Article,bool?>>{
+                        a=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        a=>a.Problem!=null && a.Problem.ArticleLocked?(bool?)false:null,
+                        a=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }},
+                    {Function.ReadArticle,new List<Func<Article,bool?>>{
+                        a=>me.Role>=SiteRole.Reader?(bool?)true:null
+                    }},
+                    {Function.ModifyArticle,new List<Func<Article,bool?>>{
+                        a=>me.Role<=SiteRole.Reader?(bool?)false:null,
+                        a=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        a=>a.Problem!=null && a.Problem.ArticleLocked?(bool?)false:null,
+                        a=>a.CreatedBy.ID==me.ID?(bool?)true:null
+                    }},
+                    {Function.DeleteArticle,new List<Func<Article,bool?>>{
+                        a=>me.Role<=SiteRole.Reader?(bool?)false:null,
+                        a=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        a=>a.Problem!=null && a.Problem.ArticleLocked?(bool?)false:null,
+                        a=>a.CreatedBy.ID==me.ID?(bool?)true:null
+                    }},
+                };
+            }
+        }
+
+        Dictionary<Function, List<Func<ArticleRevision, bool?>>> ArticleRevisionRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<ArticleRevision, bool?>>>
+                {
+                    {Function.CreateArticleRevision,new List<Func<ArticleRevision,bool?>>{
+                        r=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        r=>r.Article.Problem!=null && r.Article.Problem.ArticleLocked?(bool?)false:null,
+                        r=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }},
+                    {Function.ReadArticleRevision,new List<Func<ArticleRevision,bool?>>{
+                        r=>me.Role>=SiteRole.Reader?(bool?)true:null
+                    }},
+                    {Function.DeleteArticleRevision,new List<Func<ArticleRevision,bool?>>{
+                        r=>me.Role<=SiteRole.Reader?(bool?)false:null,
+                        r=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        r=>r.Article.Problem!=null && r.Article.Problem.ArticleLocked?(bool?)false:null,
+                        r=>r.CreatedBy.ID==me.ID?(bool?)true:null
+                    }},
+                };
+            }
+        }
+
+        Dictionary<Function, List<Func<Category, bool?>>> CategoryRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<Category, bool?>>>
+                {
+                    {Function.CreateCatagory,new List<Func<Category,bool?>>{
+                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.ReadCatagory,new List<Func<Category,bool?>>{
+                        c=>me.Role>=SiteRole.Reader?(bool?)true:null
+                    }},
+                    {Function.ModifyCatagory,new List<Func<Category,bool?>>{
+                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.DeleteCatagory,new List<Func<Category,bool?>>{
+                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                };
+            }
+        }
+
+        Dictionary<Function, List<Func<Mail, bool?>>> MailRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<Mail, bool?>>>
+                {
+                    {Function.CreateMail,new List<Func<Mail,bool?>>{
+                        m=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }},
+                    {Function.ReadMail,new List<Func<Mail,bool?>>{
+                        m=>m.To.ID!=me.ID && m.From.ID!=me.ID?(bool?)false:null,
+                        m=>me.Role>=SiteRole.Reader?(bool?)true:null
+                    }},
+                    {Function.DeleteMail,new List<Func<Mail,bool?>>{
+                        m=>m.To.ID!=me.ID && m.From.ID!=me.ID?(bool?)false:null,
+                        m=>me.Role<=SiteRole.Reader?(bool?)false:null,
+                        m=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        m=>m.To.ID==me.ID?(bool?)true:null,
+                        m=>!m.IsRead?(bool?)true:null
+                    }},
+                };
+            }
+        }
+
         public static bool Check(MooDB dbContext, object @object, Function function)
         {
             return new Access()
@@ -253,6 +354,22 @@ namespace Moo.Core.Security
             else if (@object is PostItem)
             {
                 return CheckRules(@object as PostItem, PostItemRules, function);
+            }
+            else if (@object is Article)
+            {
+                return CheckRules(@object as Article, ArticleRules, function);
+            }
+            else if (@object is ArticleRevision)
+            {
+                return CheckRules(@object as ArticleRevision, ArticleRevisionRules, function);
+            }
+            else if (@object is Category)
+            {
+                return CheckRules(@object as Category, CategoryRules, function);
+            }
+            else if (@object is Mail)
+            {
+                return CheckRules(@object as Mail, MailRules, function);
             }
             else
                 throw new NotImplementedException("糟糕！权限模块不完整！");
