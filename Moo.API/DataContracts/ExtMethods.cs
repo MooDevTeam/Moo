@@ -219,5 +219,51 @@ namespace Moo.API.DataContracts
                 Post = postItem.Post.ID,
             };
         }
+
+        public static FullArticle ToFullArticle(this Article article)
+        {
+            return new FullArticle()
+            {
+                ID = article.ID,
+                CreatedBy = article.CreatedBy.ID,
+                CreateTime = article.CreateTime,
+                LatestRevision = article.LatestRevision == null ? null : (int?)article.LatestRevision.ID,
+                Name = article.Name,
+                Category = article.Category.ID,
+                Problem = article.Problem.ID
+            };
+        }
+
+        public static BriefArticleRevision ToBriefArticleRevision(this ArticleRevision articleRevision)
+        {
+            return new BriefArticleRevision()
+            {
+                Article = articleRevision.Article.ID,
+                CreatedBy = articleRevision.CreatedBy.ID,
+                CreateTime = articleRevision.CreateTime,
+                ID = articleRevision.ID
+            };
+        }
+
+        public static FullArticleRevision ToFullArticleRevision(this ArticleRevision articleRevision)
+        {
+            return new FullArticleRevision()
+            {
+                Article = articleRevision.Article.ID,
+                Content = articleRevision.Content,
+                CreatedBy = articleRevision.CreatedBy.ID,
+                CreateTime = articleRevision.CreateTime,
+                ID = articleRevision.ID
+            };
+        }
+
+        public static FullCategory ToFullCategory(this Category category)
+        {
+            return new FullCategory()
+            {
+                ID = category.ID,
+                Name = category.Name
+            };
+        }
     }
 }

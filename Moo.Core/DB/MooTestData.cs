@@ -355,6 +355,7 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
+                CreateTime=DateTime.Now,
                 Content = "出--这么水--的题，找死啊",
                 CreatedBy = ShaBi,
             });
@@ -363,6 +364,7 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
+                CreateTime = DateTime.Now,
                 Content = "靠！作为出题人我压力很大啊!",
                 CreatedBy = MrPhone
             });
@@ -379,6 +381,7 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
+                CreateTime = DateTime.Now,
                 Content = "A+B能有什么变形呢？",
                 CreatedBy = MrPhone
             });
@@ -387,6 +390,7 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
+                CreateTime = DateTime.Now,
                 Content = "靠！没人回答，我寂寞了~",
                 CreatedBy = MrPhone
             });
@@ -402,6 +406,7 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
+                CreateTime = DateTime.Now,
                 Content = "Moo很好啊。*注意此贴没有对应题目且被锁*",
                 CreatedBy = MrPhone
             });

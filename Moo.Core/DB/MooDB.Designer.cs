@@ -41,6 +41,12 @@ using System.Runtime.Serialization;
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "LogUser", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.User), "Log", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Log))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UploadedFileUser", "UploadedFile", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.UploadedFile), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateProblem", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Problem), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateArticle", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateArticleRevision", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "ArticleRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ArticleRevision))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleArticleRevision", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Article), "ArticleRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ArticleRevision))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleLatestRevision", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Article), "ArticleRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.ArticleRevision))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleCategory", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article), "Category", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Category))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleProblem", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article), "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Problem))]
 
 #endregion
 
@@ -315,6 +321,54 @@ namespace Moo.Core.DB
             }
         }
         private ObjectSet<Log> _Logs;
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        public ObjectSet<Article> Articles
+        {
+            get
+            {
+                if ((_Articles == null))
+                {
+                    _Articles = base.CreateObjectSet<Article>("Articles");
+                }
+                return _Articles;
+            }
+        }
+        private ObjectSet<Article> _Articles;
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        public ObjectSet<ArticleRevision> ArticleRevisions
+        {
+            get
+            {
+                if ((_ArticleRevisions == null))
+                {
+                    _ArticleRevisions = base.CreateObjectSet<ArticleRevision>("ArticleRevisions");
+                }
+                return _ArticleRevisions;
+            }
+        }
+        private ObjectSet<ArticleRevision> _ArticleRevisions;
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        public ObjectSet<Category> Categories
+        {
+            get
+            {
+                if ((_Categories == null))
+                {
+                    _Categories = base.CreateObjectSet<Category>("Categories");
+                }
+                return _Categories;
+            }
+        }
+        private ObjectSet<Category> _Categories;
 
         #endregion
         #region AddTo 方法
@@ -430,6 +484,30 @@ namespace Moo.Core.DB
         {
             base.AddObject("Logs", log);
         }
+    
+        /// <summary>
+        /// 用于向 Articles EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
+        /// </summary>
+        public void AddToArticles(Article article)
+        {
+            base.AddObject("Articles", article);
+        }
+    
+        /// <summary>
+        /// 用于向 ArticleRevisions EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
+        /// </summary>
+        public void AddToArticleRevisions(ArticleRevision articleRevision)
+        {
+            base.AddObject("ArticleRevisions", articleRevision);
+        }
+    
+        /// <summary>
+        /// 用于向 Categories EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
+        /// </summary>
+        public void AddToCategories(Category category)
+        {
+            base.AddObject("Categories", category);
+        }
 
         #endregion
     }
@@ -532,6 +610,535 @@ namespace Moo.Core.DB
         }
 
         #endregion
+    }
+    
+    /// <summary>
+    /// 没有元数据文档可用。
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="Article")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Article : EntityObject
+    {
+        #region 工厂方法
+    
+        /// <summary>
+        /// 创建新的 Article 对象。
+        /// </summary>
+        /// <param name="id">ID 属性的初始值。</param>
+        /// <param name="name">Name 属性的初始值。</param>
+        /// <param name="createTime">CreateTime 属性的初始值。</param>
+        public static Article CreateArticle(global::System.Int32 id, global::System.String name, global::System.DateTime createTime)
+        {
+            Article article = new Article();
+            article.ID = id;
+            article.Name = name;
+            article.CreateTime = createTime;
+            return article;
+        }
+
+        #endregion
+        #region 基元属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Name");
+                OnNameChanged();
+            }
+        }
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime CreateTime
+        {
+            get
+            {
+                return _CreateTime;
+            }
+            set
+            {
+                OnCreateTimeChanging(value);
+                ReportPropertyChanging("CreateTime");
+                _CreateTime = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CreateTime");
+                OnCreateTimeChanged();
+            }
+        }
+        private global::System.DateTime _CreateTime;
+        partial void OnCreateTimeChanging(global::System.DateTime value);
+        partial void OnCreateTimeChanged();
+
+        #endregion
+    
+        #region 导航属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "UserCreateArticle", "User")]
+        public User CreatedBy
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateArticle", "User").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateArticle", "User").Value = value;
+            }
+        }
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<User> CreatedByReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateArticle", "User");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<User>("Moo.Core.DB.UserCreateArticle", "User", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ArticleLatestRevision", "ArticleRevision")]
+        public ArticleRevision LatestRevision
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<ArticleRevision>("Moo.Core.DB.ArticleLatestRevision", "ArticleRevision").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<ArticleRevision>("Moo.Core.DB.ArticleLatestRevision", "ArticleRevision").Value = value;
+            }
+        }
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<ArticleRevision> LatestRevisionReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<ArticleRevision>("Moo.Core.DB.ArticleLatestRevision", "ArticleRevision");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<ArticleRevision>("Moo.Core.DB.ArticleLatestRevision", "ArticleRevision", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ArticleCategory", "Category")]
+        public Category Category
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category").Value = value;
+            }
+        }
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Category> CategoryReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ArticleProblem", "Problem")]
+        public Problem Problem
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.ArticleProblem", "Problem").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.ArticleProblem", "Problem").Value = value;
+            }
+        }
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Problem> ProblemReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.ArticleProblem", "Problem");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Problem>("Moo.Core.DB.ArticleProblem", "Problem", value);
+                }
+            }
+        }
+
+        #endregion
+    }
+    
+    /// <summary>
+    /// 没有元数据文档可用。
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="ArticleRevision")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class ArticleRevision : EntityObject
+    {
+        #region 工厂方法
+    
+        /// <summary>
+        /// 创建新的 ArticleRevision 对象。
+        /// </summary>
+        /// <param name="id">ID 属性的初始值。</param>
+        /// <param name="content">Content 属性的初始值。</param>
+        /// <param name="createTime">CreateTime 属性的初始值。</param>
+        public static ArticleRevision CreateArticleRevision(global::System.Int32 id, global::System.String content, global::System.DateTime createTime)
+        {
+            ArticleRevision articleRevision = new ArticleRevision();
+            articleRevision.ID = id;
+            articleRevision.Content = content;
+            articleRevision.CreateTime = createTime;
+            return articleRevision;
+        }
+
+        #endregion
+        #region 基元属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Content
+        {
+            get
+            {
+                return _Content;
+            }
+            set
+            {
+                OnContentChanging(value);
+                ReportPropertyChanging("Content");
+                _Content = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Content");
+                OnContentChanged();
+            }
+        }
+        private global::System.String _Content;
+        partial void OnContentChanging(global::System.String value);
+        partial void OnContentChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.DateTime CreateTime
+        {
+            get
+            {
+                return _CreateTime;
+            }
+            set
+            {
+                OnCreateTimeChanging(value);
+                ReportPropertyChanging("CreateTime");
+                _CreateTime = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("CreateTime");
+                OnCreateTimeChanged();
+            }
+        }
+        private global::System.DateTime _CreateTime;
+        partial void OnCreateTimeChanging(global::System.DateTime value);
+        partial void OnCreateTimeChanged();
+
+        #endregion
+    
+        #region 导航属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "UserCreateArticleRevision", "User")]
+        public User CreatedBy
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateArticleRevision", "User").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateArticleRevision", "User").Value = value;
+            }
+        }
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<User> CreatedByReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.UserCreateArticleRevision", "User");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<User>("Moo.Core.DB.UserCreateArticleRevision", "User", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ArticleArticleRevision", "Article")]
+        public Article Article
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Article>("Moo.Core.DB.ArticleArticleRevision", "Article").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Article>("Moo.Core.DB.ArticleArticleRevision", "Article").Value = value;
+            }
+        }
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Article> ArticleReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Article>("Moo.Core.DB.ArticleArticleRevision", "Article");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Article>("Moo.Core.DB.ArticleArticleRevision", "Article", value);
+                }
+            }
+        }
+
+        #endregion
+    }
+    
+    /// <summary>
+    /// 没有元数据文档可用。
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="Category")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Category : EntityObject
+    {
+        #region 工厂方法
+    
+        /// <summary>
+        /// 创建新的 Category 对象。
+        /// </summary>
+        /// <param name="id">ID 属性的初始值。</param>
+        /// <param name="name">Name 属性的初始值。</param>
+        public static Category CreateCategory(global::System.Int32 id, global::System.String name)
+        {
+            Category category = new Category();
+            category.ID = id;
+            category.Name = name;
+            return category;
+        }
+
+        #endregion
+        #region 基元属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Name");
+                OnNameChanged();
+            }
+        }
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
+
+        #endregion
+    
     }
     
     /// <summary>
@@ -3146,44 +3753,6 @@ namespace Moo.Core.DB
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<User>("Moo.Core.DB.UserProblemRevision", "User", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "LastestRevisionOfProblem", "Problem")]
-        public Problem LatestRevisionOf
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.LastestRevisionOfProblem", "Problem").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.LastestRevisionOfProblem", "Problem").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Problem> LatestRevisionOfReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Problem>("Moo.Core.DB.LastestRevisionOfProblem", "Problem");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Problem>("Moo.Core.DB.LastestRevisionOfProblem", "Problem", value);
                 }
             }
         }

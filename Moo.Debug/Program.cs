@@ -10,7 +10,7 @@ namespace Moo.Debug
 {
     class Program
     {
-        static string ROOT = "http://localhost:52590/API/JsonAPI.svc/";
+        static string ROOT = "http://localhost:52590/JsonAPI.svc/";
         static string Auth;
         static string ReadResponse(WebRequest request)
         {
@@ -75,9 +75,10 @@ namespace Moo.Debug
 
         static void Main(string[] args)
         {
-            //Auth = Post("Login", "{\"userName\":\"onetwogoo\",\"password\":\"123456\"}");
-            //Auth = Auth.Substring(1, Auth.Length - 2);
-            //Console.WriteLine("Got Token <{0}>",Auth);
+            Auth = Post("Login", "{\"userName\":\"onetwogoo\",\"password\":\"123456\"}");
+            Auth = Auth.Substring(1, Auth.Length - 2);
+            Console.WriteLine("Got Token <{0}>",Auth);
+            //Console.WriteLine(Post("Problems", "{\"problem\":{\"Name\":\"Easy Problem\",\"Type\":\"Tranditional\"}}"));
         }
     }
 }

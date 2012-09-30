@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 09/28/2012 15:07:44
+-- Date Created: 09/30/2012 14:07:05
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -29,11 +29,8 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_UserProblemRevision]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ProblemRevisions] DROP CONSTRAINT [FK_UserProblemRevision];
 GO
-IF OBJECT_ID(N'[dbo].[FK_UserRole_User]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[UserRole] DROP CONSTRAINT [FK_UserRole_User];
-GO
-IF OBJECT_ID(N'[dbo].[FK_UserRole_Role]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[UserRole] DROP CONSTRAINT [FK_UserRole_Role];
+IF OBJECT_ID(N'[dbo].[FK_UserRole]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Users] DROP CONSTRAINT [FK_UserRole];
 GO
 IF OBJECT_ID(N'[dbo].[FK_UserCreatePostItem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[PostItems] DROP CONSTRAINT [FK_UserCreatePostItem];
@@ -41,8 +38,8 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_PostItemPost]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[PostItems] DROP CONSTRAINT [FK_PostItemPost];
 GO
-IF OBJECT_ID(N'[dbo].[FK_ProblemPost]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Posts] DROP CONSTRAINT [FK_ProblemPost];
+IF OBJECT_ID(N'[dbo].[FK_PostProblem]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Posts] DROP CONSTRAINT [FK_PostProblem];
 GO
 IF OBJECT_ID(N'[dbo].[FK_RecordJudgeInfo]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[JudgeInfos] DROP CONSTRAINT [FK_RecordJudgeInfo];
@@ -94,6 +91,24 @@ IF OBJECT_ID(N'[dbo].[FK_UploadedFileUser]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_UserCreateProblem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Problems] DROP CONSTRAINT [FK_UserCreateProblem];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UserCreateArticle]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Articles] DROP CONSTRAINT [FK_UserCreateArticle];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UserCreateArticleRevision]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ArticleRevisions] DROP CONSTRAINT [FK_UserCreateArticleRevision];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ArticleArticleRevision]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ArticleRevisions] DROP CONSTRAINT [FK_ArticleArticleRevision];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ArticleLatestRevision]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ArticleRevisions] DROP CONSTRAINT [FK_ArticleLatestRevision];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ArticleCategory]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Articles] DROP CONSTRAINT [FK_ArticleCategory];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ArticleProblem]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Articles] DROP CONSTRAINT [FK_ArticleProblem];
 GO
 IF OBJECT_ID(N'[dbo].[FK_SpecialJudgedTestCase_inherits_TestCase]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TestCases_SpecialJudgedTestCase] DROP CONSTRAINT [FK_SpecialJudgedTestCase_inherits_TestCase];
@@ -154,6 +169,15 @@ GO
 IF OBJECT_ID(N'[dbo].[Logs]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Logs];
 GO
+IF OBJECT_ID(N'[dbo].[Articles]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Articles];
+GO
+IF OBJECT_ID(N'[dbo].[ArticleRevisions]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[ArticleRevisions];
+GO
+IF OBJECT_ID(N'[dbo].[Categories]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Categories];
+GO
 IF OBJECT_ID(N'[dbo].[TestCases_SpecialJudgedTestCase]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TestCases_SpecialJudgedTestCase];
 GO
@@ -165,9 +189,6 @@ IF OBJECT_ID(N'[dbo].[TestCases_AnswerOnlyTestCase]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[TestCases_TranditionalTestCase]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TestCases_TranditionalTestCase];
-GO
-IF OBJECT_ID(N'[dbo].[UserRole]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[UserRole];
 GO
 IF OBJECT_ID(N'[dbo].[UserAttendContest]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UserAttendContest];
@@ -252,7 +273,7 @@ CREATE TABLE [dbo].[ProblemRevisions] (
     [CreateTime] datetime  NOT NULL,
     [Problem_ID] int  NOT NULL,
     [CreatedBy_ID] int  NOT NULL,
-    [LatestRevisionOf_ID] int  NULL
+    [LastestRevisionOfProblem_ProblemRevision_ID] int  NULL
 );
 GO
 
@@ -350,6 +371,35 @@ CREATE TABLE [dbo].[Logs] (
     [Info] nvarchar(max)  NOT NULL,
     [RemoteAddress] nvarchar(max)  NOT NULL,
     [User_ID] int  NULL
+);
+GO
+
+-- Creating table 'Articles'
+CREATE TABLE [dbo].[Articles] (
+    [ID] int IDENTITY(1,1) NOT NULL,
+    [Name] nvarchar(40)  NOT NULL,
+    [CreateTime] datetime  NOT NULL,
+    [CreatedBy_ID] int  NOT NULL,
+    [Category_ID] int  NOT NULL,
+    [Problem_ID] int  NULL
+);
+GO
+
+-- Creating table 'ArticleRevisions'
+CREATE TABLE [dbo].[ArticleRevisions] (
+    [ID] int IDENTITY(1,1) NOT NULL,
+    [Content] nvarchar(max)  NOT NULL,
+    [CreateTime] datetime  NOT NULL,
+    [CreatedBy_ID] int  NOT NULL,
+    [Article_ID] int  NOT NULL,
+    [ArticleLatestRevision_ArticleRevision_ID] int  NULL
+);
+GO
+
+-- Creating table 'Categories'
+CREATE TABLE [dbo].[Categories] (
+    [ID] int IDENTITY(1,1) NOT NULL,
+    [Name] nvarchar(20)  NOT NULL
 );
 GO
 
@@ -492,6 +542,24 @@ GO
 -- Creating primary key on [ID] in table 'Logs'
 ALTER TABLE [dbo].[Logs]
 ADD CONSTRAINT [PK_Logs]
+    PRIMARY KEY CLUSTERED ([ID] ASC);
+GO
+
+-- Creating primary key on [ID] in table 'Articles'
+ALTER TABLE [dbo].[Articles]
+ADD CONSTRAINT [PK_Articles]
+    PRIMARY KEY CLUSTERED ([ID] ASC);
+GO
+
+-- Creating primary key on [ID] in table 'ArticleRevisions'
+ALTER TABLE [dbo].[ArticleRevisions]
+ADD CONSTRAINT [PK_ArticleRevisions]
+    PRIMARY KEY CLUSTERED ([ID] ASC);
+GO
+
+-- Creating primary key on [ID] in table 'Categories'
+ALTER TABLE [dbo].[Categories]
+ADD CONSTRAINT [PK_Categories]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
@@ -689,10 +757,10 @@ ON [dbo].[Mails]
     ([To_ID]);
 GO
 
--- Creating foreign key on [LatestRevisionOf_ID] in table 'ProblemRevisions'
+-- Creating foreign key on [LastestRevisionOfProblem_ProblemRevision_ID] in table 'ProblemRevisions'
 ALTER TABLE [dbo].[ProblemRevisions]
 ADD CONSTRAINT [FK_LastestRevisionOfProblem]
-    FOREIGN KEY ([LatestRevisionOf_ID])
+    FOREIGN KEY ([LastestRevisionOfProblem_ProblemRevision_ID])
     REFERENCES [dbo].[Problems]
         ([ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -700,7 +768,7 @@ ADD CONSTRAINT [FK_LastestRevisionOfProblem]
 -- Creating non-clustered index for FOREIGN KEY 'FK_LastestRevisionOfProblem'
 CREATE INDEX [IX_FK_LastestRevisionOfProblem]
 ON [dbo].[ProblemRevisions]
-    ([LatestRevisionOf_ID]);
+    ([LastestRevisionOfProblem_ProblemRevision_ID]);
 GO
 
 -- Creating foreign key on [User_ID] in table 'UserAttendContest'
@@ -873,6 +941,90 @@ ADD CONSTRAINT [FK_UserCreateProblem]
 CREATE INDEX [IX_FK_UserCreateProblem]
 ON [dbo].[Problems]
     ([CreatedBy_ID]);
+GO
+
+-- Creating foreign key on [CreatedBy_ID] in table 'Articles'
+ALTER TABLE [dbo].[Articles]
+ADD CONSTRAINT [FK_UserCreateArticle]
+    FOREIGN KEY ([CreatedBy_ID])
+    REFERENCES [dbo].[Users]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_UserCreateArticle'
+CREATE INDEX [IX_FK_UserCreateArticle]
+ON [dbo].[Articles]
+    ([CreatedBy_ID]);
+GO
+
+-- Creating foreign key on [CreatedBy_ID] in table 'ArticleRevisions'
+ALTER TABLE [dbo].[ArticleRevisions]
+ADD CONSTRAINT [FK_UserCreateArticleRevision]
+    FOREIGN KEY ([CreatedBy_ID])
+    REFERENCES [dbo].[Users]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_UserCreateArticleRevision'
+CREATE INDEX [IX_FK_UserCreateArticleRevision]
+ON [dbo].[ArticleRevisions]
+    ([CreatedBy_ID]);
+GO
+
+-- Creating foreign key on [Article_ID] in table 'ArticleRevisions'
+ALTER TABLE [dbo].[ArticleRevisions]
+ADD CONSTRAINT [FK_ArticleArticleRevision]
+    FOREIGN KEY ([Article_ID])
+    REFERENCES [dbo].[Articles]
+        ([ID])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ArticleArticleRevision'
+CREATE INDEX [IX_FK_ArticleArticleRevision]
+ON [dbo].[ArticleRevisions]
+    ([Article_ID]);
+GO
+
+-- Creating foreign key on [ArticleLatestRevision_ArticleRevision_ID] in table 'ArticleRevisions'
+ALTER TABLE [dbo].[ArticleRevisions]
+ADD CONSTRAINT [FK_ArticleLatestRevision]
+    FOREIGN KEY ([ArticleLatestRevision_ArticleRevision_ID])
+    REFERENCES [dbo].[Articles]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ArticleLatestRevision'
+CREATE INDEX [IX_FK_ArticleLatestRevision]
+ON [dbo].[ArticleRevisions]
+    ([ArticleLatestRevision_ArticleRevision_ID]);
+GO
+
+-- Creating foreign key on [Category_ID] in table 'Articles'
+ALTER TABLE [dbo].[Articles]
+ADD CONSTRAINT [FK_ArticleCategory]
+    FOREIGN KEY ([Category_ID])
+    REFERENCES [dbo].[Categories]
+        ([ID])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ArticleCategory'
+CREATE INDEX [IX_FK_ArticleCategory]
+ON [dbo].[Articles]
+    ([Category_ID]);
+GO
+
+-- Creating foreign key on [Problem_ID] in table 'Articles'
+ALTER TABLE [dbo].[Articles]
+ADD CONSTRAINT [FK_ArticleProblem]
+    FOREIGN KEY ([Problem_ID])
+    REFERENCES [dbo].[Problems]
+        ([ID])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ArticleProblem'
+CREATE INDEX [IX_FK_ArticleProblem]
+ON [dbo].[Articles]
+    ([Problem_ID]);
 GO
 
 -- Creating foreign key on [ID] in table 'TestCases_SpecialJudgedTestCase'

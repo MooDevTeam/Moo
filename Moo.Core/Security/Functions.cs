@@ -76,5 +76,22 @@ namespace Moo.Core.Security
         ReadFile,
         ModifyFile,
         DeleteFile,
+
+        //Articles
+        CreateArticle,
+        ReadArticle,
+        ModifyArticle,
+        DeleteArticle,
+
+        //ArticleRevisions
+        CreateArticleRevision,
+        ReadArticleRevision,
+        DeleteArticleRevision,
+
+        //Catagories
+        CreateCatagory,
+        ReadCatagory,
+        ModifyCatagory,
+        DeleteCatagory
     }
 }
