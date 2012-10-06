@@ -27,6 +27,14 @@ namespace Moo.API.DataContracts
                 SubmissionCount = problem.SubmissionCount,
                 SubmissionUser = problem.SubmissionUser,
                 LatestRevision = problem.LatestRevision == null ? null : (int?)problem.LatestRevision.ID,
+                ArticleLocked = problem.ArticleLocked,
+                EnableTesting = problem.EnableTesting,
+                Hidden = problem.Hidden,
+                Locked = problem.Locked,
+                PostLocked = problem.PostLocked,
+                RecordLocked = problem.RecordLocked,
+                TestCaseHidden = problem.TestCaseHidden,
+                TestCaseLocked = problem.TestCaseLocked
             };
         }
 
@@ -290,6 +298,49 @@ namespace Moo.API.DataContracts
                 IsRead = mail.IsRead,
                 Name = mail.Name,
                 To = mail.To.ID
+            };
+        }
+
+        public static BriefContest ToBriefContest(this Contest contest)
+        {
+            return new BriefContest()
+            {
+                ID = contest.ID,
+                EndTime = contest.EndTime,
+                Name = contest.Name,
+                StartTime = contest.StartTime,
+                Status = contest.Status
+            };
+        }
+
+        public static FullContest ToFullContest(this Contest contest)
+        {
+            return new FullContest()
+            {
+                ID = contest.ID,
+                EndTime = contest.EndTime,
+                Name = contest.Name,
+                StartTime = contest.StartTime,
+                Status = contest.Status,
+                Description = contest.Description,
+                EnableTestingOnEnd = contest.EnableTestingOnEnd,
+                EnableTestingOnStart = contest.EnableTestingOnStart,
+                HideProblemOnEnd = contest.HideProblemOnEnd,
+                HideProblemOnStart = contest.HideProblemOnStart,
+                HideTestCaseOnEnd = contest.HideTestCaseOnEnd,
+                HideTestCaseOnStart = contest.HideTestCaseOnStart,
+                LockArticleOnEnd = contest.LockArticleOnEnd,
+                LockArticleOnStart = contest.LockArticleOnStart,
+                LockPostOnEnd = contest.LockPostOnEnd,
+                LockPostOnStart = contest.LockPostOnStart,
+                LockProblemOnEnd = contest.LockProblemOnEnd,
+                LockProblemOnStart = contest.LockProblemOnStart,
+                LockRecordOnEnd = contest.LockRecordOnEnd,
+                LockRecordOnStart = contest.LockRecordOnStart,
+                LockTestCaseOnEnd = contest.LockTestCaseOnEnd,
+                LockTestCaseOnStart = contest.LockTestCaseOnStart,
+                Problem = contest.Problem.Select(p => p.ID).ToList(),
+                User = contest.User.Select(u => u.ID).ToList()
             };
         }
     }

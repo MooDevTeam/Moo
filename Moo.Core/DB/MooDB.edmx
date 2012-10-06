@@ -18,7 +18,6 @@
     <EntitySet Name="Mails" EntityType="Moo.Core.DB.Store.Mails" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Contests" EntityType="Moo.Core.DB.Store.Contests" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="UploadedFiles" EntityType="Moo.Core.DB.Store.UploadedFiles" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="HomepageRevisions" EntityType="Moo.Core.DB.Store.HomepageRevisions" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Logs" EntityType="Moo.Core.DB.Store.Logs" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Articles" EntityType="Moo.Core.DB.Store.Articles" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ArticleRevisions" EntityType="Moo.Core.DB.Store.ArticleRevisions" store:Type="Tables" Schema="dbo" />
@@ -100,10 +99,6 @@
     <AssociationSet Name="SpecialJudgedTestCaseUploadedFile" Association="Moo.Core.DB.Store.SpecialJudgedTestCaseUploadedFile">
       <End Role="SpecialJudgedTestCase" EntitySet="TestCases_SpecialJudgedTestCase" />
       <End Role="UploadedFile" EntitySet="UploadedFiles" />
-    </AssociationSet>
-    <AssociationSet Name="UserCreateHomepageRevision" Association="Moo.Core.DB.Store.UserCreateHomepageRevision">
-      <End Role="HomepageRevision" EntitySet="HomepageRevisions" />
-      <End Role="User" EntitySet="Users" />
     </AssociationSet>
     <AssociationSet Name="InteractiveTestCaseInvokerFile" Association="Moo.Core.DB.Store.InteractiveTestCaseInvokerFile">
       <End Role="InteractiveTestCase" EntitySet="TestCases_InteractiveTestCase" />
@@ -300,7 +295,7 @@
     <Property Name="LockTestCaseOnStart" Type="bit" Nullable="false" />
     <Property Name="LockPostOnStart" Type="bit" Nullable="false" />
     <Property Name="HideTestCaseOnStart" Type="bit" Nullable="false" />
-    <Property Name="AllowTestingOnStart" Type="bit" Nullable="false" />
+    <Property Name="EnableTestingOnStart" Type="bit" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Status" Type="varchar" Nullable="false" MaxLength="12" />
     <Property Name="HideProblemOnStart" Type="bit" Nullable="false" />
@@ -309,9 +304,11 @@
     <Property Name="LockTestCaseOnEnd" Type="bit" Nullable="false" />
     <Property Name="LockPostOnEnd" Type="bit" Nullable="false" />
     <Property Name="LockRecordOnEnd" Type="bit" Nullable="false" />
-    <Property Name="AllowTestingOnEnd" Type="bit" Nullable="false" />
+    <Property Name="EnableTestingOnEnd" Type="bit" Nullable="false" />
     <Property Name="HideProblemOnEnd" Type="bit" Nullable="false" />
     <Property Name="HideTestCaseOnEnd" Type="bit" Nullable="false" />
+    <Property Name="LockArticleOnStart" Type="bit" Nullable="false" />
+    <Property Name="LockArticleOnEnd" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="UploadedFiles">
     <Key>
@@ -321,16 +318,6 @@
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
-  </EntityType>
-  <EntityType Name="HomepageRevisions">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="40" />
-    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="Reason" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Logs">
@@ -610,18 +597,6 @@
       </Principal>
       <Dependent Role="SpecialJudgedTestCase">
         <PropertyRef Name="Judger_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="UserCreateHomepageRevision">
-    <End Role="HomepageRevision" Type="Moo.Core.DB.Store.HomepageRevisions" Multiplicity="*" />
-    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="User">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="HomepageRevision">
-        <PropertyRef Name="CreatedBy_ID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -952,11 +927,6 @@
             <End Role="SpecialJudgedTestCase" EntitySet="TestCases" />
             <End Role="UploadedFile" EntitySet="UploadedFiles" />
           </AssociationSet>
-          <EntitySet Name="HomepageRevisions" EntityType="Moo.Core.DB.HomepageRevision" />
-          <AssociationSet Name="UserCreateHomepageRevision" Association="Moo.Core.DB.UserCreateHomepageRevision">
-            <End Role="HomepageRevision" EntitySet="HomepageRevisions" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="InteractiveTestCaseInvokerFile" Association="Moo.Core.DB.InteractiveTestCaseInvokerFile">
             <End Role="InteractiveTestCase" EntitySet="TestCases" />
             <End Role="UploadedFile" EntitySet="UploadedFiles" />
@@ -1218,7 +1188,7 @@
           <Property Type="Boolean" Name="LockTestCaseOnStart" Nullable="false" />
           <Property Type="Boolean" Name="LockPostOnStart" Nullable="false" />
           <Property Type="Boolean" Name="HideTestCaseOnStart" Nullable="false" />
-          <Property Type="Boolean" Name="AllowTestingOnStart" Nullable="false" />
+          <Property Type="Boolean" Name="EnableTestingOnStart" Nullable="false" />
           <Property Type="String" Name="Description" Nullable="false" />
           <NavigationProperty Name="User" Relationship="Moo.Core.DB.UserAttendContest" FromRole="Contest" ToRole="User" />
           <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.ContestProblem" FromRole="Contest" ToRole="Problem" />
@@ -1229,9 +1199,11 @@
           <Property Type="Boolean" Name="LockTestCaseOnEnd" Nullable="false" />
           <Property Type="Boolean" Name="LockPostOnEnd" Nullable="false" />
           <Property Type="Boolean" Name="LockRecordOnEnd" Nullable="false" />
-          <Property Type="Boolean" Name="AllowTestingOnEnd" Nullable="false" />
+          <Property Type="Boolean" Name="EnableTestingOnEnd" Nullable="false" />
           <Property Type="Boolean" Name="HideProblemOnEnd" Nullable="false" />
           <Property Type="Boolean" Name="HideTestCaseOnEnd" Nullable="false" />
+          <Property Type="Boolean" Name="LockArticleOnStart" Nullable="false" />
+          <Property Type="Boolean" Name="LockArticleOnEnd" Nullable="false" />
         </EntityType>
         <Association Name="UserAttendContest">
           <End Type="Moo.Core.DB.User" Role="User" Multiplicity="*" />
@@ -1265,20 +1237,6 @@
         <Association Name="SpecialJudgedTestCaseUploadedFile">
           <End Type="Moo.Core.DB.SpecialJudgedTestCase" Role="SpecialJudgedTestCase" Multiplicity="*" />
           <End Type="Moo.Core.DB.UploadedFile" Role="UploadedFile" Multiplicity="1" />
-        </Association>
-        <EntityType Name="HomepageRevision">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="Title" Nullable="false" MaxLength="40" />
-          <Property Type="String" Name="Content" Nullable="false" />
-          <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserCreateHomepageRevision" FromRole="HomepageRevision" ToRole="User" />
-          <Property Type="String" Name="Reason" Nullable="false" MaxLength="40" />
-        </EntityType>
-        <Association Name="UserCreateHomepageRevision">
-          <End Type="Moo.Core.DB.HomepageRevision" Role="HomepageRevision" Multiplicity="*" />
-          <End Type="Moo.Core.DB.User" Role="User" Multiplicity="1" />
         </Association>
         <EntityType Name="InteractiveTestCase" BaseType="Moo.Core.DB.TestCase" >
           <Property Type="Binary" Name="TestData" Nullable="false" />
@@ -1547,7 +1505,7 @@
           <ScalarProperty Name="LockTestCaseOnStart" ColumnName="LockTestCaseOnStart" />
           <ScalarProperty Name="LockPostOnStart" ColumnName="LockPostOnStart" />
           <ScalarProperty Name="HideTestCaseOnStart" ColumnName="HideTestCaseOnStart" />
-          <ScalarProperty Name="AllowTestingOnStart" ColumnName="AllowTestingOnStart" />
+          <ScalarProperty Name="EnableTestingOnStart" ColumnName="EnableTestingOnStart" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Status" ColumnName="Status" />
           <ScalarProperty Name="HideProblemOnStart" ColumnName="HideProblemOnStart" />
@@ -1556,9 +1514,11 @@
           <ScalarProperty Name="LockTestCaseOnEnd" ColumnName="LockTestCaseOnEnd" />
           <ScalarProperty Name="LockPostOnEnd" ColumnName="LockPostOnEnd" />
           <ScalarProperty Name="LockRecordOnEnd" ColumnName="LockRecordOnEnd" />
-          <ScalarProperty Name="AllowTestingOnEnd" ColumnName="AllowTestingOnEnd" />
+          <ScalarProperty Name="EnableTestingOnEnd" ColumnName="EnableTestingOnEnd" />
           <ScalarProperty Name="HideProblemOnEnd" ColumnName="HideProblemOnEnd" />
           <ScalarProperty Name="HideTestCaseOnEnd" ColumnName="HideTestCaseOnEnd" />
+          <ScalarProperty Name="LockArticleOnStart" ColumnName="LockArticleOnStart" />
+          <ScalarProperty Name="LockArticleOnEnd" ColumnName="LockArticleOnEnd" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1569,16 +1529,6 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Path" ColumnName="Path" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="HomepageRevisions">
-      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.HomepageRevision)">
-        <MappingFragment StoreEntitySet="HomepageRevisions">
-          <ScalarProperty Name="ID" ColumnName="ID" />
-          <ScalarProperty Name="Title" ColumnName="Title" />
-          <ScalarProperty Name="Content" ColumnName="Content" />
-          <ScalarProperty Name="Reason" ColumnName="Reason" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1749,14 +1699,6 @@
         <ScalarProperty Name="ID" ColumnName="ID" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="UserCreateHomepageRevision" TypeName="Moo.Core.DB.UserCreateHomepageRevision" StoreEntitySet="HomepageRevisions">
-      <EndProperty Name="User">
-        <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
-      </EndProperty>
-      <EndProperty Name="HomepageRevision">
-        <ScalarProperty Name="ID" ColumnName="ID" />
-      </EndProperty>
-    </AssociationSetMapping>
     <AssociationSetMapping Name="InteractiveTestCaseInvokerFile" TypeName="Moo.Core.DB.InteractiveTestCaseInvokerFile" StoreEntitySet="TestCases_InteractiveTestCase">
       <EndProperty Name="UploadedFile">
         <ScalarProperty Name="ID" ColumnName="Invoker_ID" />
@@ -1875,7 +1817,7 @@
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram Name="MooDB" ZoomLevel="100" >
+      <Diagram Name="MooDB" ZoomLevel="97" >
         <EntityTypeShape EntityType="Moo.Core.DB.User" Width="1.75" PointX="11.75" PointY="11.5" Height="2.9251310221354174" IsExpanded="true" />
         <EntityTypeShape EntityType="Moo.Core.DB.Role" Width="1.5" PointX="14.25" PointY="15.25" Height="1.587993164062496" IsExpanded="true" />
         <EntityTypeShape EntityType="Moo.Core.DB.Problem" Width="1.875" PointX="9.125" PointY="9.625" Height="4.6443082682291674" IsExpanded="true" />
@@ -1924,10 +1866,10 @@
         <EntityTypeShape EntityType="Moo.Core.DB.PostItem" Width="1.5" PointX="6.5" PointY="12" Height="1.9700325520833317" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.UserCreatePostItem">
           <ConnectorPoint PointX="7.25" PointY="13.970032552083332" />
-          <ConnectorPoint PointX="7.25" PointY="14.378469645182292" />
-          <ConnectorPoint PointX="9.1979166666666661" PointY="14.378469645182292" />
-          <ConnectorPoint PointX="9.3645833333333339" PointY="14.378469645182292" />
-          <ConnectorPoint PointX="11.75" PointY="14.378469645182292" />
+          <ConnectorPoint PointX="7.25" PointY="14.393878522135417" />
+          <ConnectorPoint PointX="10.104166666666666" PointY="14.393878522135417" />
+          <ConnectorPoint PointX="10.270833333333334" PointY="14.393878522135417" />
+          <ConnectorPoint PointX="11.75" PointY="14.393878522135417" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.PostItemPost">
           <ConnectorPoint PointX="7.25" PointY="12" />
@@ -1980,23 +1922,21 @@
           <ConnectorPoint PointX="15.083333333333334" PointY="11.40625" />
           <ConnectorPoint PointX="17.25" PointY="11.40625" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Contest" Width="1.875" PointX="6.5" PointY="15.625" Height="5.2173673502604174" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Contest" Width="1.875" PointX="9.375" PointY="14.75" Height="5.59940673828125" />
         <AssociationConnector Association="Moo.Core.DB.UserAttendContest">
-          <ConnectorPoint PointX="11.921871249999999" PointY="14.425131022135417" />
-          <ConnectorPoint PointX="11.921871249999999" PointY="18.860016276041669" />
-          <ConnectorPoint PointX="8.375" PointY="18.860016276041669" />
+          <ConnectorPoint PointX="11.75" PointY="14.425131022135417" />
+          <ConnectorPoint PointX="11.25" PointY="14.75" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.UserRecord">
-          <ConnectorPoint PointX="11.75" PointY="14.35513895670573" />
-          <ConnectorPoint PointX="9.3645833333333339" PointY="14.35513895670573" />
-          <ConnectorPoint PointX="9.1979166666666661" PointY="14.35513895670573" />
-          <ConnectorPoint PointX="4.625" PointY="14.35513895670573" />
+          <ConnectorPoint PointX="11.75" PointY="14.362843395182292" />
+          <ConnectorPoint PointX="10.270833333333334" PointY="14.362843395182292" />
+          <ConnectorPoint PointX="10.104166666666666" PointY="14.362843395182292" />
+          <ConnectorPoint PointX="4.625" PointY="14.362843395182292" />
           <ConnectorPoint PointX="4.625" PointY="13.293091634114582" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.ContestProblem">
-          <ConnectorPoint PointX="8.375" PointY="17.97752191406251" />
-          <ConnectorPoint PointX="9.28125" PointY="17.97752191406251" />
-          <ConnectorPoint PointX="9.28125" PointY="14.269308268229167" />
+          <ConnectorPoint PointX="10.1875" PointY="14.75" />
+          <ConnectorPoint PointX="10.1875" PointY="14.269308268229167" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Moo.Core.DB.UploadedFile" Width="1.5" PointX="9.5" PointY="23.5" Height="1.9700325520833388" />
         <EntityTypeShape EntityType="Moo.Core.DB.SpecialJudgedTestCase" Width="1.5" PointX="21.375" PointY="14.625" Height="1.9700325520833388" />
@@ -2012,16 +1952,6 @@
           <ConnectorPoint PointX="17.708333333333332" PointY="24.485016276041669" />
           <ConnectorPoint PointX="17.541666666666668" PointY="24.485016276041669" />
           <ConnectorPoint PointX="11" PointY="24.485016276041669" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.HomepageRevision" Width="1.5" PointX="9.5" PointY="15.125" Height="1.9700325520833388" />
-        <AssociationConnector Association="Moo.Core.DB.UserCreateHomepageRevision">
-          <ConnectorPoint PointX="11" PointY="16.569514567057293" />
-          <ConnectorPoint PointX="11.838537916666665" PointY="16.569514567057293" />
-          <ConnectorPoint PointX="12.005204583333333" PointY="16.569514567057293" />
-          <ConnectorPoint PointX="12.072914166666665" PointY="16.569514567057293" />
-          <ConnectorPoint PointX="12.239580833333333" PointY="16.569514567057293" />
-          <ConnectorPoint PointX="12.39062375" PointY="16.569514567057293" />
-          <ConnectorPoint PointX="12.39062375" PointY="14.425131022135417" />
         </AssociationConnector>
         <EntityTypeShape EntityType="Moo.Core.DB.InteractiveTestCase" Width="1.5" PointX="19.125" PointY="14.625" Height="1.7790128580729174" />
         <InheritanceConnector EntityType="Moo.Core.DB.InteractiveTestCase" ManuallyRouted="false" >
@@ -2072,10 +2002,10 @@
         <EntityTypeShape EntityType="Moo.Core.DB.ArticleRevision" Width="1.5" PointX="17.25" PointY="7.75" Height="1.9700325520833335" />
         <EntityTypeShape EntityType="Moo.Core.DB.Category" Width="1.5" PointX="9.125" PointY="7.25" Height="1.3969734700520817" />
         <AssociationConnector Association="Moo.Core.DB.UserCreateArticle">
-          <ConnectorPoint PointX="11.75" PointY="14.401800333658855" />
-          <ConnectorPoint PointX="9.3645833333333339" PointY="14.401800333658855" />
-          <ConnectorPoint PointX="9.1979166666666661" PointY="14.401800333658855" />
-          <ConnectorPoint PointX="8.21875" PointY="14.401800333658855" />
+          <ConnectorPoint PointX="11.75" PointY="14.409504772135417" />
+          <ConnectorPoint PointX="10.270833333333334" PointY="14.409504772135417" />
+          <ConnectorPoint PointX="10.104166666666666" PointY="14.409504772135417" />
+          <ConnectorPoint PointX="8.21875" PointY="14.409504772135417" />
           <ConnectorPoint PointX="8.21875" PointY="11.227071940104166" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.UserCreateArticleRevision">

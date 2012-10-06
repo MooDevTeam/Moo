@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Authenticator.cs" />
     <Compile Include="DataContracts\BriefArticleRevision.cs" />
+    <Compile Include="DataContracts\BriefContest.cs" />
     <Compile Include="DataContracts\BriefMail.cs" />
     <Compile Include="DataContracts\FullArticle.cs" />
     <Compile Include="DataContracts\BriefPostItem.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="DataContracts\FullArticleRevision.cs" />
     <Compile Include="DataContracts\FullCategory.cs" />
     <Compile Include="DataContracts\FullMail.cs" />
+    <Compile Include="DataContracts\FullContest.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="CustomBehavior.cs" />
     <Compile Include="DataContracts\ExtMethods.cs" />

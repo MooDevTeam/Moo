@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 09/30/2012 14:48:25
+-- Date Created: 10/05/2012 17:02:37
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -70,9 +70,6 @@ IF OBJECT_ID(N'[dbo].[FK_ContestProblem_Problem]', 'F') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[FK_SpecialJudgedTestCaseUploadedFile]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TestCases_SpecialJudgedTestCase] DROP CONSTRAINT [FK_SpecialJudgedTestCaseUploadedFile];
-GO
-IF OBJECT_ID(N'[dbo].[FK_UserCreateHomepageRevision]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[HomepageRevisions] DROP CONSTRAINT [FK_UserCreateHomepageRevision];
 GO
 IF OBJECT_ID(N'[dbo].[FK_InteractiveTestCaseInvokerFile]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TestCases_InteractiveTestCase] DROP CONSTRAINT [FK_InteractiveTestCaseInvokerFile];
@@ -162,9 +159,6 @@ IF OBJECT_ID(N'[dbo].[Contests]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[UploadedFiles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UploadedFiles];
-GO
-IF OBJECT_ID(N'[dbo].[HomepageRevisions]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[HomepageRevisions];
 GO
 IF OBJECT_ID(N'[dbo].[Logs]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Logs];
@@ -329,7 +323,7 @@ CREATE TABLE [dbo].[Contests] (
     [LockTestCaseOnStart] bit  NOT NULL,
     [LockPostOnStart] bit  NOT NULL,
     [HideTestCaseOnStart] bit  NOT NULL,
-    [AllowTestingOnStart] bit  NOT NULL,
+    [EnableTestingOnStart] bit  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
     [Status] varchar(12)  NOT NULL,
     [HideProblemOnStart] bit  NOT NULL,
@@ -338,9 +332,11 @@ CREATE TABLE [dbo].[Contests] (
     [LockTestCaseOnEnd] bit  NOT NULL,
     [LockPostOnEnd] bit  NOT NULL,
     [LockRecordOnEnd] bit  NOT NULL,
-    [AllowTestingOnEnd] bit  NOT NULL,
+    [EnableTestingOnEnd] bit  NOT NULL,
     [HideProblemOnEnd] bit  NOT NULL,
-    [HideTestCaseOnEnd] bit  NOT NULL
+    [HideTestCaseOnEnd] bit  NOT NULL,
+    [LockArticleOnStart] bit  NOT NULL,
+    [LockArticleOnEnd] bit  NOT NULL
 );
 GO
 
@@ -350,16 +346,6 @@ CREATE TABLE [dbo].[UploadedFiles] (
     [Name] nvarchar(40)  NOT NULL,
     [Path] nvarchar(max)  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
-    [CreatedBy_ID] int  NOT NULL
-);
-GO
-
--- Creating table 'HomepageRevisions'
-CREATE TABLE [dbo].[HomepageRevisions] (
-    [ID] int IDENTITY(1,1) NOT NULL,
-    [Title] nvarchar(40)  NOT NULL,
-    [Content] nvarchar(max)  NOT NULL,
-    [Reason] nvarchar(40)  NOT NULL,
     [CreatedBy_ID] int  NOT NULL
 );
 GO
@@ -531,12 +517,6 @@ GO
 -- Creating primary key on [ID] in table 'UploadedFiles'
 ALTER TABLE [dbo].[UploadedFiles]
 ADD CONSTRAINT [PK_UploadedFiles]
-    PRIMARY KEY CLUSTERED ([ID] ASC);
-GO
-
--- Creating primary key on [ID] in table 'HomepageRevisions'
-ALTER TABLE [dbo].[HomepageRevisions]
-ADD CONSTRAINT [PK_HomepageRevisions]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
@@ -844,20 +824,6 @@ ADD CONSTRAINT [FK_SpecialJudgedTestCaseUploadedFile]
 CREATE INDEX [IX_FK_SpecialJudgedTestCaseUploadedFile]
 ON [dbo].[TestCases_SpecialJudgedTestCase]
     ([Judger_ID]);
-GO
-
--- Creating foreign key on [CreatedBy_ID] in table 'HomepageRevisions'
-ALTER TABLE [dbo].[HomepageRevisions]
-ADD CONSTRAINT [FK_UserCreateHomepageRevision]
-    FOREIGN KEY ([CreatedBy_ID])
-    REFERENCES [dbo].[Users]
-        ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_UserCreateHomepageRevision'
-CREATE INDEX [IX_FK_UserCreateHomepageRevision]
-ON [dbo].[HomepageRevisions]
-    ([CreatedBy_ID]);
 GO
 
 -- Creating foreign key on [Invoker_ID] in table 'TestCases_InteractiveTestCase'

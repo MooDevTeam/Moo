@@ -72,19 +72,6 @@ namespace Moo.Core.DB
                 PreferredLanguage = "c"
             });
 
-            //Homepage
-            db.HomepageRevisions.AddObject(new HomepageRevision()
-            {
-                Title = "欢迎测试",
-                Content = "测试用户：\n"
-                + "onetwogoo/123456 组织者\n"
-                + "ShaBi/ShaBi 工作者\n"
-                + "Baby/Baby 普通用户\n"
-                + "BeiJu/BeiJu 作恶者",
-                Reason = "测试用原因",
-                CreatedBy = ShaBi
-            });
-
             //Problems
             Problem APlusB = new Problem()
             {
@@ -355,7 +342,7 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
-                CreateTime=DateTime.Now,
+                CreateTime = DateTime.Now,
                 Content = "出--这么水--的题，找死啊",
                 CreatedBy = ShaBi,
             });
@@ -416,7 +403,7 @@ namespace Moo.Core.DB
             {
                 Name = "咱把Moo黑了如何？",
                 Content = "嘿！onetwogoo!把Moo--黑--了吧！",
-                CreateTime=DateTime.Now,
+                CreateTime = DateTime.Now,
                 IsRead = true,
                 From = ShaBi,
                 To = MrPhone
@@ -489,17 +476,19 @@ namespace Moo.Core.DB
                 LockProblemOnStart = true,
                 LockPostOnStart = true,
                 LockTestCaseOnStart = true,
-                AllowTestingOnStart = false,
+                EnableTestingOnStart = false,
                 HideTestCaseOnStart = true,
                 LockRecordOnStart = false,
                 HideProblemOnStart = false,
-                AllowTestingOnEnd = true,
+                EnableTestingOnEnd = true,
                 LockPostOnEnd = false,
                 LockProblemOnEnd = false,
                 LockRecordOnEnd = false,
                 LockTestCaseOnEnd = false,
                 HideProblemOnEnd = false,
                 HideTestCaseOnEnd = false,
+                LockArticleOnEnd = false,
+                LockArticleOnStart = true,
             };
             //contest.Problem.Add(APlusB);
             contest.Problem.Add(CPlusD);

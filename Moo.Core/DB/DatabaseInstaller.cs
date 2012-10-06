@@ -50,7 +50,6 @@ namespace Moo.Core.DB
         {
             AddRoles(db);
             AddOwner(db);
-            AddHomepage(db);
         }
 
         static void AddRoles(MooDB db)
@@ -76,18 +75,6 @@ namespace Moo.Core.DB
                 PreferredLanguage = "c++",
             };
             db.Users.AddObject(owner);
-            db.SaveChanges();
-        }
-
-        static void AddHomepage(MooDB db)
-        {
-            db.HomepageRevisions.AddObject(new HomepageRevision()
-            {
-                Title = "Moo的主页",
-                Content = "请点击上方的更新，以便使这里显示您需要的内容。",
-                CreatedBy = owner,
-                Reason = "安装Moo"
-            });
             db.SaveChanges();
         }
     }

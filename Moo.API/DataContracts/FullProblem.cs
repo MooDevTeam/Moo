@@ -40,5 +40,29 @@ namespace Moo.API.DataContracts
 
         [DataMember]
         public int? CreatedBy { get; set; }
+
+        [DataMember]
+        public bool? Hidden { get; set; }
+
+        [DataMember]
+        public bool? Locked { get; set; }
+
+        [DataMember]
+        public bool? RecordLocked { get; set; }
+
+        [DataMember]
+        public bool? PostLocked { get; set; }
+
+        [DataMember]
+        public bool? ArticleLocked { get; set; }
+
+        [DataMember]
+        public bool? TestCaseLocked { get; set; }
+
+        [DataMember]
+        public bool? EnableTesting { get; set; }
+
+        [DataMember]
+        public bool? TestCaseHidden { get; set; }
     }
 }

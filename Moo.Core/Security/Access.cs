@@ -308,6 +308,31 @@ namespace Moo.Core.Security
             }
         }
 
+        Dictionary<Function, List<Func<Contest, bool?>>> ContestRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<Contest, bool?>>>
+                {
+                    {Function.AttendContest,new List<Func<Contest,bool?>>{
+                        c=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }},
+                    {Function.CreateContest,new List<Func<Contest,bool?>>{
+                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.DeleteContest,new List<Func<Contest,bool?>>{
+                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.ModifyContest,new List<Func<Contest,bool?>>{
+                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.ReadContest,new List<Func<Contest,bool?>>{
+                        c=>me.Role>=SiteRole.Reader?(bool?)true:null
+                    }}
+                };
+            }
+        }
+
         public static bool Check(MooDB dbContext, object @object, Function function)
         {
             return new Access()
@@ -370,6 +395,10 @@ namespace Moo.Core.Security
             else if (@object is Mail)
             {
                 return CheckRules(@object as Mail, MailRules, function);
+            }
+            else if (@object is Contest)
+            {
+                return CheckRules(@object as Contest, ContestRules, function);
             }
             else
                 throw new NotImplementedException("糟糕！权限模块不完整！");

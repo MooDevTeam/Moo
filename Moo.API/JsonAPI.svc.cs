@@ -148,7 +148,15 @@ namespace Moo.API
                     Name = problem.Name,
                     Type = problem.Type,
                     CreateTime = DateTime.Now,
-                    CreatedBy = Security.CurrentUser.GetDBUser(db)
+                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    ArticleLocked = false,
+                    EnableTesting = true,
+                    Hidden = false,
+                    Locked = false,
+                    PostLocked = false,
+                    RecordLocked = false,
+                    TestCaseHidden = false,
+                    TestCaseLocked = false,
                 };
                 Access.Required(db, newProblem, Function.CreateProblem);
                 db.Problems.AddObject(newProblem);
@@ -200,6 +208,38 @@ namespace Moo.API
                         throw new NotSupportedException("不支持的题目类型：" + problem.Type);
                     }
                     theProblem.Type = problem.Type;
+                }
+                if (problem.ArticleLocked != null)
+                {
+                    theProblem.ArticleLocked = (bool)problem.ArticleLocked;
+                }
+                if (problem.EnableTesting != null)
+                {
+                    theProblem.EnableTesting = (bool)problem.EnableTesting;
+                }
+                if (problem.Hidden != null)
+                {
+                    theProblem.Hidden = (bool)problem.Hidden;
+                }
+                if (problem.Locked != null)
+                {
+                    theProblem.Locked = (bool)problem.Locked;
+                }
+                if (problem.PostLocked != null)
+                {
+                    theProblem.PostLocked = (bool)problem.PostLocked;
+                }
+                if (problem.RecordLocked != null)
+                {
+                    theProblem.RecordLocked = (bool)problem.RecordLocked;
+                }
+                if (problem.TestCaseHidden != null)
+                {
+                    theProblem.TestCaseHidden = (bool)problem.TestCaseHidden;
+                }
+                if (problem.TestCaseLocked != null)
+                {
+                    theProblem.TestCaseLocked = (bool)problem.TestCaseLocked;
                 }
                 db.SaveChanges();
             }
@@ -1939,6 +1979,292 @@ namespace Moo.API
                 Access.Required(db, mail, Function.DeleteMail);
 
                 db.Mails.DeleteObject(mail);
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region Contests
+        [OperationContract]
+        [WebGet(UriTemplate = "Contests/Count")]
+        public int CountContest()
+        {
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Contest> contests = db.Contests;
+                return contests.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Contests")]
+        public List<BriefContest> ListContest()
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Contest> contests = from c in db.Contests
+                                               orderby c.ID descending
+                                               select c;
+                if (skip != null)
+                {
+                    contests = contests.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    contests = contests.Take((int)top);
+                }
+
+                return contests.ToList().Select(c => c.ToBriefContest()).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Contests/{id}")]
+        public FullContest GetContest(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Contest contest = (from c in db.Contests
+                                   where c.ID == iid
+                                   select c).SingleOrDefault<Contest>();
+                if (contest == null) throw new ArgumentException("无此比赛");
+
+                Access.Required(db, contest, Function.ReadContest);
+
+                return contest.ToFullContest();
+            }
+        }
+
+        /*
+        [OperationContract]
+        [WebGet(UriTemplate = "Contests/{id}/Result")]
+        public Dictionary<int, Dictionary<int, int>> GetContestResult(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Contest contest = (from c in db.Contests
+                                   where c.ID == iid
+                                   select c).SingleOrDefault<Contest>();
+                if (contest == null) throw new ArgumentException("无此比赛");
+
+                Access.Required(db, contest, Function.ReadContest);
+
+                Dictionary<int, Dictionary<int, int>> result = new Dictionary<int, Dictionary<int, int>>();
+                foreach (User u in contest.User)
+                {
+                    foreach (Problem p in contest.Problem)
+                    {
+                        var a=from r in db.Records
+                              where r.Problem==
+                    }
+                }
+            }
+        }
+         * */
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Contests", Method = "POST")]
+        public int CreateContest(FullContest contest)
+        {
+            using (MooDB db = new MooDB())
+            {
+                Contest newContest = new Contest
+                {
+                    Description = contest.Description,
+                    EnableTestingOnEnd = true,
+                    EnableTestingOnStart = false,
+                    EndTime = (DateTime)contest.EndTime,
+                    HideProblemOnEnd = false,
+                    HideProblemOnStart = false,
+                    HideTestCaseOnEnd = false,
+                    HideTestCaseOnStart = true,
+                    LockArticleOnEnd = false,
+                    LockArticleOnStart = true,
+                    LockPostOnEnd = false,
+                    LockPostOnStart = true,
+                    LockProblemOnEnd = false,
+                    LockProblemOnStart = true,
+                    LockRecordOnEnd = false,
+                    LockRecordOnStart = false,
+                    LockTestCaseOnEnd = false,
+                    LockTestCaseOnStart = true,
+                    Name = contest.Name,
+                    StartTime = (DateTime)contest.StartTime,
+                    Status = "Before",
+                };
+
+                Access.Required(db, contest, Function.CreateContest);
+
+                db.Contests.AddObject(newContest);
+                db.SaveChanges();
+                return newContest.ID;
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Contests/{id}", Method = "PUT")]
+        public void ModifyContest(string id, FullContest contest)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Contest theContest=(from c in db.Contests
+                                where c.ID==iid
+                                select c).SingleOrDefault<Contest>();
+                if (theContest == null) throw new ArgumentException("无此比赛");
+
+                Access.Required(db, theContest, Function.ModifyContest);
+
+                if (contest.Description != null)
+                {
+                    theContest.Description = contest.Description;
+                }
+                if (contest.EnableTestingOnEnd != null)
+                {
+                    theContest.EnableTestingOnEnd = (bool)contest.EnableTestingOnEnd;
+                }
+                if (contest.EnableTestingOnStart != null)
+                {
+                    theContest.EnableTestingOnStart = (bool)contest.EnableTestingOnStart;
+                }
+                if (contest.EndTime != null)
+                {
+                    theContest.EndTime = (DateTime)contest.EndTime;
+                }
+                if (contest.HideProblemOnEnd != null)
+                {
+                    theContest.HideProblemOnEnd = (bool)contest.HideProblemOnEnd;
+                }
+                if (contest.HideProblemOnStart != null)
+                {
+                    theContest.HideProblemOnStart = (bool)contest.HideProblemOnStart;
+                }
+                if (contest.HideTestCaseOnEnd != null)
+                {
+                    theContest.HideTestCaseOnEnd = (bool)contest.HideTestCaseOnEnd;
+                }
+                if (contest.HideTestCaseOnStart != null)
+                {
+                    theContest.HideTestCaseOnStart = (bool)contest.HideTestCaseOnStart;
+                }
+                if (contest.LockArticleOnEnd != null)
+                {
+                    theContest.LockArticleOnEnd = (bool)contest.LockArticleOnEnd;
+                }
+                if (contest.LockArticleOnStart != null)
+                {
+                    theContest.LockArticleOnStart = (bool)contest.LockArticleOnStart;
+                }
+                if (contest.LockPostOnEnd != null)
+                {
+                    theContest.LockPostOnEnd = (bool)contest.LockPostOnEnd;
+                }
+                if (contest.LockPostOnStart != null)
+                {
+                    theContest.LockPostOnStart = (bool)contest.LockPostOnStart;
+                }
+                if (contest.LockProblemOnEnd != null)
+                {
+                    theContest.LockProblemOnEnd = (bool)contest.LockProblemOnEnd;
+                }
+                if (contest.LockProblemOnStart != null)
+                {
+                    theContest.LockProblemOnStart = (bool)contest.LockProblemOnStart;
+                }
+                if (contest.LockRecordOnEnd != null)
+                {
+                    theContest.LockRecordOnEnd = (bool)contest.LockRecordOnEnd;
+                }
+                if (contest.LockRecordOnStart != null)
+                {
+                    theContest.LockRecordOnStart = (bool)contest.LockRecordOnStart;
+                }
+                if (contest.LockTestCaseOnEnd != null)
+                {
+                    theContest.LockTestCaseOnEnd = (bool)contest.LockTestCaseOnEnd;
+                }
+                if (contest.LockTestCaseOnStart != null)
+                {
+                    theContest.LockTestCaseOnStart = (bool)contest.LockTestCaseOnStart;
+                }
+                if (contest.Name != null)
+                {
+                    theContest.Name = contest.Name;
+                }
+                if (contest.Problem != null)
+                {
+                    theContest.Problem.Clear();
+                    foreach (int problemID in contest.Problem)
+                    {
+                        Problem problem = (from p in db.Problems
+                                           where p.ID == problemID
+                                           select p).SingleOrDefault<Problem>();
+                        if (problem == null) throw new ArgumentException("无此题目");
+
+                        theContest.Problem.Add(problem);
+                    }
+                }
+                if (contest.StartTime != null)
+                {
+                    theContest.StartTime = (DateTime)contest.StartTime;
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Contests/{id}/Attend", Method = "POST")]
+        public void AttendContest(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Contest contest = (from c in db.Contests
+                                   where c.ID == iid
+                                   select c).SingleOrDefault<Contest>();
+                if (contest == null) throw new ArgumentException("无此比赛");
+
+                Access.Required(db, contest, Function.AttendContest);
+
+                if (contest.EndTime < DateTime.Now)
+                {
+                    throw new InvalidOperationException("比赛已结束");
+                }
+
+                User currentUser = Security.CurrentUser.GetDBUser(db);
+                if (contest.User.Contains(currentUser))
+                {
+                    throw new InvalidOperationException("早已参加比赛");
+                }
+
+                contest.User.Add(currentUser);
+                db.SaveChanges();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Contests/{id}", Method = "DELETE")]
+        public void DeleteContest(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Contest contest = (from c in db.Contests
+                                   where c.ID == iid
+                                   select c).SingleOrDefault<Contest>();
+                if (contest == null) throw new ArgumentException("无此比赛");
+
+                Access.Required(db, contest, Function.DeleteContest);
+
+                contest.Problem.Clear();
+                contest.User.Clear();
+
+                db.Contests.DeleteObject(contest);
                 db.SaveChanges();
             }
         }

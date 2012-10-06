@@ -7,11 +7,6 @@ namespace Moo.Core.Security
 {
     public enum Function
     {
-        //Homepages
-        CreateHomepage,
-        ReadHomepage,
-        DeleteHomepage,
-
         //Problems
         CreateProblem,
         ReadProblem,
