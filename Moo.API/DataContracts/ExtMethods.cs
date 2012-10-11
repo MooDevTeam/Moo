@@ -343,5 +343,15 @@ namespace Moo.API.DataContracts
                 User = contest.User.Select(u => u.ID).ToList()
             };
         }
+
+        public static FullRole ToFullRole(this Role role)
+        {
+            return new FullRole
+            {
+                ID=role.ID,
+                Name=role.Name,
+                DisplayName=role.DisplayName,
+            };
+        }
     }
 }

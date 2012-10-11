@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM 关系源元数据
@@ -354,6 +355,7 @@ namespace Moo.Core.DB
         private ObjectSet<Category> _Categories;
 
         #endregion
+
         #region AddTo 方法
     
         /// <summary>
@@ -485,11 +487,11 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region 实体
     
     /// <summary>
@@ -516,7 +518,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -533,7 +536,7 @@ namespace Moo.Core.DB
             {
                 OnTestDataChanging(value);
                 ReportPropertyChanging("TestData");
-                _TestData = StructuralObject.SetValidValue(value, false);
+                _TestData = StructuralObject.SetValidValue(value, false, "TestData");
                 ReportPropertyChanged("TestData");
                 OnTestDataChanged();
             }
@@ -543,7 +546,7 @@ namespace Moo.Core.DB
         partial void OnTestDataChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -585,6 +588,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -613,7 +617,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -632,7 +637,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -657,7 +662,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -681,7 +686,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -691,7 +696,7 @@ namespace Moo.Core.DB
         partial void OnCreateTimeChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -847,6 +852,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -875,7 +881,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -894,7 +901,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -919,7 +926,7 @@ namespace Moo.Core.DB
             {
                 OnContentChanging(value);
                 ReportPropertyChanging("Content");
-                _Content = StructuralObject.SetValidValue(value, false);
+                _Content = StructuralObject.SetValidValue(value, false, "Content");
                 ReportPropertyChanged("Content");
                 OnContentChanged();
             }
@@ -943,7 +950,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -953,7 +960,7 @@ namespace Moo.Core.DB
         partial void OnCreateTimeChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -1033,6 +1040,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1059,7 +1067,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -1078,7 +1087,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -1103,7 +1112,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -1113,7 +1122,7 @@ namespace Moo.Core.DB
         partial void OnNameChanged();
 
         #endregion
-    
+
     }
     
     /// <summary>
@@ -1180,7 +1189,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -1199,7 +1209,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -1224,7 +1234,7 @@ namespace Moo.Core.DB
             {
                 OnStartTimeChanging(value);
                 ReportPropertyChanging("StartTime");
-                _StartTime = StructuralObject.SetValidValue(value);
+                _StartTime = StructuralObject.SetValidValue(value, "StartTime");
                 ReportPropertyChanged("StartTime");
                 OnStartTimeChanged();
             }
@@ -1248,7 +1258,7 @@ namespace Moo.Core.DB
             {
                 OnEndTimeChanging(value);
                 ReportPropertyChanging("EndTime");
-                _EndTime = StructuralObject.SetValidValue(value);
+                _EndTime = StructuralObject.SetValidValue(value, "EndTime");
                 ReportPropertyChanged("EndTime");
                 OnEndTimeChanged();
             }
@@ -1272,7 +1282,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -1296,7 +1306,7 @@ namespace Moo.Core.DB
             {
                 OnLockProblemOnStartChanging(value);
                 ReportPropertyChanging("LockProblemOnStart");
-                _LockProblemOnStart = StructuralObject.SetValidValue(value);
+                _LockProblemOnStart = StructuralObject.SetValidValue(value, "LockProblemOnStart");
                 ReportPropertyChanged("LockProblemOnStart");
                 OnLockProblemOnStartChanged();
             }
@@ -1320,7 +1330,7 @@ namespace Moo.Core.DB
             {
                 OnLockTestCaseOnStartChanging(value);
                 ReportPropertyChanging("LockTestCaseOnStart");
-                _LockTestCaseOnStart = StructuralObject.SetValidValue(value);
+                _LockTestCaseOnStart = StructuralObject.SetValidValue(value, "LockTestCaseOnStart");
                 ReportPropertyChanged("LockTestCaseOnStart");
                 OnLockTestCaseOnStartChanged();
             }
@@ -1344,7 +1354,7 @@ namespace Moo.Core.DB
             {
                 OnLockPostOnStartChanging(value);
                 ReportPropertyChanging("LockPostOnStart");
-                _LockPostOnStart = StructuralObject.SetValidValue(value);
+                _LockPostOnStart = StructuralObject.SetValidValue(value, "LockPostOnStart");
                 ReportPropertyChanged("LockPostOnStart");
                 OnLockPostOnStartChanged();
             }
@@ -1368,7 +1378,7 @@ namespace Moo.Core.DB
             {
                 OnHideTestCaseOnStartChanging(value);
                 ReportPropertyChanging("HideTestCaseOnStart");
-                _HideTestCaseOnStart = StructuralObject.SetValidValue(value);
+                _HideTestCaseOnStart = StructuralObject.SetValidValue(value, "HideTestCaseOnStart");
                 ReportPropertyChanged("HideTestCaseOnStart");
                 OnHideTestCaseOnStartChanged();
             }
@@ -1392,7 +1402,7 @@ namespace Moo.Core.DB
             {
                 OnEnableTestingOnStartChanging(value);
                 ReportPropertyChanging("EnableTestingOnStart");
-                _EnableTestingOnStart = StructuralObject.SetValidValue(value);
+                _EnableTestingOnStart = StructuralObject.SetValidValue(value, "EnableTestingOnStart");
                 ReportPropertyChanged("EnableTestingOnStart");
                 OnEnableTestingOnStartChanged();
             }
@@ -1416,7 +1426,7 @@ namespace Moo.Core.DB
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, false);
+                _Description = StructuralObject.SetValidValue(value, false, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -1440,7 +1450,7 @@ namespace Moo.Core.DB
             {
                 OnStatusChanging(value);
                 ReportPropertyChanging("Status");
-                _Status = StructuralObject.SetValidValue(value, false);
+                _Status = StructuralObject.SetValidValue(value, false, "Status");
                 ReportPropertyChanged("Status");
                 OnStatusChanged();
             }
@@ -1464,7 +1474,7 @@ namespace Moo.Core.DB
             {
                 OnHideProblemOnStartChanging(value);
                 ReportPropertyChanging("HideProblemOnStart");
-                _HideProblemOnStart = StructuralObject.SetValidValue(value);
+                _HideProblemOnStart = StructuralObject.SetValidValue(value, "HideProblemOnStart");
                 ReportPropertyChanged("HideProblemOnStart");
                 OnHideProblemOnStartChanged();
             }
@@ -1488,7 +1498,7 @@ namespace Moo.Core.DB
             {
                 OnLockRecordOnStartChanging(value);
                 ReportPropertyChanging("LockRecordOnStart");
-                _LockRecordOnStart = StructuralObject.SetValidValue(value);
+                _LockRecordOnStart = StructuralObject.SetValidValue(value, "LockRecordOnStart");
                 ReportPropertyChanged("LockRecordOnStart");
                 OnLockRecordOnStartChanged();
             }
@@ -1512,7 +1522,7 @@ namespace Moo.Core.DB
             {
                 OnLockProblemOnEndChanging(value);
                 ReportPropertyChanging("LockProblemOnEnd");
-                _LockProblemOnEnd = StructuralObject.SetValidValue(value);
+                _LockProblemOnEnd = StructuralObject.SetValidValue(value, "LockProblemOnEnd");
                 ReportPropertyChanged("LockProblemOnEnd");
                 OnLockProblemOnEndChanged();
             }
@@ -1536,7 +1546,7 @@ namespace Moo.Core.DB
             {
                 OnLockTestCaseOnEndChanging(value);
                 ReportPropertyChanging("LockTestCaseOnEnd");
-                _LockTestCaseOnEnd = StructuralObject.SetValidValue(value);
+                _LockTestCaseOnEnd = StructuralObject.SetValidValue(value, "LockTestCaseOnEnd");
                 ReportPropertyChanged("LockTestCaseOnEnd");
                 OnLockTestCaseOnEndChanged();
             }
@@ -1560,7 +1570,7 @@ namespace Moo.Core.DB
             {
                 OnLockPostOnEndChanging(value);
                 ReportPropertyChanging("LockPostOnEnd");
-                _LockPostOnEnd = StructuralObject.SetValidValue(value);
+                _LockPostOnEnd = StructuralObject.SetValidValue(value, "LockPostOnEnd");
                 ReportPropertyChanged("LockPostOnEnd");
                 OnLockPostOnEndChanged();
             }
@@ -1584,7 +1594,7 @@ namespace Moo.Core.DB
             {
                 OnLockRecordOnEndChanging(value);
                 ReportPropertyChanging("LockRecordOnEnd");
-                _LockRecordOnEnd = StructuralObject.SetValidValue(value);
+                _LockRecordOnEnd = StructuralObject.SetValidValue(value, "LockRecordOnEnd");
                 ReportPropertyChanged("LockRecordOnEnd");
                 OnLockRecordOnEndChanged();
             }
@@ -1608,7 +1618,7 @@ namespace Moo.Core.DB
             {
                 OnEnableTestingOnEndChanging(value);
                 ReportPropertyChanging("EnableTestingOnEnd");
-                _EnableTestingOnEnd = StructuralObject.SetValidValue(value);
+                _EnableTestingOnEnd = StructuralObject.SetValidValue(value, "EnableTestingOnEnd");
                 ReportPropertyChanged("EnableTestingOnEnd");
                 OnEnableTestingOnEndChanged();
             }
@@ -1632,7 +1642,7 @@ namespace Moo.Core.DB
             {
                 OnHideProblemOnEndChanging(value);
                 ReportPropertyChanging("HideProblemOnEnd");
-                _HideProblemOnEnd = StructuralObject.SetValidValue(value);
+                _HideProblemOnEnd = StructuralObject.SetValidValue(value, "HideProblemOnEnd");
                 ReportPropertyChanged("HideProblemOnEnd");
                 OnHideProblemOnEndChanged();
             }
@@ -1656,7 +1666,7 @@ namespace Moo.Core.DB
             {
                 OnHideTestCaseOnEndChanging(value);
                 ReportPropertyChanging("HideTestCaseOnEnd");
-                _HideTestCaseOnEnd = StructuralObject.SetValidValue(value);
+                _HideTestCaseOnEnd = StructuralObject.SetValidValue(value, "HideTestCaseOnEnd");
                 ReportPropertyChanged("HideTestCaseOnEnd");
                 OnHideTestCaseOnEndChanged();
             }
@@ -1680,7 +1690,7 @@ namespace Moo.Core.DB
             {
                 OnLockArticleOnStartChanging(value);
                 ReportPropertyChanging("LockArticleOnStart");
-                _LockArticleOnStart = StructuralObject.SetValidValue(value);
+                _LockArticleOnStart = StructuralObject.SetValidValue(value, "LockArticleOnStart");
                 ReportPropertyChanged("LockArticleOnStart");
                 OnLockArticleOnStartChanged();
             }
@@ -1704,7 +1714,7 @@ namespace Moo.Core.DB
             {
                 OnLockArticleOnEndChanging(value);
                 ReportPropertyChanging("LockArticleOnEnd");
-                _LockArticleOnEnd = StructuralObject.SetValidValue(value);
+                _LockArticleOnEnd = StructuralObject.SetValidValue(value, "LockArticleOnEnd");
                 ReportPropertyChanged("LockArticleOnEnd");
                 OnLockArticleOnEndChanged();
             }
@@ -1714,7 +1724,7 @@ namespace Moo.Core.DB
         partial void OnLockArticleOnEndChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -1762,6 +1772,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1792,7 +1803,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -1809,7 +1821,7 @@ namespace Moo.Core.DB
             {
                 OnTestDataChanging(value);
                 ReportPropertyChanging("TestData");
-                _TestData = StructuralObject.SetValidValue(value, false);
+                _TestData = StructuralObject.SetValidValue(value, false, "TestData");
                 ReportPropertyChanged("TestData");
                 OnTestDataChanged();
             }
@@ -1833,7 +1845,7 @@ namespace Moo.Core.DB
             {
                 OnTimeLimitChanging(value);
                 ReportPropertyChanging("TimeLimit");
-                _TimeLimit = StructuralObject.SetValidValue(value);
+                _TimeLimit = StructuralObject.SetValidValue(value, "TimeLimit");
                 ReportPropertyChanged("TimeLimit");
                 OnTimeLimitChanged();
             }
@@ -1857,7 +1869,7 @@ namespace Moo.Core.DB
             {
                 OnMemoryLimitChanging(value);
                 ReportPropertyChanging("MemoryLimit");
-                _MemoryLimit = StructuralObject.SetValidValue(value);
+                _MemoryLimit = StructuralObject.SetValidValue(value, "MemoryLimit");
                 ReportPropertyChanged("MemoryLimit");
                 OnMemoryLimitChanged();
             }
@@ -1867,7 +1879,7 @@ namespace Moo.Core.DB
         partial void OnMemoryLimitChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -1909,6 +1921,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1937,7 +1950,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -1956,7 +1970,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -1981,7 +1995,7 @@ namespace Moo.Core.DB
             {
                 OnScoreChanging(value);
                 ReportPropertyChanging("Score");
-                _Score = StructuralObject.SetValidValue(value);
+                _Score = StructuralObject.SetValidValue(value, "Score");
                 ReportPropertyChanged("Score");
                 OnScoreChanged();
             }
@@ -2005,7 +2019,7 @@ namespace Moo.Core.DB
             {
                 OnInfoChanging(value);
                 ReportPropertyChanging("Info");
-                _Info = StructuralObject.SetValidValue(value, false);
+                _Info = StructuralObject.SetValidValue(value, false, "Info");
                 ReportPropertyChanged("Info");
                 OnInfoChanged();
             }
@@ -2015,7 +2029,7 @@ namespace Moo.Core.DB
         partial void OnInfoChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -2057,6 +2071,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2089,7 +2104,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2108,7 +2124,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -2133,7 +2149,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -2157,7 +2173,7 @@ namespace Moo.Core.DB
             {
                 OnLevelChanging(value);
                 ReportPropertyChanging("Level");
-                _Level = StructuralObject.SetValidValue(value);
+                _Level = StructuralObject.SetValidValue(value, "Level");
                 ReportPropertyChanged("Level");
                 OnLevelChanged();
             }
@@ -2181,7 +2197,7 @@ namespace Moo.Core.DB
             {
                 OnInfoChanging(value);
                 ReportPropertyChanging("Info");
-                _Info = StructuralObject.SetValidValue(value, false);
+                _Info = StructuralObject.SetValidValue(value, false, "Info");
                 ReportPropertyChanged("Info");
                 OnInfoChanged();
             }
@@ -2205,7 +2221,7 @@ namespace Moo.Core.DB
             {
                 OnRemoteAddressChanging(value);
                 ReportPropertyChanging("RemoteAddress");
-                _RemoteAddress = StructuralObject.SetValidValue(value, false);
+                _RemoteAddress = StructuralObject.SetValidValue(value, false, "RemoteAddress");
                 ReportPropertyChanged("RemoteAddress");
                 OnRemoteAddressChanged();
             }
@@ -2215,7 +2231,7 @@ namespace Moo.Core.DB
         partial void OnRemoteAddressChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -2257,6 +2273,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2289,7 +2306,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2308,7 +2326,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -2333,7 +2351,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -2357,7 +2375,7 @@ namespace Moo.Core.DB
             {
                 OnContentChanging(value);
                 ReportPropertyChanging("Content");
-                _Content = StructuralObject.SetValidValue(value, false);
+                _Content = StructuralObject.SetValidValue(value, false, "Content");
                 ReportPropertyChanged("Content");
                 OnContentChanged();
             }
@@ -2381,7 +2399,7 @@ namespace Moo.Core.DB
             {
                 OnIsReadChanging(value);
                 ReportPropertyChanging("IsRead");
-                _IsRead = StructuralObject.SetValidValue(value);
+                _IsRead = StructuralObject.SetValidValue(value, "IsRead");
                 ReportPropertyChanged("IsRead");
                 OnIsReadChanged();
             }
@@ -2405,7 +2423,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -2415,7 +2433,7 @@ namespace Moo.Core.DB
         partial void OnCreateTimeChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -2495,6 +2513,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2527,7 +2546,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2546,7 +2566,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -2571,7 +2591,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -2595,7 +2615,7 @@ namespace Moo.Core.DB
             {
                 OnOnTopChanging(value);
                 ReportPropertyChanging("OnTop");
-                _OnTop = StructuralObject.SetValidValue(value);
+                _OnTop = StructuralObject.SetValidValue(value, "OnTop");
                 ReportPropertyChanged("OnTop");
                 OnOnTopChanged();
             }
@@ -2619,7 +2639,7 @@ namespace Moo.Core.DB
             {
                 OnReplyTimeChanging(value);
                 ReportPropertyChanging("ReplyTime");
-                _ReplyTime = StructuralObject.SetValidValue(value);
+                _ReplyTime = StructuralObject.SetValidValue(value, "ReplyTime");
                 ReportPropertyChanged("ReplyTime");
                 OnReplyTimeChanged();
             }
@@ -2643,7 +2663,7 @@ namespace Moo.Core.DB
             {
                 OnLockedChanging(value);
                 ReportPropertyChanging("Locked");
-                _Locked = StructuralObject.SetValidValue(value);
+                _Locked = StructuralObject.SetValidValue(value, "Locked");
                 ReportPropertyChanged("Locked");
                 OnLockedChanged();
             }
@@ -2653,7 +2673,7 @@ namespace Moo.Core.DB
         partial void OnLockedChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -2695,6 +2715,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2723,7 +2744,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2742,7 +2764,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -2767,7 +2789,7 @@ namespace Moo.Core.DB
             {
                 OnContentChanging(value);
                 ReportPropertyChanging("Content");
-                _Content = StructuralObject.SetValidValue(value, false);
+                _Content = StructuralObject.SetValidValue(value, false, "Content");
                 ReportPropertyChanged("Content");
                 OnContentChanged();
             }
@@ -2791,7 +2813,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -2801,7 +2823,7 @@ namespace Moo.Core.DB
         partial void OnCreateTimeChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -2881,6 +2903,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2933,7 +2956,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -2952,7 +2976,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -2977,7 +3001,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -3001,7 +3025,7 @@ namespace Moo.Core.DB
             {
                 OnTypeChanging(value);
                 ReportPropertyChanging("Type");
-                _Type = StructuralObject.SetValidValue(value, false);
+                _Type = StructuralObject.SetValidValue(value, false, "Type");
                 ReportPropertyChanged("Type");
                 OnTypeChanged();
             }
@@ -3025,7 +3049,7 @@ namespace Moo.Core.DB
             {
                 OnSubmissionCountChanging(value);
                 ReportPropertyChanging("SubmissionCount");
-                _SubmissionCount = StructuralObject.SetValidValue(value);
+                _SubmissionCount = StructuralObject.SetValidValue(value, "SubmissionCount");
                 ReportPropertyChanged("SubmissionCount");
                 OnSubmissionCountChanged();
             }
@@ -3049,7 +3073,7 @@ namespace Moo.Core.DB
             {
                 OnScoreSumChanging(value);
                 ReportPropertyChanging("ScoreSum");
-                _ScoreSum = StructuralObject.SetValidValue(value);
+                _ScoreSum = StructuralObject.SetValidValue(value, "ScoreSum");
                 ReportPropertyChanged("ScoreSum");
                 OnScoreSumChanged();
             }
@@ -3073,7 +3097,7 @@ namespace Moo.Core.DB
             {
                 OnSubmissionUserChanging(value);
                 ReportPropertyChanging("SubmissionUser");
-                _SubmissionUser = StructuralObject.SetValidValue(value);
+                _SubmissionUser = StructuralObject.SetValidValue(value, "SubmissionUser");
                 ReportPropertyChanged("SubmissionUser");
                 OnSubmissionUserChanged();
             }
@@ -3097,7 +3121,7 @@ namespace Moo.Core.DB
             {
                 OnMaximumScoreChanging(value);
                 ReportPropertyChanging("MaximumScore");
-                _MaximumScore = StructuralObject.SetValidValue(value);
+                _MaximumScore = StructuralObject.SetValidValue(value, "MaximumScore");
                 ReportPropertyChanged("MaximumScore");
                 OnMaximumScoreChanged();
             }
@@ -3121,7 +3145,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -3145,7 +3169,7 @@ namespace Moo.Core.DB
             {
                 OnHiddenChanging(value);
                 ReportPropertyChanging("Hidden");
-                _Hidden = StructuralObject.SetValidValue(value);
+                _Hidden = StructuralObject.SetValidValue(value, "Hidden");
                 ReportPropertyChanged("Hidden");
                 OnHiddenChanged();
             }
@@ -3169,7 +3193,7 @@ namespace Moo.Core.DB
             {
                 OnLockedChanging(value);
                 ReportPropertyChanging("Locked");
-                _Locked = StructuralObject.SetValidValue(value);
+                _Locked = StructuralObject.SetValidValue(value, "Locked");
                 ReportPropertyChanged("Locked");
                 OnLockedChanged();
             }
@@ -3193,7 +3217,7 @@ namespace Moo.Core.DB
             {
                 OnRecordLockedChanging(value);
                 ReportPropertyChanging("RecordLocked");
-                _RecordLocked = StructuralObject.SetValidValue(value);
+                _RecordLocked = StructuralObject.SetValidValue(value, "RecordLocked");
                 ReportPropertyChanged("RecordLocked");
                 OnRecordLockedChanged();
             }
@@ -3217,7 +3241,7 @@ namespace Moo.Core.DB
             {
                 OnPostLockedChanging(value);
                 ReportPropertyChanging("PostLocked");
-                _PostLocked = StructuralObject.SetValidValue(value);
+                _PostLocked = StructuralObject.SetValidValue(value, "PostLocked");
                 ReportPropertyChanged("PostLocked");
                 OnPostLockedChanged();
             }
@@ -3241,7 +3265,7 @@ namespace Moo.Core.DB
             {
                 OnArticleLockedChanging(value);
                 ReportPropertyChanging("ArticleLocked");
-                _ArticleLocked = StructuralObject.SetValidValue(value);
+                _ArticleLocked = StructuralObject.SetValidValue(value, "ArticleLocked");
                 ReportPropertyChanged("ArticleLocked");
                 OnArticleLockedChanged();
             }
@@ -3265,7 +3289,7 @@ namespace Moo.Core.DB
             {
                 OnTestCaseLockedChanging(value);
                 ReportPropertyChanging("TestCaseLocked");
-                _TestCaseLocked = StructuralObject.SetValidValue(value);
+                _TestCaseLocked = StructuralObject.SetValidValue(value, "TestCaseLocked");
                 ReportPropertyChanged("TestCaseLocked");
                 OnTestCaseLockedChanged();
             }
@@ -3289,7 +3313,7 @@ namespace Moo.Core.DB
             {
                 OnEnableTestingChanging(value);
                 ReportPropertyChanging("EnableTesting");
-                _EnableTesting = StructuralObject.SetValidValue(value);
+                _EnableTesting = StructuralObject.SetValidValue(value, "EnableTesting");
                 ReportPropertyChanged("EnableTesting");
                 OnEnableTestingChanged();
             }
@@ -3313,7 +3337,7 @@ namespace Moo.Core.DB
             {
                 OnTestCaseHiddenChanging(value);
                 ReportPropertyChanging("TestCaseHidden");
-                _TestCaseHidden = StructuralObject.SetValidValue(value);
+                _TestCaseHidden = StructuralObject.SetValidValue(value, "TestCaseHidden");
                 ReportPropertyChanged("TestCaseHidden");
                 OnTestCaseHiddenChanged();
             }
@@ -3323,7 +3347,7 @@ namespace Moo.Core.DB
         partial void OnTestCaseHiddenChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -3425,6 +3449,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -3455,7 +3480,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -3474,7 +3500,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -3499,7 +3525,7 @@ namespace Moo.Core.DB
             {
                 OnContentChanging(value);
                 ReportPropertyChanging("Content");
-                _Content = StructuralObject.SetValidValue(value, false);
+                _Content = StructuralObject.SetValidValue(value, false, "Content");
                 ReportPropertyChanged("Content");
                 OnContentChanged();
             }
@@ -3523,7 +3549,7 @@ namespace Moo.Core.DB
             {
                 OnReasonChanging(value);
                 ReportPropertyChanging("Reason");
-                _Reason = StructuralObject.SetValidValue(value, false);
+                _Reason = StructuralObject.SetValidValue(value, false, "Reason");
                 ReportPropertyChanged("Reason");
                 OnReasonChanged();
             }
@@ -3547,7 +3573,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -3557,7 +3583,7 @@ namespace Moo.Core.DB
         partial void OnCreateTimeChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -3637,6 +3663,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -3669,7 +3696,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -3688,7 +3716,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -3713,7 +3741,7 @@ namespace Moo.Core.DB
             {
                 OnCodeChanging(value);
                 ReportPropertyChanging("Code");
-                _Code = StructuralObject.SetValidValue(value, false);
+                _Code = StructuralObject.SetValidValue(value, false, "Code");
                 ReportPropertyChanged("Code");
                 OnCodeChanged();
             }
@@ -3737,7 +3765,7 @@ namespace Moo.Core.DB
             {
                 OnCreateTimeChanging(value);
                 ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value);
+                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
                 ReportPropertyChanged("CreateTime");
                 OnCreateTimeChanged();
             }
@@ -3761,7 +3789,7 @@ namespace Moo.Core.DB
             {
                 OnLanguageChanging(value);
                 ReportPropertyChanging("Language");
-                _Language = StructuralObject.SetValidValue(value, false);
+                _Language = StructuralObject.SetValidValue(value, false, "Language");
                 ReportPropertyChanged("Language");
                 OnLanguageChanged();
             }
@@ -3785,7 +3813,7 @@ namespace Moo.Core.DB
             {
                 OnPublicCodeChanging(value);
                 ReportPropertyChanging("PublicCode");
-                _PublicCode = StructuralObject.SetValidValue(value);
+                _PublicCode = StructuralObject.SetValidValue(value, "PublicCode");
                 ReportPropertyChanged("PublicCode");
                 OnPublicCodeChanged();
             }
@@ -3795,7 +3823,7 @@ namespace Moo.Core.DB
         partial void OnPublicCodeChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -3913,6 +3941,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -3941,7 +3970,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -3960,7 +3990,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -3985,7 +4015,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -4009,7 +4039,7 @@ namespace Moo.Core.DB
             {
                 OnDisplayNameChanging(value);
                 ReportPropertyChanging("DisplayName");
-                _DisplayName = StructuralObject.SetValidValue(value, false);
+                _DisplayName = StructuralObject.SetValidValue(value, false, "DisplayName");
                 ReportPropertyChanged("DisplayName");
                 OnDisplayNameChanged();
             }
@@ -4019,7 +4049,7 @@ namespace Moo.Core.DB
         partial void OnDisplayNameChanged();
 
         #endregion
-    
+
     }
     
     /// <summary>
@@ -4052,7 +4082,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -4069,7 +4100,7 @@ namespace Moo.Core.DB
             {
                 OnInputChanging(value);
                 ReportPropertyChanging("Input");
-                _Input = StructuralObject.SetValidValue(value, false);
+                _Input = StructuralObject.SetValidValue(value, false, "Input");
                 ReportPropertyChanged("Input");
                 OnInputChanged();
             }
@@ -4093,7 +4124,7 @@ namespace Moo.Core.DB
             {
                 OnAnswerChanging(value);
                 ReportPropertyChanging("Answer");
-                _Answer = StructuralObject.SetValidValue(value, false);
+                _Answer = StructuralObject.SetValidValue(value, false, "Answer");
                 ReportPropertyChanged("Answer");
                 OnAnswerChanged();
             }
@@ -4117,7 +4148,7 @@ namespace Moo.Core.DB
             {
                 OnTimeLimitChanging(value);
                 ReportPropertyChanging("TimeLimit");
-                _TimeLimit = StructuralObject.SetValidValue(value);
+                _TimeLimit = StructuralObject.SetValidValue(value, "TimeLimit");
                 ReportPropertyChanged("TimeLimit");
                 OnTimeLimitChanged();
             }
@@ -4141,7 +4172,7 @@ namespace Moo.Core.DB
             {
                 OnMemoryLimitChanging(value);
                 ReportPropertyChanging("MemoryLimit");
-                _MemoryLimit = StructuralObject.SetValidValue(value);
+                _MemoryLimit = StructuralObject.SetValidValue(value, "MemoryLimit");
                 ReportPropertyChanged("MemoryLimit");
                 OnMemoryLimitChanged();
             }
@@ -4151,7 +4182,7 @@ namespace Moo.Core.DB
         partial void OnMemoryLimitChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -4193,6 +4224,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -4207,7 +4239,7 @@ namespace Moo.Core.DB
     [KnownTypeAttribute(typeof(TranditionalTestCase))]
     public abstract partial class TestCase : EntityObject
     {
-        #region 基元属性
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -4226,7 +4258,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -4237,7 +4269,7 @@ namespace Moo.Core.DB
         partial void OnIDChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -4317,6 +4349,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -4351,7 +4384,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -4368,7 +4402,7 @@ namespace Moo.Core.DB
             {
                 OnInputChanging(value);
                 ReportPropertyChanging("Input");
-                _Input = StructuralObject.SetValidValue(value, false);
+                _Input = StructuralObject.SetValidValue(value, false, "Input");
                 ReportPropertyChanged("Input");
                 OnInputChanged();
             }
@@ -4392,7 +4426,7 @@ namespace Moo.Core.DB
             {
                 OnAnswerChanging(value);
                 ReportPropertyChanging("Answer");
-                _Answer = StructuralObject.SetValidValue(value, false);
+                _Answer = StructuralObject.SetValidValue(value, false, "Answer");
                 ReportPropertyChanged("Answer");
                 OnAnswerChanged();
             }
@@ -4416,7 +4450,7 @@ namespace Moo.Core.DB
             {
                 OnTimeLimitChanging(value);
                 ReportPropertyChanging("TimeLimit");
-                _TimeLimit = StructuralObject.SetValidValue(value);
+                _TimeLimit = StructuralObject.SetValidValue(value, "TimeLimit");
                 ReportPropertyChanged("TimeLimit");
                 OnTimeLimitChanged();
             }
@@ -4440,7 +4474,7 @@ namespace Moo.Core.DB
             {
                 OnMemoryLimitChanging(value);
                 ReportPropertyChanging("MemoryLimit");
-                _MemoryLimit = StructuralObject.SetValidValue(value);
+                _MemoryLimit = StructuralObject.SetValidValue(value, "MemoryLimit");
                 ReportPropertyChanged("MemoryLimit");
                 OnMemoryLimitChanged();
             }
@@ -4464,7 +4498,7 @@ namespace Moo.Core.DB
             {
                 OnScoreChanging(value);
                 ReportPropertyChanging("Score");
-                _Score = StructuralObject.SetValidValue(value);
+                _Score = StructuralObject.SetValidValue(value, "Score");
                 ReportPropertyChanged("Score");
                 OnScoreChanged();
             }
@@ -4474,7 +4508,7 @@ namespace Moo.Core.DB
         partial void OnScoreChanged();
 
         #endregion
-    
+
     }
     
     /// <summary>
@@ -4505,7 +4539,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -4524,7 +4559,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -4549,7 +4584,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -4573,7 +4608,7 @@ namespace Moo.Core.DB
             {
                 OnPathChanging(value);
                 ReportPropertyChanging("Path");
-                _Path = StructuralObject.SetValidValue(value, false);
+                _Path = StructuralObject.SetValidValue(value, false, "Path");
                 ReportPropertyChanged("Path");
                 OnPathChanged();
             }
@@ -4597,7 +4632,7 @@ namespace Moo.Core.DB
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, false);
+                _Description = StructuralObject.SetValidValue(value, false, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -4607,7 +4642,7 @@ namespace Moo.Core.DB
         partial void OnDescriptionChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -4649,6 +4684,7 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -4687,7 +4723,8 @@ namespace Moo.Core.DB
         }
 
         #endregion
-        #region 基元属性
+
+        #region 简单属性
     
         /// <summary>
         /// 没有元数据文档可用。
@@ -4706,7 +4743,7 @@ namespace Moo.Core.DB
                 {
                     OnIDChanging(value);
                     ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value);
+                    _ID = StructuralObject.SetValidValue(value, "ID");
                     ReportPropertyChanged("ID");
                     OnIDChanged();
                 }
@@ -4731,7 +4768,7 @@ namespace Moo.Core.DB
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -4755,7 +4792,7 @@ namespace Moo.Core.DB
             {
                 OnPasswordChanging(value);
                 ReportPropertyChanging("Password");
-                _Password = StructuralObject.SetValidValue(value, false);
+                _Password = StructuralObject.SetValidValue(value, false, "Password");
                 ReportPropertyChanged("Password");
                 OnPasswordChanged();
             }
@@ -4779,7 +4816,7 @@ namespace Moo.Core.DB
             {
                 OnBriefDescriptionChanging(value);
                 ReportPropertyChanging("BriefDescription");
-                _BriefDescription = StructuralObject.SetValidValue(value, false);
+                _BriefDescription = StructuralObject.SetValidValue(value, false, "BriefDescription");
                 ReportPropertyChanged("BriefDescription");
                 OnBriefDescriptionChanged();
             }
@@ -4803,7 +4840,7 @@ namespace Moo.Core.DB
             {
                 OnEmailChanging(value);
                 ReportPropertyChanging("Email");
-                _Email = StructuralObject.SetValidValue(value, false);
+                _Email = StructuralObject.SetValidValue(value, false, "Email");
                 ReportPropertyChanged("Email");
                 OnEmailChanged();
             }
@@ -4827,7 +4864,7 @@ namespace Moo.Core.DB
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, false);
+                _Description = StructuralObject.SetValidValue(value, false, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -4851,7 +4888,7 @@ namespace Moo.Core.DB
             {
                 OnScoreChanging(value);
                 ReportPropertyChanging("Score");
-                _Score = StructuralObject.SetValidValue(value);
+                _Score = StructuralObject.SetValidValue(value, "Score");
                 ReportPropertyChanged("Score");
                 OnScoreChanged();
             }
@@ -4875,7 +4912,7 @@ namespace Moo.Core.DB
             {
                 OnPreferredLanguageChanging(value);
                 ReportPropertyChanging("PreferredLanguage");
-                _PreferredLanguage = StructuralObject.SetValidValue(value, false);
+                _PreferredLanguage = StructuralObject.SetValidValue(value, false, "PreferredLanguage");
                 ReportPropertyChanged("PreferredLanguage");
                 OnPreferredLanguageChanged();
             }
@@ -4885,7 +4922,7 @@ namespace Moo.Core.DB
         partial void OnPreferredLanguageChanged();
 
         #endregion
-    
+
         #region 导航属性
     
         /// <summary>
@@ -4949,8 +4986,9 @@ namespace Moo.Core.DB
         }
 
         #endregion
+
     }
 
     #endregion
-    
+
 }

@@ -452,7 +452,11 @@ namespace Moo.API
                                        where c.ID == contestID
                                        select c).SingleOrDefault<Contest>();
                     if (contest == null) throw new ArgumentException("无此比赛");
-                    records = records.Where(r => contest.Problem.Contains(r.Problem));
+                    records = from r in records
+                              where contest.Problem.Contains(r.Problem)
+                                 && contest.User.Contains(r.User)
+                                 && r.CreateTime >= contest.StartTime && r.CreateTime <= contest.EndTime
+                              select r;
                 }
 
                 records = records.OrderByDescending(r => r.ID);
@@ -1166,6 +1170,18 @@ namespace Moo.API
                     theUser.Role = role;
                 }
                 db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region Roles
+        [OperationContract]
+        [WebGet(UriTemplate = "Roles")]
+        public List<FullRole> GetRole()
+        {
+            using (MooDB db = new MooDB())
+            {
+                return db.Roles.Select(r => r.ToFullRole()).ToList();
             }
         }
         #endregion
@@ -2112,9 +2128,9 @@ namespace Moo.API
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
-                Contest theContest=(from c in db.Contests
-                                where c.ID==iid
-                                select c).SingleOrDefault<Contest>();
+                Contest theContest = (from c in db.Contests
+                                      where c.ID == iid
+                                      select c).SingleOrDefault<Contest>();
                 if (theContest == null) throw new ArgumentException("无此比赛");
 
                 Access.Required(db, theContest, Function.ModifyContest);

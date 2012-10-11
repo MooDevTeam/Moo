@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moo.Core", "Moo.Core\Moo.Core.csproj", "{4E9C3A2E-4239-4E6E-9BA7-6BD46EBB9E4E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moo.Debug", "Moo.Debug\Moo.Debug.csproj", "{425FB83F-058F-4E65-AF67-DEFF7E2CED29}"
