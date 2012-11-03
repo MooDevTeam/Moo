@@ -34,6 +34,14 @@ namespace Moo.API
                     epDisp.DispatchRuntime.MessageInspectors.Add(new Authenticator());
                 }
             }
+
+            foreach (ServiceEndpoint endpoint in serviceDescription.Endpoints)
+            {
+                foreach (OperationDescription operation in endpoint.Contract.Operations)
+                {
+                    operation.Behaviors.Add(new CustomMessageFormatter.Behavior());
+                }
+            }
         }
 
         public void Validate(ServiceDescription serviceDescription, System.ServiceModel.ServiceHostBase serviceHostBase)

@@ -58,8 +58,10 @@
     <Compile Include="DB\MooTestData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Access.cs" />
+    <Compile Include="Security\Captcha.cs" />
     <Compile Include="Security\CustomPrincipal.cs" />
     <Compile Include="Security\Functions.cs" />
+    <Compile Include="Security\NoBot.cs" />
     <Compile Include="Security\Security.cs" />
     <Compile Include="Security\SiteRole.cs" />
     <Compile Include="Security\SiteRoles.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Text\DiffGenerator.cs" />
     <Compile Include="Text\VDifference.cs" />
     <Compile Include="Text\WikiParser.cs" />
+    <Compile Include="Utility\AutoPopDictionary.cs" />
     <Compile Include="Utility\Converter.cs" />
     <Compile Include="Utility\Rand.cs" />
   </ItemGroup>

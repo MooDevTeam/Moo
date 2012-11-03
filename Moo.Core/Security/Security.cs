@@ -19,13 +19,23 @@ namespace Moo.Core.Security
             get { return Thread.CurrentPrincipal.Identity as SiteUser; }
         }
 
-        public static string Login(string userName, string password)
+        public static void Authenticate(string sToken)
+        {
+            string[] splited = sToken.Split(',');
+            int userID = int.Parse(splited[0]);
+            int iToken = int.Parse(splited[1]);
+
+            if (SiteUsers.ByID[userID].Token != iToken) throw new Exception();
+            Thread.CurrentPrincipal = new CustomPrincipal() { Identity = SiteUsers.ByID[userID] };
+        }
+
+        public static string Login(int userID, string password)
         {
             password = Converter.ToSHA256Hash(password);
             using (MooDB db = new MooDB())
             {
                 User user = (from u in db.Users
-                             where u.Name == userName && u.Password == password
+                             where u.ID==userID && u.Password == password
                              select u).SingleOrDefault<User>();
                 if (user == null) return null;
 

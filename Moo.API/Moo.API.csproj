@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticator.cs" />
+    <Compile Include="CustomMessageFormatter.cs" />
     <Compile Include="DataContracts\BriefArticleRevision.cs" />
     <Compile Include="DataContracts\BriefContest.cs" />
     <Compile Include="DataContracts\BriefMail.cs" />
@@ -124,6 +125,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Captcha.ashx" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

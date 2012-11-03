@@ -346,7 +346,7 @@ namespace Moo.Core.Security
         {
             if (!Check(dbContext, @object, function))
             {
-                throw new UnauthorizedAccessException("缺少权限：" + function.ToString());
+                throw new UnauthorizedAccessException(function.ToString());
             }
         }
 

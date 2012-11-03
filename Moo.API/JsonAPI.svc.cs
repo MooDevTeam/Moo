@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -37,9 +38,16 @@ namespace Moo.API
             return text;
         }
         [OperationContract]
-        public string Debug()
+        public object Debug()
         {
-            throw new ArgumentException("没事啊");
+            using (MooDB db = new MooDB())
+            {
+                return db.Problems.Select(p => new
+                {
+                    ID = p.ID,
+                    Name = p.Name
+                });
+            }
         }
         #endregion
 
@@ -65,9 +73,9 @@ namespace Moo.API
 
         #region Security
         [OperationContract]
-        public string Login(string userName, string password)
+        public string Login(int userID, string password)
         {
-            return Security.Login(userName, password);
+            return Security.Login(userID, password);
         }
 
         [OperationContract]
@@ -425,6 +433,8 @@ namespace Moo.API
             }
         }
 
+        /*
+         * Old ListRecord
         [OperationContract]
         [WebGet(UriTemplate = "Records")]
         public List<BriefRecord> ListRecord()
@@ -471,6 +481,71 @@ namespace Moo.API
                 }
 
                 return records.ToList().Select(r => r.ToBriefRecord(db)).ToList();
+            }
+        }
+         * */
+        [OperationContract]
+        [WebGet(UriTemplate = "Records")]
+        public object ListRecord()
+        {
+            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
+            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
+            int? userID = QueryParameters["userID"] == null ? null : (int?)int.Parse(QueryParameters["userID"]);
+            int? contestID = QueryParameters["contestID"] == null ? null : (int?)int.Parse(QueryParameters["contestID"]);
+
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Record> records = db.Records;
+                if (problemID != null)
+                {
+                    records = records.Where(r => r.Problem.ID == problemID);
+                }
+                if (userID != null)
+                {
+                    records = records.Where(r => r.User.ID == userID);
+                }
+                if (contestID != null)
+                {
+                    Contest contest = (from c in db.Contests
+                                       where c.ID == contestID
+                                       select c).SingleOrDefault<Contest>();
+                    if (contest == null) throw new ArgumentException("无此比赛");
+                    records = from r in records
+                              where contest.Problem.Contains(r.Problem)
+                                 && contest.User.Contains(r.User)
+                                 && r.CreateTime >= contest.StartTime && r.CreateTime <= contest.EndTime
+                              select r;
+                }
+
+                records = records.OrderByDescending(r => r.ID);
+
+                if (skip != null)
+                {
+                    records = records.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    records = records.Take((int)top);
+                }
+
+                return records.Select(r => new
+                {
+                    ID = r.ID,
+                    CreateTime = r.CreateTime,
+                    Problem = new
+                    {
+                        ID = r.Problem.ID,
+                        Name = r.Problem.Name
+                    },
+                    User = new
+                    {
+                        ID = r.User.ID,
+                        Name = r.User.Name
+                    },
+                    Language = r.Language,
+                    Score = r.JudgeInfo == null ? null : (int?)r.JudgeInfo.Score
+                }).ToList();
             }
         }
 
@@ -1044,6 +1119,20 @@ namespace Moo.API
                     users = users.Where(u => u.Name.Contains(nameContains));
                 }
                 return users.Count();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Users/ByName")]
+        public int? GetUserByName()
+        {
+            string name = QueryParameters["name"];
+            using (MooDB db = new MooDB())
+            {
+                User user = (from u in db.Users
+                             where u.Name == name
+                             select u).SingleOrDefault<User>();
+                return user == null ? null : (int?)user.ID;
             }
         }
 

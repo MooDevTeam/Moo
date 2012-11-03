@@ -10,25 +10,24 @@ using System.ServiceModel.Web;
 using Moo.Core.Security;
 namespace Moo.API
 {
-
     public class Authenticator : IDispatchMessageInspector
     {
+        static readonly string[] ALLOWED_OPERATIONS = new string[]{
+            "", "HelpPageInvoke",
+            "Echo", "Debug",
+            "Login", "GetUserByName", "CreateUser"
+        };
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
             if (request.Properties.ContainsKey("HttpOperationName"))
             {
                 string operation = (string)request.Properties["HttpOperationName"];
-                if (!new[] { "", "HelpPageInvoke", "Login", "Echo", "Debug" }.Contains(operation))
+                if (!ALLOWED_OPERATIONS.Contains(operation))
                 {
                     try
                     {
                         string sToken = WebOperationContext.Current.IncomingRequest.Headers["Auth"];
-                        string[] splited = sToken.Split(',');
-                        int userID = int.Parse(splited[0]);
-                        int iToken = int.Parse(splited[1]);
-
-                        if (SiteUsers.ByID[userID].Token != iToken) throw new Exception();
-                        Thread.CurrentPrincipal = new CustomPrincipal() { Identity = SiteUsers.ByID[userID] };
+                        Security.Authenticate(sToken);
                     }
                     catch
                     {
