@@ -119,6 +119,22 @@ namespace Moo.Core.Security
             }
         }
 
+        Dictionary<Function, List<Func<JudgeInfo, bool?>>> JudgeInfoRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<JudgeInfo, bool?>>>
+                {
+                    {Function.ReadJudgeInfo,new List<Func<JudgeInfo,bool?>>{
+                        j=>me.Role>=SiteRole.Reader?(bool?)true:null
+                    }},
+                    {Function.DeleteJudgeInfo,new List<Func<JudgeInfo,bool?>>{
+                        j=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }}
+                };
+            }
+        }
+
         Dictionary<Function, List<Func<TestCase, bool?>>> TestCaseRules
         {
             get
@@ -367,6 +383,10 @@ namespace Moo.Core.Security
             else if (@object is Record)
             {
                 return CheckRules(@object as Record, RecordRules, function);
+            }
+            else if (@object is JudgeInfo)
+            {
+                return CheckRules(@object as JudgeInfo, JudgeInfoRules, function);
             }
             else if (@object is TestCase)
             {

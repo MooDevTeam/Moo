@@ -504,7 +504,7 @@ namespace Moo.Core.DB
             Record record = new Record()
             {
                 Code = "",
-                Language = "cxx",
+                Language = "c++",
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
                 Problem = APlusB,
@@ -533,13 +533,18 @@ namespace Moo.Core.DB
 
             info = new JudgeInfo()
             {
-                Info = "test",
+                Info = "<color:green>All Cases Passed</color> <color:red>But I'm not happy, so you got 60.</color>",
                 Score = 60
             };
 
             record = new Record()
             {
-                Code = "",
+                Code = "#include <iostream>\n"
+                    + "int main(int argc,char* argv[]) {\n"
+                    + "\tint c,d;\n"
+                    + "\tstd::cin>>c>>d;\n"
+                    + "\tstd::cout<<c+d<<std::endl;\n"
+                    + "}",
                 Language = "c++",
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
@@ -551,7 +556,7 @@ namespace Moo.Core.DB
 
             db.Records.AddObject(new Record()
             {
-                Code = "int APlusB(int x,int y){return 4;}",
+                Code = "int APlusB(int x,int y){\n\treturn 4;\n}",
                 CreateTime = DateTime.Now,
                 Language = "c++",
                 Problem = EasyAPlusB,

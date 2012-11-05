@@ -87,6 +87,12 @@
   <ItemGroup>
     <Content Include="DB\MooDB.edmx.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WikiPlex\WikiPlex.csproj">
+      <Project>{ab01cc6c-9caf-4ba4-8adb-2d16f665f272}</Project>
+      <Name>WikiPlex</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

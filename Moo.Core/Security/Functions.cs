@@ -44,7 +44,6 @@ namespace Moo.Core.Security
         DeleteRecord,
 
         //JudgeInfos
-        CreateJudgeInfo,
         ReadJudgeInfo,
         DeleteJudgeInfo,
 

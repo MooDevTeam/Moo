@@ -28,6 +28,10 @@ namespace Moo.API
                 return WebOperationContext.Current.IncomingRequest.UriTemplateMatch.QueryParameters;
             }
         }
+        int? OptionalIntParameter(string name)
+        {
+            return QueryParameters[name] == null ? null : (int?)int.Parse(QueryParameters[name]);
+        }
         #endregion
 
         #region Test
@@ -433,61 +437,11 @@ namespace Moo.API
             }
         }
 
-        /*
-         * Old ListRecord
-        [OperationContract]
-        [WebGet(UriTemplate = "Records")]
-        public List<BriefRecord> ListRecord()
-        {
-            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
-            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
-            int? userID = QueryParameters["userID"] == null ? null : (int?)int.Parse(QueryParameters["userID"]);
-            int? contestID = QueryParameters["contestID"] == null ? null : (int?)int.Parse(QueryParameters["contestID"]);
-
-            using (MooDB db = new MooDB())
-            {
-                IQueryable<Record> records = db.Records;
-                if (problemID != null)
-                {
-                    records = records.Where(r => r.Problem.ID == problemID);
-                }
-                if (userID != null)
-                {
-                    records = records.Where(r => r.User.ID == userID);
-                }
-                if (contestID != null)
-                {
-                    Contest contest = (from c in db.Contests
-                                       where c.ID == contestID
-                                       select c).SingleOrDefault<Contest>();
-                    if (contest == null) throw new ArgumentException("无此比赛");
-                    records = from r in records
-                              where contest.Problem.Contains(r.Problem)
-                                 && contest.User.Contains(r.User)
-                                 && r.CreateTime >= contest.StartTime && r.CreateTime <= contest.EndTime
-                              select r;
-                }
-
-                records = records.OrderByDescending(r => r.ID);
-
-                if (skip != null)
-                {
-                    records = records.Skip((int)skip);
-                }
-                if (top != null)
-                {
-                    records = records.Take((int)top);
-                }
-
-                return records.ToList().Select(r => r.ToBriefRecord(db)).ToList();
-            }
-        }
-         * */
         [OperationContract]
         [WebGet(UriTemplate = "Records")]
         public object ListRecord()
         {
+            int? id = OptionalIntParameter("id");
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
             int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
@@ -497,6 +451,10 @@ namespace Moo.API
             using (MooDB db = new MooDB())
             {
                 IQueryable<Record> records = db.Records;
+                if (id != null)
+                {
+                    records = records.Where(r => r.ID == id);
+                }
                 if (problemID != null)
                 {
                     records = records.Where(r => r.Problem.ID == problemID);
@@ -551,7 +509,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Records/{id}")]
-        public FullRecord GetRecord(string id)
+        public object GetRecord(string id)
         {
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
@@ -563,7 +521,26 @@ namespace Moo.API
 
                 Access.Required(db, record, Function.ReadRecord);
 
-                return record.ToFullRecord(db);
+                return new
+                {
+                    ID = record.ID,
+                    Problem = new
+                    {
+                        ID = record.Problem.ID,
+                        Name = record.Problem.Name,
+                    },
+                    User = new
+                    {
+                        ID = record.User.ID,
+                        Name = record.User.Name
+                    },
+                    CreateTime = record.CreateTime,
+                    Code = Access.Check(db, record, Function.ReadRecordCode) ? record.Code : null,
+                    Score = record.JudgeInfo == null ? null : (int?)record.JudgeInfo.Score,
+                    JudgeInfo = record.JudgeInfo == null ? null : record.JudgeInfo.Info,
+                    Language = record.Language,
+                    PublicCode = record.PublicCode
+                };
             }
         }
 
@@ -727,7 +704,8 @@ namespace Moo.API
                                  where r.ID == irecordID
                                  select r).SingleOrDefault<Record>();
                 if (record == null) throw new ArgumentException("无此记录");
-                if (record.JudgeInfo == null) throw new ArgumentException("记录无测评信息");
+                //Omit
+                if (record.JudgeInfo == null) return;
 
                 JudgeInfo info = record.JudgeInfo;
 
