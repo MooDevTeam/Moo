@@ -77,7 +77,8 @@ namespace Moo.Core.DB
             {
                 Name = "A+B问题",
                 Type = "Tranditional",
-                SubmissionCount = 10,
+                SubmissionTimes = 10,
+                EnableTesting=true,
                 ScoreSum = 100,
                 SubmissionUser = 1,
                 MaximumScore = 30,
@@ -89,7 +90,8 @@ namespace Moo.Core.DB
             {
                 Name = "C+D问题",
                 Type = "Tranditional",
-                SubmissionCount = 20,
+                SubmissionTimes = 20,
+                EnableTesting = true,
                 ScoreSum = 5,
                 SubmissionUser = 2,
                 MaximumScore = 120,
@@ -102,7 +104,8 @@ namespace Moo.Core.DB
             {
                 Name = "E+F问题",
                 Type = "Tranditional",
-                SubmissionCount = 40,
+                SubmissionTimes = 40,
+                EnableTesting = true,
                 ScoreSum = 300,
                 SubmissionUser = 4,
                 MaximumScore = 110,
@@ -332,7 +335,7 @@ namespace Moo.Core.DB
             //Post
             Post post = new Post()
             {
-                Name = "讨论一下出题人心理",
+                Name = "主页吐槽专用贴",
                 Problem = APlusB,
                 ReplyTime = DateTime.Now,
                 OnTop = true,
@@ -343,7 +346,7 @@ namespace Moo.Core.DB
             {
                 Post = post,
                 CreateTime = DateTime.Now,
-                Content = "出--这么水--的题，找死啊",
+                Content = "终于抢到了主页第一个帖子。*沙发*！",
                 CreatedBy = ShaBi,
             });
             db.SaveChanges();
@@ -351,8 +354,16 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
-                CreateTime = DateTime.Now,
-                Content = "靠！作为出题人我压力很大啊!",
+                CreateTime = DateTime.Now.AddSeconds(3),
+                Content = "靠！傻逼给我<color:red>撤</color>，这帖子是我的!测试一下源代码：\n"
+                +"{code: c++}\n"
+                +"#include <iostream>\n"
+                +"using namespace std;\n"
+                +"int main(){\n"
+                +"\tcout<<\"没占上沙发真倒霉\"<<endl;\n"
+                +"\treturn 0;\n"
+                +"}\n"
+                +"{code: c++}\n",
                 CreatedBy = MrPhone
             });
 
@@ -495,29 +506,23 @@ namespace Moo.Core.DB
             contest.User.Add(ShaBi);
 
             //Record
-            JudgeInfo info = new JudgeInfo()
-            {
-                Info = "Test",
-                Score = 10
-            };
 
             Record record = new Record()
             {
-                Code = "",
+                Code = "#include <iostream>\n"
+                    +"using namespace std;"
+                    +"int main(){"
+                    +"  int x,y;"
+                    +"  cin>>x>>y;"
+                    +"  cout<<x+y;"
+                    +"  return 0;"
+                    +"}",
                 Language = "c++",
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
                 Problem = APlusB,
             };
-            record.JudgeInfo = info;
-            info.Record = record;
             db.Records.AddObject(record);
-
-            info = new JudgeInfo()
-            {
-                Info = "test",
-                Score = 30
-            };
 
             record = new Record()
             {
@@ -527,15 +532,7 @@ namespace Moo.Core.DB
                 User = ShaBi,
                 Problem = APlusB,
             };
-            record.JudgeInfo = info;
-            info.Record = record;
             db.Records.AddObject(record);
-
-            info = new JudgeInfo()
-            {
-                Info = "<color:green>All Cases Passed</color> <color:red>But I'm not happy, so you got 60.</color>",
-                Score = 60
-            };
 
             record = new Record()
             {
@@ -550,8 +547,6 @@ namespace Moo.Core.DB
                 User = ShaBi,
                 Problem = CPlusD,
             };
-            record.JudgeInfo = info;
-            info.Record = record;
             db.Records.AddObject(record);
 
             db.Records.AddObject(new Record()

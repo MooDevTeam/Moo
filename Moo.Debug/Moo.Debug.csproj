@@ -64,6 +64,10 @@
       <Project>{4E9C3A2E-4239-4E6E-9BA7-6BD46EBB9E4E}</Project>
       <Name>Moo.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WikiPlex\WikiPlex.csproj">
+      <Project>{ab01cc6c-9caf-4ba4-8adb-2d16f665f272}</Project>
+      <Name>WikiPlex</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

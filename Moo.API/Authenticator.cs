@@ -15,7 +15,8 @@ namespace Moo.API
         static readonly string[] ALLOWED_OPERATIONS = new string[]{
             "", "HelpPageInvoke",
             "Echo", "Debug",
-            "Login", "GetUserByName", "CreateUser"
+            "Login", "GetUserByName", "CreateUser",
+            "ListPostItem","ParseWiki"
         };
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {

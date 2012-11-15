@@ -63,132 +63,14 @@ namespace WikiPlex.Compilation.Macros
                                            {3, ScopeName.Remove}
                                        }),
                                new MacroRule(
-                                   @"(?si)(\{code:\s*aspx c#\}\r?\n)(.*?)(\r?\n\{code:\s*aspx c#\}(?:\r?\n)?)",
+                                   @"(?si)(\{code:\s*)((?<Language>[^\}]+))(\s*\}\r?\n)(.*?)(\r?\n\{code:\s*\k<Language>\s*\}(?:\r?\n)?)",
                                    new Dictionary<int, string>
                                        {
                                            {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeAspxCs},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*aspx vb.net\}\r?\n)(.*?)(\r?\n\{code:\s*aspx vb.net\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeAspxVb},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*ashx\}\r?\n)(.*?)(\r?\n\{code:\s*ashx\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeAshx},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*c\+\+\}\r?\n)(.*?)(\r?\n\{code:\s*c\+\+\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeCpp},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*c#\}\r?\n)(.*?)(\r?\n\{code:\s*c#\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeCSharp},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*vb.net\}\r?\n)(.*?)(\r?\n\{code:\s*vb.net\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeVbDotNet},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*html\}\r?\n)(.*?)(\r?\n\{code:\s*html\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeHtml},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*sql\}\r?\n)(.*?)(\r?\n\{code:\s*sql\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeSql},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*java\}\r?\n)(.*?)(\r?\n\{code:\s*java\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeJava},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*javascript\}\r?\n)(.*?)(\r?\n\{code:\s*javascript\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeJavaScript},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*xml\}\r?\n)(.*?)(\r?\n\{code:\s*xml\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeXml},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*php\}\r?\n)(.*?)(\r?\n\{code:\s*php\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodePhp},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*css\}\r?\n)(.*?)(\r?\n\{code:\s*css\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodeCss},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:\s*powershell\}\r?\n)(.*?)(\r?\n\{code:\s*powershell\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodePowerShell},
-                                           {3, ScopeName.Remove}
-                                       }),
-                              new MacroRule(
-                                   @"(?si)(\{code:\s*pascal\}\r?\n)(.*?)(\r?\n\{code:\s*pascal\}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.ColorCodePascal},
-                                           {3, ScopeName.Remove}
-                                       }),
-                               new MacroRule(
-                                   @"(?si)(\{code:[^\}]+\}\r?\n)(.*?)(\r?\n\{code:[^\}]+}(?:\r?\n)?)",
-                                   new Dictionary<int, string>
-                                       {
-                                           {1, ScopeName.Remove},
-                                           {2, ScopeName.MultiLineCode},
-                                           {3, ScopeName.Remove}
+                                           {2, ScopeName.SourceCodeLanguage},
+                                           {3, ScopeName.Remove},
+                                           {4, ScopeName.SourceCode},
+                                           {5, ScopeName.Remove}
                                        })
                            };
             }

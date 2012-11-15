@@ -75,11 +75,11 @@ namespace Moo.Debug
 
         static void Main(string[] args)
         {
-            Auth = Post("Login", "{\"userName\":\"onetwogoo\",\"password\":\"123456\"}");
-            Auth = Auth.Substring(1, Auth.Length - 2);
-            Console.WriteLine("Got Token <{0}>",Auth);
-            Console.WriteLine(Get("Problems?skip=100"));
-            //Console.WriteLine(Post("Problems", "{\"problem\":{\"Name\":\"Easy Problem\",\"Type\":\"Tranditional\"}}"));
+            Console.WriteLine(new WikiPlex.WikiEngine().Render("{code: c++ }\n"
+            +"int main(){\n"
+            +"\tstd::cin>>a>>b;\n"
+            +"\tstd::cout<<a+b;\n"
+            +"{code: c++}\n"));
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using Moo.Core.DB;
+using Moo.Core.Daemon;
 namespace Moo.API
 {
     public class Global : System.Web.HttpApplication
@@ -22,6 +23,8 @@ namespace Moo.API
                     MooTestData.AddTestData(db);
                 }
             }
+
+            TestDaemon.Instance.Start();
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -59,7 +62,7 @@ namespace Moo.API
 
         protected void Application_End(object sender, EventArgs e)
         {
-
+            TestDaemon.Instance.Stop();
         }
     }
 }

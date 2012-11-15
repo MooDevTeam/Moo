@@ -24,7 +24,7 @@ namespace Moo.API.DataContracts
                 MaximumScore = problem.MaximumScore,
                 AverageScore = problem.SubmissionUser != 0 ? (double?)(problem.ScoreSum / (double)problem.SubmissionUser) : null,
                 MyScore = myRecords.Any() ? (int?)myRecords.Max(r => r.JudgeInfo.Score) : null,
-                SubmissionCount = problem.SubmissionCount,
+                SubmissionTimes= problem.SubmissionTimes,
                 SubmissionUser = problem.SubmissionUser,
                 LatestRevision = problem.LatestRevision == null ? null : (int?)problem.LatestRevision.ID,
                 ArticleLocked = problem.ArticleLocked,

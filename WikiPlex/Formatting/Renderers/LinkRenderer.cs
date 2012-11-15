@@ -46,18 +46,16 @@ namespace WikiPlex.Formatting.Renderers
         {
             input = input.Trim();
 
-            
-                if (scopeName == ScopeName.LinkNoText)
-                    return ExpandLinkNoText(input, attributeEncode, htmlEncode);
-                if (scopeName == ScopeName.LinkWithText)
-                    return ExpandLinkWithText(input, attributeEncode, htmlEncode);
-                if (scopeName == ScopeName.LinkAsMailto)
-                    return string.Format(LinkFormat, attributeEncode("mailto:" + input), htmlEncode(input));
-                if (scopeName == ScopeName.Anchor)
-                    return string.Format("<a name=\"{0}\"></a>", attributeEncode(input));
-                if (scopeName == ScopeName.LinkToAnchor)
-                    return string.Format(LinkFormat, attributeEncode("#" + input), htmlEncode(input));
-            
+            if (scopeName == ScopeName.LinkNoText)
+                return ExpandLinkNoText(input, attributeEncode, htmlEncode);
+            if (scopeName == ScopeName.LinkWithText)
+                return ExpandLinkWithText(input, attributeEncode, htmlEncode);
+            if (scopeName == ScopeName.LinkAsMailto)
+                return string.Format(LinkFormat, attributeEncode("mailto:" + input), htmlEncode(input));
+            if (scopeName == ScopeName.Anchor)
+                return string.Format("<a name=\"{0}\"></a>", attributeEncode(input));
+            if (scopeName == ScopeName.LinkToAnchor)
+                return string.Format(LinkFormat, attributeEncode("#" + input), htmlEncode(input));
 
             return null;
         }
@@ -66,13 +64,14 @@ namespace WikiPlex.Formatting.Renderers
         {
             TextPart part = RenderException.ConvertAny(() => Utility.ExtractTextParts(input));
             string url = part.Text;
+            url = "javascript: Page.redirect('" + url.Replace("'", "\\'").Replace("\\","\\\\") + "\'); void 0;";
 
             return string.Format(LinkFormat, attributeEncode(url), htmlEncode(part.FriendlyText));
         }
 
         private static string ExpandLinkNoText(string input, Func<string, string> attributeEncode, Func<string, string> htmlEncode)
         {
-            string url = input;
+            string url = "javascript: Page.redirect('" + input.Replace("'", "\\'").Replace("\\", "\\\\") + "\'); void 0;";
 
             return string.Format(LinkFormat, attributeEncode(url), htmlEncode(input));
         }

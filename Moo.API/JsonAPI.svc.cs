@@ -57,15 +57,9 @@ namespace Moo.API
 
         #region Misc
         [OperationContract]
-        public string Wiki2HTML(string wiki)
+        public string ParseWiki(string wiki)
         {
-            return wiki;
-        }
-
-        [OperationContract]
-        public string GenerateDiffHTML(string oldText, string newText)
-        {
-            return DiffGenerator.Generate(oldText, newText);
+            return Moo.Core.Text.WikiParser.Parse(wiki);
         }
 
         [OperationContract]
@@ -116,8 +110,9 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Problems")]
-        public List<FullProblem> ListProblem()
+        public object ListProblem()
         {
+            int? id = OptionalIntParameter("id");
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
             string nameContains = QueryParameters["nameContains"];
@@ -125,6 +120,10 @@ namespace Moo.API
             {
                 IQueryable<Problem> problems = db.Problems;
 
+                if (id != null)
+                {
+                    problems = problems.Where(p => p.ID == id);
+                }
                 if (nameContains != null)
                 {
                     problems = problems.Where(p => p.Name.Contains(nameContains));
@@ -141,26 +140,64 @@ namespace Moo.API
                     problems = problems.Take((int)top);
                 }
 
-                return problems.ToList().Select(p => p.ToFullProblem(db)).ToList();
+                return (from p in problems
+                        let myRecords = from r in db.Records
+                                        where r.Problem.ID == p.ID && r.User.ID == Security.CurrentUser.ID
+                                              && r.JudgeInfo != null && r.JudgeInfo.Score >= 0
+                                        select r
+                        let testCases = from t in db.TestCases.OfType<TranditionalTestCase>()
+                                        where t.Problem.ID == p.ID
+                                        select t.Score
+                        let fullScore = testCases.Any() ? (int?)testCases.Sum() : null
+                        select new
+                        {
+                            ID = p.ID,
+                            Problem = new
+                            {
+                                ID = p.ID,
+                                Name = p.Name,
+                            },
+                            AverageScore = p.SubmissionUser != 0 ? (double?)(p.ScoreSum / (double)p.SubmissionUser) : null,
+                            MyScore = myRecords.Any() ? (int?)myRecords.Max(r => r.JudgeInfo.Score) : null,
+                            FullScore = fullScore,
+                            SubmissionTimes = p.SubmissionTimes,
+                            SubmissionUser = p.SubmissionUser,
+                        }).ToList();
             }
+        }
+
+        #region CreateProblem
+        [DataContract]
+        public class CreateProblemData
+        {
+            [DataMember]
+            public string Name;
+
+            [DataMember]
+            public string Type;
+
+            [DataMember]
+            public string Content;
         }
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems", Method = "POST")]
-        public int CreateProblem(FullProblem problem)
+        public int CreateProblem(CreateProblemData problem)
         {
+            if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
+            {
+                throw new NotSupportedException("不支持的题目类型：" + problem.Type);
+            }
+
             using (MooDB db = new MooDB())
             {
-                if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
-                {
-                    throw new NotSupportedException("不支持的题目类型：" + problem.Type);
-                }
+                User currentUser = Security.CurrentUser.GetDBUser(db);
                 Problem newProblem = new Problem()
                 {
                     Name = problem.Name,
                     Type = problem.Type,
                     CreateTime = DateTime.Now,
-                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    CreatedBy = currentUser,
                     ArticleLocked = false,
                     EnableTesting = true,
                     Hidden = false,
@@ -172,16 +209,31 @@ namespace Moo.API
                 };
                 Access.Required(db, newProblem, Function.CreateProblem);
                 db.Problems.AddObject(newProblem);
+
+                ProblemRevision revision = new ProblemRevision()
+                {
+                    Content = problem.Content,
+                    CreatedBy = currentUser,
+                    CreateTime = DateTime.Now,
+                    Problem = newProblem,
+                    Reason = "创建题目",
+                };
+                newProblem.LatestRevision = revision;
+                Access.Required(db, revision, Function.CreateProblemRevision);
+                db.ProblemRevisions.AddObject(revision);
+
                 db.SaveChanges();
                 return newProblem.ID;
             }
         }
+        #endregion
 
         [OperationContract]
         [WebGet(UriTemplate = "Problems/{id}")]
-        public FullProblem GetProblem(string id)
+        public object GetProblem(string id)
         {
             int iid = int.Parse(id);
+            int? revisionID = OptionalIntParameter("revisionID");
             using (MooDB db = new MooDB())
             {
                 Problem problem = (from p in db.Problems
@@ -191,7 +243,38 @@ namespace Moo.API
 
                 Access.Required(db, problem, Function.ReadProblem);
 
-                return problem.ToFullProblem(db);
+                ProblemRevision revision;
+                if (revisionID == null)
+                {
+                    revision = problem.LatestRevision;
+                }
+                else
+                {
+                    revision = (from r in db.ProblemRevisions
+                                where r.ID == revisionID
+                                select r).SingleOrDefault<ProblemRevision>();
+                    if (revision == null) throw new ArgumentException("题目版本与题目不对应");
+                }
+
+                return new
+                {
+                    ID = problem.ID,
+                    Name = problem.Name,
+                    Content = Access.Check(db, revision, Function.ReadProblemRevision) ? revision.Content : "权限不足，无法查看内容。",
+                    Revision = new
+                    {
+                        CreateTime = revision.CreateTime
+                    },
+                    ArticleLocked = problem.ArticleLocked,
+                    EnableTesting = problem.EnableTesting,
+                    Hidden = problem.Hidden,
+                    Locked = problem.Locked,
+                    PostLocked = problem.PostLocked,
+                    RecordLocked = problem.RecordLocked,
+                    TestCaseHidden = problem.TestCaseHidden,
+                    TestCaseLocked = problem.TestCaseLocked,
+                    Type = problem.Type
+                };
             }
         }
 
@@ -295,7 +378,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Problems/{problemID}/Revisions")]
-        public List<BriefProblemRevision> ListProblemRevision(string problemID)
+        public object ListProblemRevision(string problemID)
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
@@ -315,26 +398,17 @@ namespace Moo.API
                     revisions = revisions.Take((int)top);
                 }
 
-                return revisions.ToList().Select(r => r.ToBriefProblemRevision()).ToList();
-            }
-        }
-
-        [OperationContract]
-        [WebGet(UriTemplate = "Problems/{problemID}/Revisions/{id}")]
-        public FullProblemRevision GetProblemRevision(string problemID, string id)
-        {
-            int iid = int.Parse(id);
-            using (MooDB db = new MooDB())
-            {
-                ProblemRevision revision = (from r in db.ProblemRevisions
-                                            where r.ID == iid
-                                            select r).SingleOrDefault<ProblemRevision>();
-
-                if (revision == null) throw new ArgumentException("无此题目版本");
-
-                Access.Required(db, revision, Function.ReadProblemRevision);
-
-                return revision.ToFullProblemRevision();
+                return revisions.Select(r => new
+                {
+                    ID = r.ID,
+                    CreateTime = r.CreateTime,
+                    CreatedBy = new
+                    {
+                        ID = r.CreatedBy.ID,
+                        Name = r.CreatedBy.Name
+                    },
+                    Reason = r.Reason,
+                }).ToList();
             }
         }
 
@@ -385,18 +459,7 @@ namespace Moo.API
                 Problem problem = revision.Problem;
                 if (problem.LatestRevision.ID == revision.ID)
                 {
-                    var otherRevisions = from r in db.ProblemRevisions
-                                         where r.ID != revision.ID && r.Problem.ID == problem.ID
-                                         select r;
-                    if (otherRevisions.Any())
-                    {
-                        int largestID = otherRevisions.Max(r => r.ID);
-                        problem.LatestRevision = otherRevisions.Where(r => r.ID == largestID).Single();
-                    }
-                    else
-                    {
-                        problem.LatestRevision = null;
-                    }
+                    throw new InvalidOperationException("不可删除最新版本");
                 }
 
                 db.ProblemRevisions.DeleteObject(revision);
@@ -572,7 +635,7 @@ namespace Moo.API
                 };
                 currentUser.PreferredLanguage = record.Language;
 
-                problem.SubmissionCount++;
+                problem.SubmissionTimes++;
                 if (!(from r in db.Records
                       where r.Problem.ID == problem.ID && r.User.ID == Security.CurrentUser.ID
                       select r).Any())
@@ -1159,20 +1222,28 @@ namespace Moo.API
             }
         }
 
+        #region CreateUser
+        public class CreateUserData
+        {
+            public string Name;
+            public string Password;
+            public string Email;
+        }
+
         [OperationContract]
         [WebInvoke(UriTemplate = "Users", Method = "POST")]
-        public int CreateUser(FullUser user)
+        public int CreateUser(CreateUserData user)
         {
             using (MooDB db = new MooDB())
             {
                 User newUser = new User()
                 {
-                    BriefDescription = user.BriefDescription,
-                    Description = user.Description,
+                    BriefDescription = "我很懒，什么都没留下~",
+                    Description = "我真的很懒，真的什么也没留下。",
                     Email = user.Email,
                     Name = user.Name,
                     Password = Converter.ToSHA256Hash(user.Password),
-                    PreferredLanguage = user.PreferredLanguage,
+                    PreferredLanguage = "c++",
                     Role = new SiteRoles(db).NormalUser,
                     Score = 0,
                 };
@@ -1188,6 +1259,7 @@ namespace Moo.API
                 return newUser.ID;
             }
         }
+        #endregion
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Users/{id}", Method = "PUT")]
@@ -1419,17 +1491,31 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Posts/{postID}/Items")]
-        public List<BriefPostItem> ListPostItem(string postID)
+        public object ListPostItem(string postID)
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            bool order = QueryParameters["order"] != "desc";
+            int? idGreaterThan = OptionalIntParameter("idGT");
             int ipostID = int.Parse(postID);
             using (MooDB db = new MooDB())
             {
                 IQueryable<PostItem> postItems = from i in db.PostItems
                                                  where i.Post.ID == ipostID
-                                                 orderby i.ID
                                                  select i;
+                if (idGreaterThan != null)
+                {
+                    postItems = postItems.Where(p => p.ID > idGreaterThan);
+                }
+                if (order)
+                {
+                    postItems = postItems.OrderBy(i => i.ID);
+                }
+                else
+                {
+                    postItems = postItems.OrderByDescending(i => i.ID);
+                }
+
                 if (skip != null)
                 {
                     postItems = postItems.Skip((int)skip);
@@ -1438,7 +1524,17 @@ namespace Moo.API
                 {
                     postItems = postItems.Take((int)top);
                 }
-                return postItems.ToList().Select(i => i.ToBriefPostItem()).ToList();
+                return postItems.Select(i => new
+                {
+                    ID = i.ID,
+                    CreatedBy = new
+                    {
+                        ID = i.CreatedBy.ID,
+                        Name = i.CreatedBy.Name
+                    },
+                    Content = i.Content,
+                    CreateTime = i.CreateTime,
+                }).ToList();
             }
         }
 

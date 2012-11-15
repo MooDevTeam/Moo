@@ -2922,7 +2922,7 @@ namespace Moo.Core.DB
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="name">Name 属性的初始值。</param>
         /// <param name="type">Type 属性的初始值。</param>
-        /// <param name="submissionCount">SubmissionCount 属性的初始值。</param>
+        /// <param name="submissionTimes">SubmissionTimes 属性的初始值。</param>
         /// <param name="scoreSum">ScoreSum 属性的初始值。</param>
         /// <param name="submissionUser">SubmissionUser 属性的初始值。</param>
         /// <param name="createTime">CreateTime 属性的初始值。</param>
@@ -2934,13 +2934,13 @@ namespace Moo.Core.DB
         /// <param name="testCaseLocked">TestCaseLocked 属性的初始值。</param>
         /// <param name="enableTesting">EnableTesting 属性的初始值。</param>
         /// <param name="testCaseHidden">TestCaseHidden 属性的初始值。</param>
-        public static Problem CreateProblem(global::System.Int32 id, global::System.String name, global::System.String type, global::System.Int32 submissionCount, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime, global::System.Boolean hidden, global::System.Boolean locked, global::System.Boolean recordLocked, global::System.Boolean postLocked, global::System.Boolean articleLocked, global::System.Boolean testCaseLocked, global::System.Boolean enableTesting, global::System.Boolean testCaseHidden)
+        public static Problem CreateProblem(global::System.Int32 id, global::System.String name, global::System.String type, global::System.Int32 submissionTimes, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime, global::System.Boolean hidden, global::System.Boolean locked, global::System.Boolean recordLocked, global::System.Boolean postLocked, global::System.Boolean articleLocked, global::System.Boolean testCaseLocked, global::System.Boolean enableTesting, global::System.Boolean testCaseHidden)
         {
             Problem problem = new Problem();
             problem.ID = id;
             problem.Name = name;
             problem.Type = type;
-            problem.SubmissionCount = submissionCount;
+            problem.SubmissionTimes = submissionTimes;
             problem.ScoreSum = scoreSum;
             problem.SubmissionUser = submissionUser;
             problem.CreateTime = createTime;
@@ -3039,24 +3039,24 @@ namespace Moo.Core.DB
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public global::System.Int32 SubmissionCount
+        public global::System.Int32 SubmissionTimes
         {
             get
             {
-                return _SubmissionCount;
+                return _SubmissionTimes;
             }
             set
             {
-                OnSubmissionCountChanging(value);
-                ReportPropertyChanging("SubmissionCount");
-                _SubmissionCount = StructuralObject.SetValidValue(value, "SubmissionCount");
-                ReportPropertyChanged("SubmissionCount");
-                OnSubmissionCountChanged();
+                OnSubmissionTimesChanging(value);
+                ReportPropertyChanging("SubmissionTimes");
+                _SubmissionTimes = StructuralObject.SetValidValue(value, "SubmissionTimes");
+                ReportPropertyChanged("SubmissionTimes");
+                OnSubmissionTimesChanged();
             }
         }
-        private global::System.Int32 _SubmissionCount;
-        partial void OnSubmissionCountChanging(global::System.Int32 value);
-        partial void OnSubmissionCountChanged();
+        private global::System.Int32 _SubmissionTimes;
+        partial void OnSubmissionTimesChanging(global::System.Int32 value);
+        partial void OnSubmissionTimesChanged();
     
         /// <summary>
         /// 没有元数据文档可用。

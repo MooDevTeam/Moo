@@ -1012,7 +1012,7 @@
           <Property Type="String" Name="Type" Nullable="false" MaxLength="20" Unicode="false" />
           <NavigationProperty Name="LatestRevision" Relationship="Moo.Core.DB.LastestRevisionOfProblem" FromRole="Problem" ToRole="ProblemRevision" />
           <NavigationProperty Name="Contest" Relationship="Moo.Core.DB.ContestProblem" FromRole="Problem" ToRole="Contest" />
-          <Property Type="Int32" Name="SubmissionCount" Nullable="false" />
+          <Property Type="Int32" Name="SubmissionTimes" Nullable="false" />
           <Property Type="Int64" Name="ScoreSum" Nullable="false" />
           <Property Type="Int32" Name="SubmissionUser" Nullable="false" />
           <Property Type="Int32" Name="MaximumScore" Nullable="true" />
@@ -1377,7 +1377,7 @@
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Type" ColumnName="Type" />
-          <ScalarProperty Name="SubmissionCount" ColumnName="SubmissionCount" />
+          <ScalarProperty Name="SubmissionTimes" ColumnName="SubmissionCount" />
           <ScalarProperty Name="ScoreSum" ColumnName="ScoreSum" />
           <ScalarProperty Name="SubmissionUser" ColumnName="SubmissionUser" />
           <ScalarProperty Name="MaximumScore" ColumnName="MaximumScore" />
@@ -1817,11 +1817,11 @@
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram Name="MooDB" ZoomLevel="97">
-        <EntityTypeShape EntityType="Moo.Core.DB.User" Width="1.75" PointX="11.75" PointY="11.5" Height="2.9251310221354174" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Role" Width="1.5" PointX="14.25" PointY="15.25" Height="1.587993164062496" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Problem" Width="1.875" PointX="9.125" PointY="9.625" Height="4.6443082682291674" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Record" Width="1.5" PointX="3.875" PointY="10.75" Height="2.5430916341145817" IsExpanded="true" />
+      <Diagram Name="MooDB" ZoomLevel="100">
+        <EntityTypeShape EntityType="Moo.Core.DB.User" Width="1.75" PointX="8.375" PointY="5.875" Height="2.9251310221354174" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Role" Width="1.5" PointX="10.875" PointY="9.625" Height="1.587993164062496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Problem" Width="1.875" PointX="5.75" PointY="4" Height="4.6443082682291674" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Record" Width="1.5" PointX="0.5" PointY="5.125" Height="2.5430916341145817" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.RecordProblem">
           <ConnectorPoint PointX="5.375" PointY="11.613535970052084" />
           <ConnectorPoint PointX="7.166666666666667" PointY="11.613535970052084" />
@@ -1830,7 +1830,7 @@
           <ConnectorPoint PointX="8.3020833333333339" PointY="11.613535970052084" />
           <ConnectorPoint PointX="9.125" PointY="11.613535970052084" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.TestCase" Width="1.5" PointX="14.25" PointY="12.25" Height="1.587993164062496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.TestCase" Width="1.5" PointX="10.875" PointY="6.625" Height="1.587993164062496" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.TestDataProblem">
           <ConnectorPoint PointX="15" PointY="12.25" />
           <ConnectorPoint PointX="15" PointY="11.25" />
@@ -1840,7 +1840,7 @@
           <ConnectorPoint PointX="11.375" PointY="11.947154134114584" />
           <ConnectorPoint PointX="11" PointY="11.947154134114584" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.ProblemRevision" Width="1.5" PointX="17.25" PointY="11" Height="2.1610522460937496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.ProblemRevision" Width="1.5" PointX="13.875" PointY="5.375" Height="2.1610522460937496" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.ProblemProblemRevision">
           <ConnectorPoint PointX="11" PointY="11.0625" />
           <ConnectorPoint PointX="13.322916666666666" PointY="11.0625" />
@@ -1862,8 +1862,8 @@
           <ConnectorPoint PointX="13.177085833333335" PointY="16.043996582031248" />
           <ConnectorPoint PointX="14.25" PointY="16.043996582031248" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Post" Width="1.5" PointX="11.75" PointY="7.875" Height="2.1610522460937496" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.PostItem" Width="1.5" PointX="6.5" PointY="12" Height="1.9700325520833317" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Post" Width="1.5" PointX="8.375" PointY="2.25" Height="2.1610522460937496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.PostItem" Width="1.5" PointX="3.125" PointY="6.375" Height="1.9700325520833317" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.UserCreatePostItem">
           <ConnectorPoint PointX="7.25" PointY="13.970032552083332" />
           <ConnectorPoint PointX="7.25" PointY="14.393878522135417" />
@@ -1884,20 +1884,20 @@
           <ConnectorPoint PointX="11" PointY="9.8305261230468748" />
           <ConnectorPoint PointX="11.75" PointY="9.8305261230468748" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.TranditionalTestCase" Width="1.5" PointX="23.625" PointY="14.625" Height="1.9700325520833246" />
+        <EntityTypeShape EntityType="Moo.Core.DB.TranditionalTestCase" Width="1.5" PointX="20.25" PointY="9" Height="1.9700325520833246" />
         <InheritanceConnector EntityType="Moo.Core.DB.TranditionalTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
           <ConnectorPoint PointX="24.375" PointY="14.25" />
           <ConnectorPoint PointX="24.375" PointY="14.625" />
         </InheritanceConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.JudgeInfo" Width="1.5" PointX="6.125" PointY="6.125" Height="1.7790128580729174" />
+        <EntityTypeShape EntityType="Moo.Core.DB.JudgeInfo" Width="1.5" PointX="2.75" PointY="0.5" Height="1.7790128580729174" />
         <AssociationConnector Association="Moo.Core.DB.RecordJudgeInfo">
           <ConnectorPoint PointX="4.625" PointY="10.75" />
           <ConnectorPoint PointX="4.625" PointY="7.0145064290364587" />
           <ConnectorPoint PointX="6.125" PointY="7.0145064290364587" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Mail" Width="1.5" PointX="9.5" PointY="20.625" Height="2.3520719401041674" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Mail" Width="1.5" PointX="6.125" PointY="15" Height="2.3520719401041674" />
         <AssociationConnector Association="Moo.Core.DB.MailFrom">
           <ConnectorPoint PointX="11" PointY="22.055541250813803" />
           <ConnectorPoint PointX="12.1562475" PointY="22.055541250813803" />
@@ -1922,7 +1922,7 @@
           <ConnectorPoint PointX="15.083333333333334" PointY="11.40625" />
           <ConnectorPoint PointX="17.25" PointY="11.40625" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Contest" Width="1.875" PointX="9.375" PointY="14.75" Height="5.59940673828125" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Contest" Width="1.875" PointX="6" PointY="9.125" Height="5.59940673828125" />
         <AssociationConnector Association="Moo.Core.DB.UserAttendContest">
           <ConnectorPoint PointX="11.75" PointY="14.425131022135417" />
           <ConnectorPoint PointX="11.25" PointY="14.75" />
@@ -1938,8 +1938,8 @@
           <ConnectorPoint PointX="10.1875" PointY="14.75" />
           <ConnectorPoint PointX="10.1875" PointY="14.269308268229167" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.UploadedFile" Width="1.5" PointX="9.5" PointY="23.5" Height="1.9700325520833388" />
-        <EntityTypeShape EntityType="Moo.Core.DB.SpecialJudgedTestCase" Width="1.5" PointX="21.375" PointY="14.625" Height="1.9700325520833388" />
+        <EntityTypeShape EntityType="Moo.Core.DB.UploadedFile" Width="1.5" PointX="6.125" PointY="17.875" Height="1.9700325520833388" />
+        <EntityTypeShape EntityType="Moo.Core.DB.SpecialJudgedTestCase" Width="1.5" PointX="18" PointY="9" Height="1.9700325520833388" />
         <InheritanceConnector EntityType="Moo.Core.DB.SpecialJudgedTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
@@ -1953,7 +1953,7 @@
           <ConnectorPoint PointX="17.541666666666668" PointY="24.485016276041669" />
           <ConnectorPoint PointX="11" PointY="24.485016276041669" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.InteractiveTestCase" Width="1.5" PointX="19.125" PointY="14.625" Height="1.7790128580729174" />
+        <EntityTypeShape EntityType="Moo.Core.DB.InteractiveTestCase" Width="1.5" PointX="15.75" PointY="9" Height="1.7790128580729174" />
         <InheritanceConnector EntityType="Moo.Core.DB.InteractiveTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
@@ -1967,7 +1967,7 @@
           <ConnectorPoint PointX="17.541666666666668" PointY="23.961255638020834" />
           <ConnectorPoint PointX="11" PointY="23.961255638020834" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.AnswerOnlyTestCase" Width="1.5" PointX="16.875" PointY="14.625" Height="1.3969734700520888" />
+        <EntityTypeShape EntityType="Moo.Core.DB.AnswerOnlyTestCase" Width="1.5" PointX="13.5" PointY="9" Height="1.3969734700520888" />
         <InheritanceConnector EntityType="Moo.Core.DB.AnswerOnlyTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
@@ -1983,7 +1983,7 @@
           <ConnectorPoint PointX="13.5" PointY="13.043996582031248" />
           <ConnectorPoint PointX="14.25" PointY="13.043996582031248" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Log" Width="1.5" PointX="14.25" PointY="8.25" Height="2.161052246093746" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Log" Width="1.5" PointX="10.875" PointY="2.625" Height="2.161052246093746" />
         <AssociationConnector Association="Moo.Core.DB.LogUser">
           <ConnectorPoint PointX="13.40625" PointY="11.5" />
           <ConnectorPoint PointX="13.40625" PointY="10.254802246093748" />
@@ -1998,9 +1998,9 @@
           <ConnectorPoint PointX="11" PointY="13.170731201171876" />
           <ConnectorPoint PointX="11.75" PointY="13.170731201171876" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Article" Width="1.5" PointX="6.875" PointY="8.875" Height="2.3520719401041656" />
-        <EntityTypeShape EntityType="Moo.Core.DB.ArticleRevision" Width="1.5" PointX="17.25" PointY="7.75" Height="1.9700325520833335" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Category" Width="1.5" PointX="9.125" PointY="7.25" Height="1.3969734700520817" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Article" Width="1.5" PointX="3.5" PointY="3.25" Height="2.3520719401041656" />
+        <EntityTypeShape EntityType="Moo.Core.DB.ArticleRevision" Width="1.5" PointX="13.875" PointY="2.125" Height="1.9700325520833335" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Category" Width="1.5" PointX="5.75" PointY="1.625" Height="1.3969734700520817" />
         <AssociationConnector Association="Moo.Core.DB.UserCreateArticle">
           <ConnectorPoint PointX="11.75" PointY="14.409504772135417" />
           <ConnectorPoint PointX="10.270833333333334" PointY="14.409504772135417" />

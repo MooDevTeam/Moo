@@ -420,6 +420,8 @@ namespace Moo.Core.Security
             {
                 return CheckRules(@object as Contest, ContestRules, function);
             }
+            else if (@object == null)
+                throw new NullReferenceException("试图检测针对Null的权限");
             else
                 throw new NotImplementedException("糟糕！权限模块不完整！");
         }
