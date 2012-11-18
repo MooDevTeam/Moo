@@ -38,15 +38,14 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "InteractiveTestCaseInvokerFile", "InteractiveTestCase", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.InteractiveTestCase), "UploadedFile", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.UploadedFile))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "AnswerOnlyTestCaseUploadedFile", "AnswerOnlyTestCase", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.AnswerOnlyTestCase), "UploadedFile", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.UploadedFile))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserTestCase", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "TestCase", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.TestCase))]
-[assembly: EdmRelationshipAttribute("Moo.Core.DB", "LogUser", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.User), "Log", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Log))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UploadedFileUser", "UploadedFile", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.UploadedFile), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateProblem", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Problem), "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateArticle", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "UserCreateArticleRevision", "User", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.User), "ArticleRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ArticleRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleArticleRevision", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Article), "ArticleRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.ArticleRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleLatestRevision", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Article), "ArticleRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.ArticleRevision))]
-[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleCategory", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article), "Category", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(Moo.Core.DB.Category))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleProblem", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article), "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Problem))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleTag", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article), "Tag", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Tag))]
 
 #endregion
 
@@ -293,22 +292,6 @@ namespace Moo.Core.DB
         /// <summary>
         /// 没有元数据文档可用。
         /// </summary>
-        public ObjectSet<Log> Logs
-        {
-            get
-            {
-                if ((_Logs == null))
-                {
-                    _Logs = base.CreateObjectSet<Log>("Logs");
-                }
-                return _Logs;
-            }
-        }
-        private ObjectSet<Log> _Logs;
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
         public ObjectSet<Article> Articles
         {
             get
@@ -341,18 +324,18 @@ namespace Moo.Core.DB
         /// <summary>
         /// 没有元数据文档可用。
         /// </summary>
-        public ObjectSet<Category> Categories
+        public ObjectSet<Tag> Tags
         {
             get
             {
-                if ((_Categories == null))
+                if ((_Tags == null))
                 {
-                    _Categories = base.CreateObjectSet<Category>("Categories");
+                    _Tags = base.CreateObjectSet<Tag>("Tags");
                 }
-                return _Categories;
+                return _Tags;
             }
         }
-        private ObjectSet<Category> _Categories;
+        private ObjectSet<Tag> _Tags;
 
         #endregion
 
@@ -455,14 +438,6 @@ namespace Moo.Core.DB
         }
     
         /// <summary>
-        /// 用于向 Logs EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
-        /// </summary>
-        public void AddToLogs(Log log)
-        {
-            base.AddObject("Logs", log);
-        }
-    
-        /// <summary>
         /// 用于向 Articles EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
         /// </summary>
         public void AddToArticles(Article article)
@@ -479,11 +454,11 @@ namespace Moo.Core.DB
         }
     
         /// <summary>
-        /// 用于向 Categories EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
+        /// 用于向 Tags EntitySet 添加新对象的方法，已弃用。请考虑改用关联的 ObjectSet&lt;T&gt; 属性的 .Add 方法。
         /// </summary>
-        public void AddToCategories(Category category)
+        public void AddToTags(Tag tag)
         {
-            base.AddObject("Categories", category);
+            base.AddObject("Tags", tag);
         }
 
         #endregion
@@ -781,44 +756,6 @@ namespace Moo.Core.DB
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ArticleCategory", "Category")]
-        public Category Category
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<Category> CategoryReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Category>("Moo.Core.DB.ArticleCategory", "Category", value);
-                }
-            }
-        }
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
         [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ArticleProblem", "Problem")]
         public Problem Problem
         {
@@ -850,6 +787,28 @@ namespace Moo.Core.DB
                 }
             }
         }
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ArticleTag", "Tag")]
+        public EntityCollection<Tag> Tag
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Tag>("Moo.Core.DB.ArticleTag", "Tag");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Tag>("Moo.Core.DB.ArticleTag", "Tag", value);
+                }
+            }
+        }
 
         #endregion
 
@@ -871,12 +830,14 @@ namespace Moo.Core.DB
         /// <param name="id">ID 属性的初始值。</param>
         /// <param name="content">Content 属性的初始值。</param>
         /// <param name="createTime">CreateTime 属性的初始值。</param>
-        public static ArticleRevision CreateArticleRevision(global::System.Int32 id, global::System.String content, global::System.DateTime createTime)
+        /// <param name="reason">Reason 属性的初始值。</param>
+        public static ArticleRevision CreateArticleRevision(global::System.Int32 id, global::System.String content, global::System.DateTime createTime, global::System.String reason)
         {
             ArticleRevision articleRevision = new ArticleRevision();
             articleRevision.ID = id;
             articleRevision.Content = content;
             articleRevision.CreateTime = createTime;
+            articleRevision.Reason = reason;
             return articleRevision;
         }
 
@@ -958,6 +919,30 @@ namespace Moo.Core.DB
         private global::System.DateTime _CreateTime;
         partial void OnCreateTimeChanging(global::System.DateTime value);
         partial void OnCreateTimeChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Reason
+        {
+            get
+            {
+                return _Reason;
+            }
+            set
+            {
+                OnReasonChanging(value);
+                ReportPropertyChanging("Reason");
+                _Reason = StructuralObject.SetValidValue(value, false, "Reason");
+                ReportPropertyChanged("Reason");
+                OnReasonChanged();
+            }
+        }
+        private global::System.String _Reason;
+        partial void OnReasonChanging(global::System.String value);
+        partial void OnReasonChanged();
 
         #endregion
 
@@ -1038,88 +1023,6 @@ namespace Moo.Core.DB
                 }
             }
         }
-
-        #endregion
-
-    }
-    
-    /// <summary>
-    /// 没有元数据文档可用。
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="Category")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class Category : EntityObject
-    {
-        #region 工厂方法
-    
-        /// <summary>
-        /// 创建新的 Category 对象。
-        /// </summary>
-        /// <param name="id">ID 属性的初始值。</param>
-        /// <param name="name">Name 属性的初始值。</param>
-        public static Category CreateCategory(global::System.Int32 id, global::System.String name)
-        {
-            Category category = new Category();
-            category.ID = id;
-            category.Name = name;
-            return category;
-        }
-
-        #endregion
-
-        #region 简单属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value, "ID");
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Int32 _ID;
-        partial void OnIDChanging(global::System.Int32 value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Name
-        {
-            get
-            {
-                return _Name;
-            }
-            set
-            {
-                OnNameChanging(value);
-                ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false, "Name");
-                ReportPropertyChanged("Name");
-                OnNameChanged();
-            }
-        }
-        private global::System.String _Name;
-        partial void OnNameChanging(global::System.String value);
-        partial void OnNameChanged();
 
         #endregion
 
@@ -2066,208 +1969,6 @@ namespace Moo.Core.DB
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Record>("Moo.Core.DB.RecordJudgeInfo", "Record", value);
-                }
-            }
-        }
-
-        #endregion
-
-    }
-    
-    /// <summary>
-    /// 没有元数据文档可用。
-    /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="Log")]
-    [Serializable()]
-    [DataContractAttribute(IsReference=true)]
-    public partial class Log : EntityObject
-    {
-        #region 工厂方法
-    
-        /// <summary>
-        /// 创建新的 Log 对象。
-        /// </summary>
-        /// <param name="id">ID 属性的初始值。</param>
-        /// <param name="createTime">CreateTime 属性的初始值。</param>
-        /// <param name="level">Level 属性的初始值。</param>
-        /// <param name="info">Info 属性的初始值。</param>
-        /// <param name="remoteAddress">RemoteAddress 属性的初始值。</param>
-        public static Log CreateLog(global::System.Int32 id, global::System.DateTime createTime, global::System.Byte level, global::System.String info, global::System.String remoteAddress)
-        {
-            Log log = new Log();
-            log.ID = id;
-            log.CreateTime = createTime;
-            log.Level = level;
-            log.Info = info;
-            log.RemoteAddress = remoteAddress;
-            return log;
-        }
-
-        #endregion
-
-        #region 简单属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Int32 ID
-        {
-            get
-            {
-                return _ID;
-            }
-            set
-            {
-                if (_ID != value)
-                {
-                    OnIDChanging(value);
-                    ReportPropertyChanging("ID");
-                    _ID = StructuralObject.SetValidValue(value, "ID");
-                    ReportPropertyChanged("ID");
-                    OnIDChanged();
-                }
-            }
-        }
-        private global::System.Int32 _ID;
-        partial void OnIDChanging(global::System.Int32 value);
-        partial void OnIDChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.DateTime CreateTime
-        {
-            get
-            {
-                return _CreateTime;
-            }
-            set
-            {
-                OnCreateTimeChanging(value);
-                ReportPropertyChanging("CreateTime");
-                _CreateTime = StructuralObject.SetValidValue(value, "CreateTime");
-                ReportPropertyChanged("CreateTime");
-                OnCreateTimeChanged();
-            }
-        }
-        private global::System.DateTime _CreateTime;
-        partial void OnCreateTimeChanging(global::System.DateTime value);
-        partial void OnCreateTimeChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.Byte Level
-        {
-            get
-            {
-                return _Level;
-            }
-            set
-            {
-                OnLevelChanging(value);
-                ReportPropertyChanging("Level");
-                _Level = StructuralObject.SetValidValue(value, "Level");
-                ReportPropertyChanged("Level");
-                OnLevelChanged();
-            }
-        }
-        private global::System.Byte _Level;
-        partial void OnLevelChanging(global::System.Byte value);
-        partial void OnLevelChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String Info
-        {
-            get
-            {
-                return _Info;
-            }
-            set
-            {
-                OnInfoChanging(value);
-                ReportPropertyChanging("Info");
-                _Info = StructuralObject.SetValidValue(value, false, "Info");
-                ReportPropertyChanged("Info");
-                OnInfoChanged();
-            }
-        }
-        private global::System.String _Info;
-        partial void OnInfoChanging(global::System.String value);
-        partial void OnInfoChanged();
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
-        [DataMemberAttribute()]
-        public global::System.String RemoteAddress
-        {
-            get
-            {
-                return _RemoteAddress;
-            }
-            set
-            {
-                OnRemoteAddressChanging(value);
-                ReportPropertyChanging("RemoteAddress");
-                _RemoteAddress = StructuralObject.SetValidValue(value, false, "RemoteAddress");
-                ReportPropertyChanged("RemoteAddress");
-                OnRemoteAddressChanged();
-            }
-        }
-        private global::System.String _RemoteAddress;
-        partial void OnRemoteAddressChanging(global::System.String value);
-        partial void OnRemoteAddressChanged();
-
-        #endregion
-
-        #region 导航属性
-    
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "LogUser", "User")]
-        public User User
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.LogUser", "User").Value;
-            }
-            set
-            {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.LogUser", "User").Value = value;
-            }
-        }
-        /// <summary>
-        /// 没有元数据文档可用。
-        /// </summary>
-        [BrowsableAttribute(false)]
-        [DataMemberAttribute()]
-        public EntityReference<User> UserReference
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<User>("Moo.Core.DB.LogUser", "User");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<User>("Moo.Core.DB.LogUser", "User", value);
                 }
             }
         }
@@ -4222,6 +3923,88 @@ namespace Moo.Core.DB
                 }
             }
         }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// 没有元数据文档可用。
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Moo.Core.DB", Name="Tag")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Tag : EntityObject
+    {
+        #region 工厂方法
+    
+        /// <summary>
+        /// 创建新的 Tag 对象。
+        /// </summary>
+        /// <param name="id">ID 属性的初始值。</param>
+        /// <param name="name">Name 属性的初始值。</param>
+        public static Tag CreateTag(global::System.Int32 id, global::System.String name)
+        {
+            Tag tag = new Tag();
+            tag.ID = id;
+            tag.Name = name;
+            return tag;
+        }
+
+        #endregion
+
+        #region 简单属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ID
+        {
+            get
+            {
+                return _ID;
+            }
+            set
+            {
+                if (_ID != value)
+                {
+                    OnIDChanging(value);
+                    ReportPropertyChanging("ID");
+                    _ID = StructuralObject.SetValidValue(value, "ID");
+                    ReportPropertyChanged("ID");
+                    OnIDChanged();
+                }
+            }
+        }
+        private global::System.Int32 _ID;
+        partial void OnIDChanging(global::System.Int32 value);
+        partial void OnIDChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
+                ReportPropertyChanged("Name");
+                OnNameChanged();
+            }
+        }
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
 
         #endregion
 

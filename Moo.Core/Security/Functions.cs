@@ -81,11 +81,5 @@ namespace Moo.Core.Security
         CreateArticleRevision,
         ReadArticleRevision,
         DeleteArticleRevision,
-
-        //Catagories
-        CreateCatagory,
-        ReadCatagory,
-        ModifyCatagory,
-        DeleteCatagory
     }
 }

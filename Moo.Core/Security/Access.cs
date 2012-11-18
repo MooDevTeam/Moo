@@ -278,28 +278,6 @@ namespace Moo.Core.Security
             }
         }
 
-        Dictionary<Function, List<Func<Category, bool?>>> CategoryRules
-        {
-            get
-            {
-                return new Dictionary<Function, List<Func<Category, bool?>>>
-                {
-                    {Function.CreateCatagory,new List<Func<Category,bool?>>{
-                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
-                    }},
-                    {Function.ReadCatagory,new List<Func<Category,bool?>>{
-                        c=>me.Role>=SiteRole.Reader?(bool?)true:null
-                    }},
-                    {Function.ModifyCatagory,new List<Func<Category,bool?>>{
-                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
-                    }},
-                    {Function.DeleteCatagory,new List<Func<Category,bool?>>{
-                        c=>me.Role>=SiteRole.Worker?(bool?)true:null
-                    }},
-                };
-            }
-        }
-
         Dictionary<Function, List<Func<Mail, bool?>>> MailRules
         {
             get
@@ -407,10 +385,6 @@ namespace Moo.Core.Security
             else if (@object is ArticleRevision)
             {
                 return CheckRules(@object as ArticleRevision, ArticleRevisionRules, function);
-            }
-            else if (@object is Category)
-            {
-                return CheckRules(@object as Category, CategoryRules, function);
             }
             else if (@object is Mail)
             {

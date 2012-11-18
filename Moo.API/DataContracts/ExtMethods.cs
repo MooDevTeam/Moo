@@ -237,7 +237,6 @@ namespace Moo.API.DataContracts
                 CreateTime = article.CreateTime,
                 LatestRevision = article.LatestRevision == null ? null : (int?)article.LatestRevision.ID,
                 Name = article.Name,
-                Category = article.Category.ID,
                 Problem = article.Problem.ID
             };
         }
@@ -262,15 +261,6 @@ namespace Moo.API.DataContracts
                 CreatedBy = articleRevision.CreatedBy.ID,
                 CreateTime = articleRevision.CreateTime,
                 ID = articleRevision.ID
-            };
-        }
-
-        public static FullCategory ToFullCategory(this Category category)
-        {
-            return new FullCategory()
-            {
-                ID = category.ID,
-                Name = category.Name
             };
         }
 

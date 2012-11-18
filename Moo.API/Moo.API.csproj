@@ -90,7 +90,6 @@
     <Compile Include="DataContracts\BriefProblemRevision.cs" />
     <Compile Include="DataContracts\BriefUser.cs" />
     <Compile Include="DataContracts\FullArticleRevision.cs" />
-    <Compile Include="DataContracts\FullCategory.cs" />
     <Compile Include="DataContracts\FullMail.cs" />
     <Compile Include="DataContracts\FullContest.cs" />
     <Compile Include="DataContracts\FullRole.cs" />

@@ -113,9 +113,10 @@ namespace Moo.API
         public object ListProblem()
         {
             int? id = OptionalIntParameter("id");
-            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
-            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            int? skip = OptionalIntParameter("skip");
+            int? top = OptionalIntParameter("top");
             string nameContains = QueryParameters["nameContains"];
+            string nameStartWith = QueryParameters["nameStartWith"];
             using (MooDB db = new MooDB())
             {
                 IQueryable<Problem> problems = db.Problems;
@@ -127,6 +128,10 @@ namespace Moo.API
                 if (nameContains != null)
                 {
                     problems = problems.Where(p => p.Name.Contains(nameContains));
+                }
+                if (nameStartWith != null)
+                {
+                    problems = problems.Where(p => p.Name.StartsWith(nameStartWith));
                 }
 
                 problems = problems.OrderByDescending(p => p.ID);
@@ -1634,7 +1639,6 @@ namespace Moo.API
         public int CountArticle()
         {
             int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
-            int? categoryID = QueryParameters["categoryID"] == null ? null : (int?)int.Parse(QueryParameters["categoryID"]);
             string nameContains = QueryParameters["nameContains"];
             using (MooDB db = new MooDB())
             {
@@ -1642,10 +1646,6 @@ namespace Moo.API
                 if (problemID != null)
                 {
                     articles = articles.Where(a => a.Problem.ID == problemID);
-                }
-                if (categoryID != null)
-                {
-                    articles = articles.Where(a => a.Category.ID == categoryID);
                 }
                 if (nameContains != null)
                 {
@@ -1657,23 +1657,30 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Articles")]
-        public List<FullArticle> ListArticle()
+        public object ListArticle()
         {
-            int? problemID = QueryParameters["problemID"] == null ? null : (int?)int.Parse(QueryParameters["problemID"]);
-            int? categoryID = QueryParameters["categoryID"] == null ? null : (int?)int.Parse(QueryParameters["categoryID"]);
+            int? problemID = OptionalIntParameter("problemID");
             string nameContains = QueryParameters["nameContains"];
-            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
-            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
+            int? skip = OptionalIntParameter("skip");
+            int? top = OptionalIntParameter("top");
+            int? id = OptionalIntParameter("id");
+            int? tagID = OptionalIntParameter("tagID");
             using (MooDB db = new MooDB())
             {
                 IQueryable<Article> articles = db.Articles;
+                if (id != null)
+                {
+                    articles = articles.Where(a => a.ID == id);
+                }
+                if (tagID != null)
+                {
+                    articles = from a in articles
+                               where a.Tag.Any(t => t.ID == tagID)
+                               select a;
+                }
                 if (problemID != null)
                 {
                     articles = articles.Where(a => a.Problem.ID == problemID);
-                }
-                if (categoryID != null)
-                {
-                    articles = articles.Where(a => a.Category.ID == categoryID);
                 }
                 if (nameContains != null)
                 {
@@ -1690,15 +1697,29 @@ namespace Moo.API
                 {
                     articles = articles.Take((int)top);
                 }
-                return articles.ToList().Select(a => a.ToFullArticle()).ToList();
+                return articles.Select(a => new
+                {
+                    ID = a.ID,
+                    Article = new
+                    {
+                        ID = a.ID,
+                        Name = a.Name
+                    },
+                    Problem = new
+                    {
+                        ID = a.Problem == null ? null : (int?)a.Problem.ID,
+                        Name = a.Problem == null ? null : a.Problem.Name
+                    }
+                }).ToList();
             }
         }
 
         [OperationContract]
         [WebGet(UriTemplate = "Articles/{id}")]
-        public FullArticle GetArticle(string id)
+        public object GetArticle(string id)
         {
             int iid = int.Parse(id);
+            int? revisionID = OptionalIntParameter("revisionID");
             using (MooDB db = new MooDB())
             {
                 Article article = (from a in db.Articles
@@ -1708,21 +1729,71 @@ namespace Moo.API
 
                 Access.Required(db, article, Function.ReadArticle);
 
-                return article.ToFullArticle();
+                ArticleRevision revision;
+                if (revisionID == null)
+                {
+                    revision = article.LatestRevision;
+                }
+                else
+                {
+                    revision = (from r in db.ArticleRevisions
+                                where r.ID == revisionID
+                                select r).SingleOrDefault<ArticleRevision>();
+                    if (revision == null) throw new ArgumentException("无此文章版本");
+                }
+
+                return new
+                {
+                    ID = article.ID,
+                    Name = article.Name,
+                    Content = Access.Check(db, revision, Function.ReadArticleRevision) ? revision.Content : "权限不足，无法查看内容。",
+                    CreateTime = article.CreateTime,
+                    Problem = new
+                    {
+                        ID = article.Problem == null ? null : (int?)article.Problem.ID,
+                        Name = article.Problem == null ? null : article.Problem.Name
+                    },
+                    Revision = new
+                    {
+                        CreatedBy = new
+                        {
+                            ID = revision.CreatedBy.ID,
+                            Name = revision.CreatedBy.Name
+                        },
+                        CreateTime = revision.CreateTime
+                    },
+                    Tag = article.Tag.Select(t => new
+                                            {
+                                                ID = t.ID,
+                                                Name = t.Name
+                                            }).ToList()
+                };
             }
+        }
+
+        #region CreateArticle
+        [DataContract]
+        public class CreateArticleData
+        {
+            [DataMember]
+            public int? ProblemID;
+            [DataMember]
+            public string Name;
+            [DataMember]
+            public string Content;
         }
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Articles", Method = "POST")]
-        public int CreateArticle(FullArticle article)
+        public int CreateArticle(CreateArticleData article)
         {
             using (MooDB db = new MooDB())
             {
                 Problem problem;
-                if (article.Problem != null)
+                if (article.ProblemID != null)
                 {
                     problem = (from p in db.Problems
-                               where p.ID == article.Problem
+                               where p.ID == article.ProblemID
                                select p).SingleOrDefault<Problem>();
                     if (problem == null) throw new ArgumentException("无此题目");
                 }
@@ -1731,27 +1802,34 @@ namespace Moo.API
                     problem = null;
                 }
 
-                Category category = (from c in db.Categories
-                                     where c.ID == article.Category
-                                     select c).SingleOrDefault<Category>();
-                if (category == null) throw new ArgumentException("无此分类");
-
+                User currentUser = Security.CurrentUser.GetDBUser(db);
                 Article newArticle = new Article()
                 {
-                    Category = category,
-                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    CreatedBy = currentUser,
                     CreateTime = DateTime.Now,
                     Name = article.Name,
                     Problem = problem,
                 };
-
                 Access.Required(db, newArticle, Function.CreateArticle);
-
                 db.Articles.AddObject(newArticle);
+
+                ArticleRevision revision = new ArticleRevision()
+                {
+                    Article = newArticle,
+                    Content = article.Content,
+                    CreatedBy = currentUser,
+                    CreateTime = DateTime.Now,
+                    Reason = "创建文章"
+                };
+                newArticle.LatestRevision = revision;
+                Access.Required(db, revision, Function.CreateArticleRevision);
+                db.ArticleRevisions.AddObject(revision);
+
                 db.SaveChanges();
                 return newArticle.ID;
             }
         }
+        #endregion
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Articles/{id}", Method = "PUT")]
@@ -1767,15 +1845,6 @@ namespace Moo.API
 
                 Access.Required(db, theArticle, Function.ModifyArticle);
 
-                if (article.Category != null)
-                {
-                    Category category = (from c in db.Categories
-                                         where c.ID == article.Category
-                                         select c).SingleOrDefault<Category>();
-                    if (category != null) throw new ArgumentException("无此分类");
-
-                    theArticle.Category = category;
-                }
                 if (article.Name != null)
                 {
                     theArticle.Name = article.Name;
@@ -1806,7 +1875,59 @@ namespace Moo.API
 
                 Access.Required(db, article, Function.DeleteArticle);
 
+                article.Tag.Clear();
                 db.Articles.DeleteObject(article);
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region ArticleTags
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Articles/{articleID}/Tags", Method = "POST")]
+        public void CreateArticleTag(string articleID, string tagID)
+        {
+            int iarticleID = int.Parse(articleID);
+            int iid = int.Parse(tagID);
+            using (MooDB db = new MooDB())
+            {
+                Article article = (from a in db.Articles
+                                   where a.ID == iarticleID
+                                   select a).SingleOrDefault<Article>();
+                if (article == null) throw new ArgumentException("无此文章");
+
+                Tag tag = (from t in db.Tags
+                           where t.ID == iid
+                           select t).SingleOrDefault<Tag>();
+                if (tag == null) throw new ArgumentException("无此标签");
+
+                Access.Required(db, article, Function.ModifyArticle);
+                article.Tag.Add(tag);
+                db.SaveChanges();
+            }
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Articles/{articleID}/Tags/{id}", Method = "DELETE")]
+        public void DeleteArticleTag(string articleID, string id)
+        {
+            int iarticleID = int.Parse(articleID);
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                Article article = (from a in db.Articles
+                                   where a.ID == iarticleID
+                                   select a).SingleOrDefault<Article>();
+                if (article == null) throw new ArgumentException("无此文章");
+
+                Tag tag = (from t in article.Tag
+                           where t.ID == iid
+                           select t).SingleOrDefault<Tag>();
+                if (tag == null) throw new ArgumentException("无此标签");
+
+                Access.Required(db, article, Function.ModifyArticle);
+                article.Tag.Remove(tag);
                 db.SaveChanges();
             }
         }
@@ -1828,7 +1949,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Articles/{articleID}/Revisions")]
-        public List<BriefArticleRevision> ListArticleRevision(string articleID)
+        public object ListArticleRevision(string articleID)
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
@@ -1848,31 +1969,33 @@ namespace Moo.API
                     articleRevisions = articleRevisions.Take((int)top);
                 }
 
-                return articleRevisions.ToList().Select(r => r.ToBriefArticleRevision()).ToList();
+                return articleRevisions.Select(r => new
+                {
+                    ID = r.ID,
+                    CreatedBy = new
+                    {
+                        ID = r.CreatedBy.ID,
+                        Name = r.CreatedBy.Name
+                    },
+                    CreateTime = r.CreateTime,
+                    Reason = r.Reason
+                }).ToList();
             }
         }
 
-        [OperationContract]
-        [WebGet(UriTemplate = "Articles/{articleID}/Revisions/{id}")]
-        public FullArticleRevision GetArticleRevision(string articleID, string id)
+        #region CreateArticleRevision
+        [DataContract]
+        public class CreateArticleRevisionData
         {
-            int iid = int.Parse(id);
-            using (MooDB db = new MooDB())
-            {
-                ArticleRevision revision = (from r in db.ArticleRevisions
-                                            where r.ID == iid
-                                            select r).SingleOrDefault<ArticleRevision>();
-                if (revision == null) throw new ArgumentException("无此文章版本");
-
-                Access.Required(db, revision, Function.ReadArticleRevision);
-
-                return revision.ToFullArticleRevision();
-            }
+            [DataMember]
+            public string Content;
+            [DataMember]
+            public string Reason;
         }
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Articles/{articleID}/Revisions", Method = "POST")]
-        public int CreateArticleRevision(string articleID, FullArticleRevision revision)
+        public int CreateArticleRevision(string articleID, CreateArticleRevisionData revision)
         {
             int iarticleID = int.Parse(articleID);
             using (MooDB db = new MooDB())
@@ -1888,6 +2011,7 @@ namespace Moo.API
                     Content = revision.Content,
                     CreatedBy = Security.CurrentUser.GetDBUser(db),
                     CreateTime = DateTime.Now,
+                    Reason = revision.Reason
                 };
                 article.LatestRevision = newRevision;
 
@@ -1898,6 +2022,7 @@ namespace Moo.API
                 return newRevision.ID;
             }
         }
+        #endregion
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Articles/{articleID}/Revisions/{id}", Method = "DELETE")]
@@ -1913,124 +2038,50 @@ namespace Moo.API
 
                 Access.Required(db, revision, Function.DeleteArticleRevision);
 
+                Article article = revision.Article;
+                if (article.LatestRevision.ID == revision.ID)
+                {
+                    throw new InvalidOperationException("不可删除最新版本");
+                }
+
                 db.ArticleRevisions.DeleteObject(revision);
                 db.SaveChanges();
             }
         }
         #endregion
 
-        #region Categories
+        #region
         [OperationContract]
-        [WebGet(UriTemplate = "Categories/Count")]
-        public int CountCategory()
+        [WebGet(UriTemplate = "Tags")]
+        public object ListTag()
         {
+            int? skip = OptionalIntParameter("skip");
+            int? top = OptionalIntParameter("top");
+            string nameStartWith = QueryParameters["nameStartWith"];
             using (MooDB db = new MooDB())
             {
-                return db.Categories.Count();
-            }
-        }
+                IQueryable<Tag> tags = db.Tags;
+                if (nameStartWith != null)
+                {
+                    tags = tags.Where(t => t.Name.StartsWith(nameStartWith));
+                }
 
-        [OperationContract]
-        [WebGet(UriTemplate = "Categories")]
-        public List<FullCategory> ListCategory()
-        {
-            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
-            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            using (MooDB db = new MooDB())
-            {
-                IQueryable<Category> categories = from c in db.Categories
-                                                  orderby c.ID
-                                                  select c;
+                tags = tags.OrderBy(t => t.ID);
 
                 if (skip != null)
                 {
-                    categories = categories.Skip((int)skip);
+                    tags = tags.Skip((int)skip);
                 }
                 if (top != null)
                 {
-                    categories = categories.Take((int)top);
+                    tags = tags.Take((int)top);
                 }
 
-                return categories.ToList().Select(c => c.ToFullCategory()).ToList();
-            }
-        }
-
-        [OperationContract]
-        [WebGet(UriTemplate = "Categories/{id}")]
-        public FullCategory GetCategory(string id)
-        {
-            int iid = int.Parse(id);
-            using (MooDB db = new MooDB())
-            {
-                Category category = (from c in db.Categories
-                                     where c.ID == iid
-                                     select c).SingleOrDefault<Category>();
-                if (category == null) throw new ArgumentException("无此分类");
-
-                Access.Required(db, category, Function.ReadCatagory);
-
-                return category.ToFullCategory();
-            }
-        }
-
-        [OperationContract]
-        [WebInvoke(UriTemplate = "Categories", Method = "POST")]
-        public int CreateCategory(FullCategory category)
-        {
-            using (MooDB db = new MooDB())
-            {
-                Category newCategory = new Category()
+                return tags.Select(t => new
                 {
-                    Name = category.Name
-                };
-
-                Access.Required(db, newCategory, Function.CreateCatagory);
-
-                db.Categories.AddObject(newCategory);
-                db.SaveChanges();
-                return newCategory.ID;
-            }
-        }
-
-        [OperationContract]
-        [WebInvoke(UriTemplate = "Categories/{id}", Method = "PUT")]
-        public void ModifyCategory(string id, FullCategory category)
-        {
-            int iid = int.Parse(id);
-            using (MooDB db = new MooDB())
-            {
-                Category theCategory = (from c in db.Categories
-                                        where c.ID == iid
-                                        select c).SingleOrDefault<Category>();
-                if (theCategory == null) throw new ArgumentException("无此分类");
-
-                Access.Required(db, theCategory, Function.ModifyCatagory);
-
-                if (category.Name != null)
-                {
-                    theCategory.Name = category.Name;
-                }
-
-                db.SaveChanges();
-            }
-        }
-
-        [OperationContract]
-        [WebInvoke(UriTemplate = "Categories/{id}", Method = "DELETE")]
-        public void DeleteCategory(string id)
-        {
-            int iid = int.Parse(id);
-            using (MooDB db = new MooDB())
-            {
-                Category category = (from c in db.Categories
-                                     where c.ID == iid
-                                     select c).SingleOrDefault<Category>();
-                if (category == null) throw new ArgumentException("无此分类");
-
-                Access.Required(db, category, Function.DeleteCatagory);
-
-                db.Categories.DeleteObject(category);
-                db.SaveChanges();
+                    ID = t.ID,
+                    Name = t.Name
+                }).ToList();
             }
         }
         #endregion

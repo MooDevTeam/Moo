@@ -50,7 +50,6 @@ namespace Moo.Core.DB
         {
             AddRoles(db);
             AddOwner(db);
-            AddHomepage(db);
         }
 
         static void AddRoles(MooDB db)
@@ -76,37 +75,6 @@ namespace Moo.Core.DB
                 PreferredLanguage = "c++",
             };
             db.Users.AddObject(owner);
-            db.SaveChanges();
-        }
-
-        static void AddHomepage(MooDB db)
-        {
-            Category category = new Category()
-            {
-                Name = "未分类"
-            };
-            db.Categories.AddObject(category);
-
-            Article homepage = new Article()
-            {
-                Category=category,
-                CreatedBy=owner,
-                CreateTime=DateTime.Now,
-                Name="Moo Online Judge",
-            };
-
-            ArticleRevision revision=new ArticleRevision()
-            {
-                Article=homepage,
-                Content="请编辑此文档，以更改主页。",
-                CreatedBy=owner,
-                CreateTime=DateTime.Now,
-            };
-            homepage.LatestRevision=revision;
-
-            db.Articles.AddObject(homepage);
-            db.ArticleRevisions.AddObject(revision);
-
             db.SaveChanges();
         }
     }

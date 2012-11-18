@@ -18,9 +18,8 @@ namespace Moo.Core.DB
         }
         public static void AddTestData(MooDB db)
         {
+            #region Users
             SiteRoles siteRoles = new SiteRoles(db);
-
-            //Users
             User MrPhone = new User()
             {
                 Name = "onetwogoo",
@@ -71,8 +70,9 @@ namespace Moo.Core.DB
                 Score = 0,
                 PreferredLanguage = "c"
             });
+            #endregion
 
-            //Problems
+            #region Problems
             Problem APlusB = new Problem()
             {
                 Name = "A+B问题",
@@ -139,8 +139,157 @@ namespace Moo.Core.DB
                 CreateTime = DateTime.Now.AddSeconds(5),
                 CreatedBy = MrPhone
             };
+            #endregion
 
-            //File
+            #region Problem Revision
+            db.ProblemRevisions.AddObject(new ProblemRevision()
+            {
+                Problem = APlusB,
+                Content = "输入A,B。输出A+B。啊！输错了！",
+                Reason = "蛋疼",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
+            });
+
+            db.ProblemRevisions.AddObject(new ProblemRevision()
+            {
+                Problem = APlusB,
+                Content = "输入A,B。输出它们的和。",
+                Reason = "蛋疼",
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            });
+
+            db.ProblemRevisions.AddObject(new ProblemRevision()
+            {
+                Problem = APlusB,
+                Content = "输入俩蛋，输出它们的和。",
+                Reason = "蛋疼",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
+            });
+
+            APlusB.LatestRevision = new ProblemRevision()
+            {
+                Problem = APlusB,
+                Content = "输入两个Int32，输出它们的和。",
+                Reason = "蛋疼",
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            };
+
+            CPlusD.LatestRevision = new ProblemRevision()
+            {
+                Problem = CPlusD,
+                Content = "输入C,D。*注意是Int64*输出它们的和。",
+                Reason = "蛋疼",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
+            };
+
+            EPlusF.LatestRevision = new ProblemRevision()
+            {
+                Problem = EPlusF,
+                Content = "输入E,F。输出它们的和。",
+                Reason = "蛋疼",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
+            };
+
+            Cat.LatestRevision = new ProblemRevision()
+            {
+                Problem = Cat,
+                Content = "模拟Cat",
+                Reason = "擦！",
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            };
+
+            EasyAPlusB.LatestRevision = new ProblemRevision()
+            {
+                Problem = EasyAPlusB,
+                Content = "仅需编写一个int APlusB(int,int);即可。",
+                Reason = "This is Interactive",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
+            };
+
+            AnswerAPlusB.LatestRevision = new ProblemRevision()
+            {
+                Problem = AnswerAPlusB,
+                Content = "提交答案吧！",
+                Reason = "None",
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            };
+            #endregion
+
+            #region Tags
+            Tag solution = new Tag()
+            {
+                Name = "题解"
+            };
+            db.Tags.AddObject(solution);
+            Tag forFun = new Tag()
+            {
+                Name = "娱乐"
+            };
+            db.Tags.AddObject(forFun);
+            #endregion
+
+            #region Articles
+            Article howToAC = new Article()
+            {
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now,
+                Name = "如何才能AC呢",
+            };
+            howToAC.Tag.Add(solution);
+            howToAC.Tag.Add(forFun);
+            db.Articles.AddObject(howToAC);
+
+            Article aPlusBSolution = new Article()
+            {
+                CreatedBy=ShaBi,
+                CreateTime=DateTime.Now,
+                Name="A+B正解",
+                Problem=APlusB
+            };
+            aPlusBSolution.Tag.Add(solution);
+            db.Articles.AddObject(aPlusBSolution);
+            #endregion
+
+            #region Article Revision
+            db.ArticleRevisions.AddObject(new ArticleRevision
+            {
+                Article=howToAC,
+                Content="AC就是<color:green>Accepted</color>，而在Moo上，评测信息则是<color:green>正确</color>。所以，理论上无法*AC*.",
+                CreatedBy=MrPhone,
+                CreateTime=DateTime.Now,
+                Reason="建立文章"
+            });
+            db.SaveChanges();
+            howToAC.LatestRevision = new ArticleRevision
+            {
+                Article=howToAC,
+                Content = "--AC就是<color:green>Accepted</color>，而在Moo上，评测信息则是<color:green>正确</color>。所以，理论上无法*AC*.--\n"
+                    +"楼上纯属扯淡",
+                CreatedBy=ShaBi,
+                CreateTime=DateTime.Now,
+                Reason="扯"
+            };
+
+            aPlusBSolution.LatestRevision = new ArticleRevision
+            {
+                Article=aPlusBSolution,
+                Content="就XXX，然后XXX，就好了~",
+                CreatedBy=ShaBi,
+                CreateTime=DateTime.Now,
+                Reason="哈哈"
+            };
+            #endregion
+
+            #region Files
             UploadedFile file = new UploadedFile()
             {
                 Name = "SPJ for Cat",
@@ -149,8 +298,9 @@ namespace Moo.Core.DB
                 CreatedBy = MrPhone
             };
             db.UploadedFiles.AddObject(file);
+            #endregion
 
-            //Test Cases
+            #region Test Cases
             db.TestCases.AddObject(new TranditionalTestCase()
             {
                 Problem = CPlusD,
@@ -249,90 +399,9 @@ namespace Moo.Core.DB
                 CreatedBy = MrPhone
             };
             db.TestCases.AddObject(answerOnlyTestCase2);
+            #endregion
 
-            //Problem Revision
-            db.ProblemRevisions.AddObject(new ProblemRevision()
-             {
-                 Problem = APlusB,
-                 Content = "输入A,B。输出A+B。啊！输错了！",
-                 Reason = "蛋疼",
-                 CreatedBy = ShaBi,
-                 CreateTime = DateTime.Now
-             });
-
-            db.ProblemRevisions.AddObject(new ProblemRevision()
-            {
-                Problem = APlusB,
-                Content = "输入A,B。输出它们的和。",
-                Reason = "蛋疼",
-                CreatedBy = MrPhone,
-                CreateTime = DateTime.Now
-            });
-
-            db.ProblemRevisions.AddObject(new ProblemRevision()
-            {
-                Problem = APlusB,
-                Content = "输入俩蛋，输出它们的和。",
-                Reason = "蛋疼",
-                CreatedBy = ShaBi,
-                CreateTime = DateTime.Now
-            });
-
-            APlusB.LatestRevision = new ProblemRevision()
-            {
-                Problem = APlusB,
-                Content = "输入两个Int32，输出它们的和。",
-                Reason = "蛋疼",
-                CreatedBy = MrPhone,
-                CreateTime = DateTime.Now
-            };
-
-            CPlusD.LatestRevision = new ProblemRevision()
-            {
-                Problem = CPlusD,
-                Content = "输入C,D。*注意是Int64*输出它们的和。",
-                Reason = "蛋疼",
-                CreatedBy = ShaBi,
-                CreateTime = DateTime.Now
-            };
-
-            EPlusF.LatestRevision = new ProblemRevision()
-            {
-                Problem = EPlusF,
-                Content = "输入E,F。输出它们的和。",
-                Reason = "蛋疼",
-                CreatedBy = ShaBi,
-                CreateTime = DateTime.Now
-            };
-
-            Cat.LatestRevision = new ProblemRevision()
-            {
-                Problem = Cat,
-                Content = "模拟Cat",
-                Reason = "擦！",
-                CreatedBy = MrPhone,
-                CreateTime = DateTime.Now
-            };
-
-            EasyAPlusB.LatestRevision = new ProblemRevision()
-            {
-                Problem = EasyAPlusB,
-                Content = "仅需编写一个int APlusB(int,int);即可。",
-                Reason = "This is Interactive",
-                CreatedBy = ShaBi,
-                CreateTime = DateTime.Now
-            };
-
-            AnswerAPlusB.LatestRevision = new ProblemRevision()
-            {
-                Problem = AnswerAPlusB,
-                Content = "提交答案吧！",
-                Reason = "None",
-                CreatedBy = MrPhone,
-                CreateTime = DateTime.Now
-            };
-
-            //Post
+            #region Posts
             Post post = new Post()
             {
                 Name = "主页吐槽专用贴",
@@ -408,8 +477,9 @@ namespace Moo.Core.DB
                 Content = "Moo很好啊。*注意此贴没有对应题目且被锁*",
                 CreatedBy = MrPhone
             });
+            #endregion
 
-            //Mail
+            #region Mails
             db.Mails.AddObject(new Mail()
             {
                 Name = "咱把Moo黑了如何？",
@@ -475,8 +545,9 @@ namespace Moo.Core.DB
                 To = Baby
             });
             db.SaveChanges();
+            #endregion
 
-            //Contest
+            #region Contest
             Contest contest = new Contest()
             {
                 StartTime = DateTime.Now.AddMinutes(1),
@@ -569,6 +640,7 @@ namespace Moo.Core.DB
             });
 
             db.SaveChanges();
+            #endregion
         }
     }
 }
