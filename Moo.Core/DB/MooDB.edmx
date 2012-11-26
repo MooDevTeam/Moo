@@ -28,6 +28,7 @@
     <EntitySet Name="UserAttendContest" EntityType="Moo.Core.DB.Store.UserAttendContest" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ContestProblem" EntityType="Moo.Core.DB.Store.ContestProblem" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ArticleTag" EntityType="Moo.Core.DB.Store.ArticleTag" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ProblemTag" EntityType="Moo.Core.DB.Store.ProblemTag" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="RecordProblem" Association="Moo.Core.DB.Store.RecordProblem">
       <End Role="Record" EntitySet="Records" />
       <End Role="Problem" EntitySet="Problems" />
@@ -148,6 +149,14 @@
       <End Role="Tag" EntitySet="Tags" />
       <End Role="ArticleTag" EntitySet="ArticleTag" />
     </AssociationSet>
+    <AssociationSet Name="FK_ProblemTag_Problem" Association="Moo.Core.DB.Store.FK_ProblemTag_Problem">
+      <End Role="Problem" EntitySet="Problems" />
+      <End Role="ProblemTag" EntitySet="ProblemTag" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProblemTag_Tag" Association="Moo.Core.DB.Store.FK_ProblemTag_Tag">
+      <End Role="Tag" EntitySet="Tags" />
+      <End Role="ProblemTag" EntitySet="ProblemTag" />
+    </AssociationSet>
     <AssociationSet Name="FK_SpecialJudgedTestCase_inherits_TestCase" Association="Moo.Core.DB.Store.FK_SpecialJudgedTestCase_inherits_TestCase">
       <End Role="TestCase" EntitySet="TestCases" />
       <End Role="SpecialJudgedTestCase" EntitySet="TestCases_SpecialJudgedTestCase" />
@@ -207,6 +216,7 @@
     <Property Name="TestCaseLocked" Type="bit" Nullable="false" />
     <Property Name="EnableTesting" Type="bit" Nullable="false" />
     <Property Name="TestCaseHidden" Type="bit" Nullable="false" />
+    <Property Name="JudgeInfoHidden" Type="bit" Nullable="false" />
     <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Records">
@@ -309,6 +319,9 @@
     <Property Name="HideTestCaseOnEnd" Type="bit" Nullable="false" />
     <Property Name="LockArticleOnStart" Type="bit" Nullable="false" />
     <Property Name="LockArticleOnEnd" Type="bit" Nullable="false" />
+    <Property Name="HideJudgeInfoOnStart" Type="bit" Nullable="false" />
+    <Property Name="HideJudgeInfoOnEnd" Type="bit" Nullable="false" />
+    <Property Name="ViewResultAnyTime" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="UploadedFiles">
     <Key>
@@ -392,10 +405,10 @@
   <EntityType Name="UserAttendContest">
     <Key>
       <PropertyRef Name="User_ID" />
-      <PropertyRef Name="UserAttendContest_User_ID" />
+      <PropertyRef Name="Contest_ID" />
     </Key>
     <Property Name="User_ID" Type="int" Nullable="false" />
-    <Property Name="UserAttendContest_User_ID" Type="int" Nullable="false" />
+    <Property Name="Contest_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="ContestProblem">
     <Key>
@@ -411,6 +424,14 @@
       <PropertyRef Name="Tag_ID" />
     </Key>
     <Property Name="ArticleTag_Tag_ID" Type="int" Nullable="false" />
+    <Property Name="Tag_ID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ProblemTag">
+    <Key>
+      <PropertyRef Name="Problem_ID" />
+      <PropertyRef Name="Tag_ID" />
+    </Key>
+    <Property Name="Problem_ID" Type="int" Nullable="false" />
     <Property Name="Tag_ID" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="RecordProblem">
@@ -741,7 +762,7 @@
         <PropertyRef Name="ID" />
       </Principal>
       <Dependent Role="UserAttendContest">
-        <PropertyRef Name="UserAttendContest_User_ID" />
+        <PropertyRef Name="Contest_ID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -789,6 +810,30 @@
         <PropertyRef Name="ID" />
       </Principal>
       <Dependent Role="ArticleTag">
+        <PropertyRef Name="Tag_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProblemTag_Problem">
+    <End Role="Problem" Type="Moo.Core.DB.Store.Problems" Multiplicity="1" />
+    <End Role="ProblemTag" Type="Moo.Core.DB.Store.ProblemTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Problem">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ProblemTag">
+        <PropertyRef Name="Problem_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProblemTag_Tag">
+    <End Role="ProblemTag" Type="Moo.Core.DB.Store.ProblemTag" Multiplicity="*" />
+    <End Role="Tag" Type="Moo.Core.DB.Store.Tags" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ProblemTag">
         <PropertyRef Name="Tag_ID" />
       </Dependent>
     </ReferentialConstraint>
@@ -977,6 +1022,10 @@
             <End Role="Article" EntitySet="Articles" />
             <End Role="Tag" EntitySet="Tags" />
           </AssociationSet>
+          <AssociationSet Name="ProblemTag" Association="Moo.Core.DB.ProblemTag">
+            <End Role="Problem" EntitySet="Problems" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -992,6 +1041,7 @@
           <Property Type="Int32" Name="Score" Nullable="false" />
           <NavigationProperty Name="Record" Relationship="Moo.Core.DB.UserRecord" FromRole="User" ToRole="Record" />
           <Property Type="String" Name="PreferredLanguage" Nullable="false" MaxLength="12" />
+          <NavigationProperty Name="Contest" Relationship="Moo.Core.DB.UserAttendContest" FromRole="User" ToRole="Contest" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -1024,6 +1074,8 @@
           <Property Type="Boolean" Name="TestCaseLocked" Nullable="false" />
           <Property Type="Boolean" Name="EnableTesting" Nullable="false" />
           <Property Type="Boolean" Name="TestCaseHidden" Nullable="false" />
+          <Property Type="Boolean" Name="JudgeInfoHidden" Nullable="false" />
+          <NavigationProperty Name="Tag" Relationship="Moo.Core.DB.ProblemTag" FromRole="Problem" ToRole="Tag" />
         </EntityType>
         <EntityType Name="Record">
           <Key>
@@ -1202,6 +1254,9 @@
           <Property Type="Boolean" Name="HideTestCaseOnEnd" Nullable="false" />
           <Property Type="Boolean" Name="LockArticleOnStart" Nullable="false" />
           <Property Type="Boolean" Name="LockArticleOnEnd" Nullable="false" />
+          <Property Type="Boolean" Name="HideJudgeInfoOnStart" Nullable="false" />
+          <Property Type="Boolean" Name="HideJudgeInfoOnEnd" Nullable="false" />
+          <Property Type="Boolean" Name="ViewResultAnyTime" Nullable="false" />
         </EntityType>
         <Association Name="UserAttendContest">
           <End Type="Moo.Core.DB.User" Role="User" Multiplicity="*" />
@@ -1319,9 +1374,14 @@
           </Key>
           <Property Type="Int32" Name="ID" Nullable="false" a:StoreGeneratedPattern="Identity" xmlns:a="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
+          <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.ProblemTag" FromRole="Tag" ToRole="Problem" />
         </EntityType>
         <Association Name="ArticleTag">
           <End Type="Moo.Core.DB.Article" Role="Article" Multiplicity="*" />
+          <End Type="Moo.Core.DB.Tag" Role="Tag" Multiplicity="*" />
+        </Association>
+        <Association Name="ProblemTag">
+          <End Type="Moo.Core.DB.Problem" Role="Problem" Multiplicity="*" />
           <End Type="Moo.Core.DB.Tag" Role="Tag" Multiplicity="*" />
         </Association>
       </Schema>
@@ -1372,6 +1432,7 @@
           <ScalarProperty Name="TestCaseLocked" ColumnName="TestCaseLocked" />
           <ScalarProperty Name="EnableTesting" ColumnName="EnableTesting" />
           <ScalarProperty Name="TestCaseHidden" ColumnName="TestCaseHidden" />
+          <ScalarProperty Name="JudgeInfoHidden" ColumnName="JudgeInfoHidden" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1501,6 +1562,9 @@
           <ScalarProperty Name="HideTestCaseOnEnd" ColumnName="HideTestCaseOnEnd" />
           <ScalarProperty Name="LockArticleOnStart" ColumnName="LockArticleOnStart" />
           <ScalarProperty Name="LockArticleOnEnd" ColumnName="LockArticleOnEnd" />
+          <ScalarProperty Name="HideJudgeInfoOnStart" ColumnName="HideJudgeInfoOnStart" />
+          <ScalarProperty Name="HideJudgeInfoOnEnd" ColumnName="HideJudgeInfoOnEnd" />
+          <ScalarProperty Name="ViewResultAnyTime" ColumnName="ViewResultAnyTime" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1644,7 +1708,7 @@
         <ScalarProperty Name="ID" ColumnName="User_ID" />
       </EndProperty>
       <EndProperty Name="Contest">
-        <ScalarProperty Name="ID" ColumnName="UserAttendContest_User_ID" />
+        <ScalarProperty Name="ID" ColumnName="Contest_ID" />
       </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="UserRecord" TypeName="Moo.Core.DB.UserRecord" StoreEntitySet="Records">
@@ -1756,6 +1820,14 @@
     <AssociationSetMapping Name="ArticleTag" TypeName="Moo.Core.DB.ArticleTag" StoreEntitySet="ArticleTag">
       <EndProperty Name="Article">
         <ScalarProperty Name="ID" ColumnName="ArticleTag_Tag_ID" />
+      </EndProperty>
+      <EndProperty Name="Tag">
+        <ScalarProperty Name="ID" ColumnName="Tag_ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ProblemTag" TypeName="Moo.Core.DB.ProblemTag" StoreEntitySet="ProblemTag">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
       </EndProperty>
       <EndProperty Name="Tag">
         <ScalarProperty Name="ID" ColumnName="Tag_ID" />
@@ -2005,6 +2077,7 @@
         </AssociationConnector>
         <EntityTypeShape EntityType="Moo.Core.DB.Tag" Width="1.5" PointX="2.375" PointY="0.5" />
         <AssociationConnector Association="Moo.Core.DB.ArticleTag" />
+        <AssociationConnector Association="Moo.Core.DB.ProblemTag" />
       </Diagram>
     </Diagrams>
   </Designer>

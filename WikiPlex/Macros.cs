@@ -42,6 +42,7 @@ namespace WikiPlex
             Register<IndentationMacro>();
             Register<ColorMacro>();
             Register<MathMarco>();
+            Register<InternalLinkMacro>();
         }
 
         /// <summary>

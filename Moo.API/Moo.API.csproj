@@ -33,7 +33,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -81,6 +81,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticator.cs" />
+    <Compile Include="Binary.cs" />
+    <Compile Include="Blob.ashx.cs">
+      <DependentUpon>Blob.ashx</DependentUpon>
+    </Compile>
     <Compile Include="CustomMessageFormatter.cs" />
     <Compile Include="DataContracts\BriefArticleRevision.cs" />
     <Compile Include="DataContracts\BriefContest.cs" />
@@ -125,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Captcha.ashx" />
+    <Content Include="Blob.ashx" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
   </ItemGroup>
   <PropertyGroup>

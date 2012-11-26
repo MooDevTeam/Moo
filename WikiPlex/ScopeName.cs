@@ -98,6 +98,13 @@
         public const string ColorBegin = "Color Begin";
         public const string ColorEnd = "Color End";
         public const string Math = "Math Tag";
+
+        public const string ProblemLink = "Problem Link";
+        public const string ArticleLink = "Article Link";
+        public const string ContestLink = "Contest Link";
+        public const string RecordLink = "Record Link";
+        public const string TestCaseLink = "TestCase Link";
+        public const string UserLink = "User Link";
 #pragma warning restore 1591
     }
 }

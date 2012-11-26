@@ -34,6 +34,7 @@ namespace WikiPlex
             Register<IndentationRenderer>();
             Register<ColorRenderer>();
             Register<MathRenderer>();
+            Register<InternalLinkRenderer>();
         }
 
         /// <summary>

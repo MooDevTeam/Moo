@@ -179,7 +179,7 @@ namespace Moo.Core.Properties {
         }
         
         /// <summary>
-        ///   查找类似 # *[url:测试点#{0}|?page=testCase&amp;id={0}]* 的本地化字符串。
+        ///   查找类似 # *[TestCase:{0}]* 的本地化字符串。
         /// </summary>
         public static string MooTester_TestCaseX {
             get {

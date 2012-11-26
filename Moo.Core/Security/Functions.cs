@@ -60,6 +60,7 @@ namespace Moo.Core.Security
 
         //Contests
         ReadContest,
+        ReadContestResult,
         CreateContest,
         ModifyContest,
         AttendContest,

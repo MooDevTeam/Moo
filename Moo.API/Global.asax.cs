@@ -25,6 +25,13 @@ namespace Moo.API
             }
 
             TestDaemon.Instance.Start();
+            ContestDaemon.Instance.Start();
+        }
+
+        protected void Application_End(object sender, EventArgs e)
+        {
+            TestDaemon.Instance.Stop();
+            ContestDaemon.Instance.Stop();
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -39,7 +46,7 @@ namespace Moo.API
             {
                 HttpContext.Current.Response.AddHeader("Cache-Control", "no-cache");
                 HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
-                HttpContext.Current.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, Auth");
+                HttpContext.Current.Response.AddHeader("Access-Control-Allow-Headers", HttpContext.Current.Request.Headers["Access-Control-Request-Headers"]);
                 HttpContext.Current.Response.AddHeader("Access-Control-Max-Age", "1728000");
                 HttpContext.Current.Response.End();
             }
@@ -60,9 +67,6 @@ namespace Moo.API
 
         }
 
-        protected void Application_End(object sender, EventArgs e)
-        {
-            TestDaemon.Instance.Stop();
-        }
+        
     }
 }

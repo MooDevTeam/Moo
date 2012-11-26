@@ -46,6 +46,7 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleLatestRevision", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Article), "ArticleRevision", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.ArticleRevision))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleProblem", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article), "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(Moo.Core.DB.Problem))]
 [assembly: EdmRelationshipAttribute("Moo.Core.DB", "ArticleTag", "Article", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Article), "Tag", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Tag))]
+[assembly: EdmRelationshipAttribute("Moo.Core.DB", "ProblemTag", "Problem", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Problem), "Tag", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(Moo.Core.DB.Tag))]
 
 #endregion
 
@@ -1063,7 +1064,10 @@ namespace Moo.Core.DB
         /// <param name="hideTestCaseOnEnd">HideTestCaseOnEnd 属性的初始值。</param>
         /// <param name="lockArticleOnStart">LockArticleOnStart 属性的初始值。</param>
         /// <param name="lockArticleOnEnd">LockArticleOnEnd 属性的初始值。</param>
-        public static Contest CreateContest(global::System.Int32 id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String name, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean enableTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean enableTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd, global::System.Boolean lockArticleOnStart, global::System.Boolean lockArticleOnEnd)
+        /// <param name="hideJudgeInfoOnStart">HideJudgeInfoOnStart 属性的初始值。</param>
+        /// <param name="hideJudgeInfoOnEnd">HideJudgeInfoOnEnd 属性的初始值。</param>
+        /// <param name="viewResultAnyTime">ViewResultAnyTime 属性的初始值。</param>
+        public static Contest CreateContest(global::System.Int32 id, global::System.DateTime startTime, global::System.DateTime endTime, global::System.String name, global::System.Boolean lockProblemOnStart, global::System.Boolean lockTestCaseOnStart, global::System.Boolean lockPostOnStart, global::System.Boolean hideTestCaseOnStart, global::System.Boolean enableTestingOnStart, global::System.String description, global::System.String status, global::System.Boolean hideProblemOnStart, global::System.Boolean lockRecordOnStart, global::System.Boolean lockProblemOnEnd, global::System.Boolean lockTestCaseOnEnd, global::System.Boolean lockPostOnEnd, global::System.Boolean lockRecordOnEnd, global::System.Boolean enableTestingOnEnd, global::System.Boolean hideProblemOnEnd, global::System.Boolean hideTestCaseOnEnd, global::System.Boolean lockArticleOnStart, global::System.Boolean lockArticleOnEnd, global::System.Boolean hideJudgeInfoOnStart, global::System.Boolean hideJudgeInfoOnEnd, global::System.Boolean viewResultAnyTime)
         {
             Contest contest = new Contest();
             contest.ID = id;
@@ -1088,6 +1092,9 @@ namespace Moo.Core.DB
             contest.HideTestCaseOnEnd = hideTestCaseOnEnd;
             contest.LockArticleOnStart = lockArticleOnStart;
             contest.LockArticleOnEnd = lockArticleOnEnd;
+            contest.HideJudgeInfoOnStart = hideJudgeInfoOnStart;
+            contest.HideJudgeInfoOnEnd = hideJudgeInfoOnEnd;
+            contest.ViewResultAnyTime = viewResultAnyTime;
             return contest;
         }
 
@@ -1625,6 +1632,78 @@ namespace Moo.Core.DB
         private global::System.Boolean _LockArticleOnEnd;
         partial void OnLockArticleOnEndChanging(global::System.Boolean value);
         partial void OnLockArticleOnEndChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean HideJudgeInfoOnStart
+        {
+            get
+            {
+                return _HideJudgeInfoOnStart;
+            }
+            set
+            {
+                OnHideJudgeInfoOnStartChanging(value);
+                ReportPropertyChanging("HideJudgeInfoOnStart");
+                _HideJudgeInfoOnStart = StructuralObject.SetValidValue(value, "HideJudgeInfoOnStart");
+                ReportPropertyChanged("HideJudgeInfoOnStart");
+                OnHideJudgeInfoOnStartChanged();
+            }
+        }
+        private global::System.Boolean _HideJudgeInfoOnStart;
+        partial void OnHideJudgeInfoOnStartChanging(global::System.Boolean value);
+        partial void OnHideJudgeInfoOnStartChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean HideJudgeInfoOnEnd
+        {
+            get
+            {
+                return _HideJudgeInfoOnEnd;
+            }
+            set
+            {
+                OnHideJudgeInfoOnEndChanging(value);
+                ReportPropertyChanging("HideJudgeInfoOnEnd");
+                _HideJudgeInfoOnEnd = StructuralObject.SetValidValue(value, "HideJudgeInfoOnEnd");
+                ReportPropertyChanged("HideJudgeInfoOnEnd");
+                OnHideJudgeInfoOnEndChanged();
+            }
+        }
+        private global::System.Boolean _HideJudgeInfoOnEnd;
+        partial void OnHideJudgeInfoOnEndChanging(global::System.Boolean value);
+        partial void OnHideJudgeInfoOnEndChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean ViewResultAnyTime
+        {
+            get
+            {
+                return _ViewResultAnyTime;
+            }
+            set
+            {
+                OnViewResultAnyTimeChanging(value);
+                ReportPropertyChanging("ViewResultAnyTime");
+                _ViewResultAnyTime = StructuralObject.SetValidValue(value, "ViewResultAnyTime");
+                ReportPropertyChanged("ViewResultAnyTime");
+                OnViewResultAnyTimeChanged();
+            }
+        }
+        private global::System.Boolean _ViewResultAnyTime;
+        partial void OnViewResultAnyTimeChanging(global::System.Boolean value);
+        partial void OnViewResultAnyTimeChanged();
 
         #endregion
 
@@ -2635,7 +2714,8 @@ namespace Moo.Core.DB
         /// <param name="testCaseLocked">TestCaseLocked 属性的初始值。</param>
         /// <param name="enableTesting">EnableTesting 属性的初始值。</param>
         /// <param name="testCaseHidden">TestCaseHidden 属性的初始值。</param>
-        public static Problem CreateProblem(global::System.Int32 id, global::System.String name, global::System.String type, global::System.Int32 submissionTimes, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime, global::System.Boolean hidden, global::System.Boolean locked, global::System.Boolean recordLocked, global::System.Boolean postLocked, global::System.Boolean articleLocked, global::System.Boolean testCaseLocked, global::System.Boolean enableTesting, global::System.Boolean testCaseHidden)
+        /// <param name="judgeInfoHidden">JudgeInfoHidden 属性的初始值。</param>
+        public static Problem CreateProblem(global::System.Int32 id, global::System.String name, global::System.String type, global::System.Int32 submissionTimes, global::System.Int64 scoreSum, global::System.Int32 submissionUser, global::System.DateTime createTime, global::System.Boolean hidden, global::System.Boolean locked, global::System.Boolean recordLocked, global::System.Boolean postLocked, global::System.Boolean articleLocked, global::System.Boolean testCaseLocked, global::System.Boolean enableTesting, global::System.Boolean testCaseHidden, global::System.Boolean judgeInfoHidden)
         {
             Problem problem = new Problem();
             problem.ID = id;
@@ -2653,6 +2733,7 @@ namespace Moo.Core.DB
             problem.TestCaseLocked = testCaseLocked;
             problem.EnableTesting = enableTesting;
             problem.TestCaseHidden = testCaseHidden;
+            problem.JudgeInfoHidden = judgeInfoHidden;
             return problem;
         }
 
@@ -3046,6 +3127,30 @@ namespace Moo.Core.DB
         private global::System.Boolean _TestCaseHidden;
         partial void OnTestCaseHiddenChanging(global::System.Boolean value);
         partial void OnTestCaseHiddenChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean JudgeInfoHidden
+        {
+            get
+            {
+                return _JudgeInfoHidden;
+            }
+            set
+            {
+                OnJudgeInfoHiddenChanging(value);
+                ReportPropertyChanging("JudgeInfoHidden");
+                _JudgeInfoHidden = StructuralObject.SetValidValue(value, "JudgeInfoHidden");
+                ReportPropertyChanged("JudgeInfoHidden");
+                OnJudgeInfoHiddenChanged();
+            }
+        }
+        private global::System.Boolean _JudgeInfoHidden;
+        partial void OnJudgeInfoHiddenChanging(global::System.Boolean value);
+        partial void OnJudgeInfoHiddenChanged();
 
         #endregion
 
@@ -3145,6 +3250,28 @@ namespace Moo.Core.DB
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<User>("Moo.Core.DB.UserCreateProblem", "User", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ProblemTag", "Tag")]
+        public EntityCollection<Tag> Tag
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Tag>("Moo.Core.DB.ProblemTag", "Tag");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Tag>("Moo.Core.DB.ProblemTag", "Tag", value);
                 }
             }
         }
@@ -4008,6 +4135,32 @@ namespace Moo.Core.DB
 
         #endregion
 
+        #region 导航属性
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "ProblemTag", "Problem")]
+        public EntityCollection<Problem> Problem
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Problem>("Moo.Core.DB.ProblemTag", "Problem");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Problem>("Moo.Core.DB.ProblemTag", "Problem", value);
+                }
+            }
+        }
+
+        #endregion
+
     }
     
     /// <summary>
@@ -4764,6 +4917,28 @@ namespace Moo.Core.DB
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Record>("Moo.Core.DB.UserRecord", "Record", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("Moo.Core.DB", "UserAttendContest", "Contest")]
+        public EntityCollection<Contest> Contest
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Contest>("Moo.Core.DB.UserAttendContest", "Contest");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Contest>("Moo.Core.DB.UserAttendContest", "Contest", value);
                 }
             }
         }

@@ -126,7 +126,9 @@ namespace Moo.Core.Security
                 return new Dictionary<Function, List<Func<JudgeInfo, bool?>>>
                 {
                     {Function.ReadJudgeInfo,new List<Func<JudgeInfo,bool?>>{
-                        j=>me.Role>=SiteRole.Reader?(bool?)true:null
+                        j=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        j=>j.Record.Problem.JudgeInfoHidden?(bool?)false:null,
+                        j=>me.Role>=SiteRole.Reader?(bool?)true:false
                     }},
                     {Function.DeleteJudgeInfo,new List<Func<JudgeInfo,bool?>>{
                         j=>me.Role>=SiteRole.NormalUser?(bool?)true:null
@@ -310,6 +312,11 @@ namespace Moo.Core.Security
                 {
                     {Function.AttendContest,new List<Func<Contest,bool?>>{
                         c=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }},
+                    {Function.ReadContestResult,new List<Func<Contest,bool?>>{
+                        c=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        c=>!c.ViewResultAnyTime && DateTime.Now<c.EndTime?(bool?)false:null,
+                        c=>me.Role>=SiteRole.Reader?(bool?)true:null
                     }},
                     {Function.CreateContest,new List<Func<Contest,bool?>>{
                         c=>me.Role>=SiteRole.Worker?(bool?)true:null

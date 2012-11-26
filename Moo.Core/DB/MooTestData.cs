@@ -72,6 +72,23 @@ namespace Moo.Core.DB
             });
             #endregion
 
+            #region Tags
+            Tag solution = new Tag()
+            {
+                Name = "题解"
+            };
+            db.Tags.AddObject(solution);
+            Tag forFun = new Tag()
+            {
+                Name = "娱乐"
+            };
+            db.Tags.AddObject(forFun);
+            Tag dp=new Tag()
+            {
+                Name="动态规划"
+            };
+            #endregion
+
             #region Problems
             Problem APlusB = new Problem()
             {
@@ -85,6 +102,8 @@ namespace Moo.Core.DB
                 CreateTime = DateTime.Now,
                 CreatedBy = MrPhone
             };
+            APlusB.Tag.Add(dp);
+            db.Problems.AddObject(APlusB);
 
             Problem CPlusD = new Problem()
             {
@@ -222,19 +241,6 @@ namespace Moo.Core.DB
                 CreatedBy = MrPhone,
                 CreateTime = DateTime.Now
             };
-            #endregion
-
-            #region Tags
-            Tag solution = new Tag()
-            {
-                Name = "题解"
-            };
-            db.Tags.AddObject(solution);
-            Tag forFun = new Tag()
-            {
-                Name = "娱乐"
-            };
-            db.Tags.AddObject(forFun);
             #endregion
 
             #region Articles
@@ -550,8 +556,8 @@ namespace Moo.Core.DB
             #region Contest
             Contest contest = new Contest()
             {
-                StartTime = DateTime.Now.AddMinutes(1),
-                EndTime = DateTime.Now.AddMinutes(2),
+                StartTime = DateTime.Now.AddMinutes(0.5),
+                EndTime = DateTime.Now.AddMinutes(1.5),
                 Status = "Before",
                 Name = "Moo水题大赛",
                 Description = "全是--水--题啊！",
@@ -575,9 +581,10 @@ namespace Moo.Core.DB
             //contest.Problem.Add(APlusB);
             contest.Problem.Add(CPlusD);
             contest.User.Add(ShaBi);
+            db.Contests.AddObject(contest);
+            #endregion
 
-            //Record
-
+            #region Record
             Record record = new Record()
             {
                 Code = "#include <iostream>\n"
@@ -638,9 +645,9 @@ namespace Moo.Core.DB
                 Problem = AnswerAPlusB,
                 User = MrPhone,
             });
-
-            db.SaveChanges();
             #endregion
+            db.SaveChanges();
+            
         }
     }
 }

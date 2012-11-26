@@ -15,17 +15,9 @@ namespace Moo.Core.Daemon
     public class TestDaemon : Daemon
     {
         ITester tester = new Moo.Core.Tester.MooTester.Tester();
-        static TestDaemon instance = new TestDaemon();
+        public static readonly TestDaemon Instance = new TestDaemon();
 
         private TestDaemon() { }
-
-        public static TestDaemon Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
 
         protected override int Run()
         {

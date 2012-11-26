@@ -74,6 +74,7 @@
     <Compile Include="Compilation\Macros\TableMacro.cs" />
     <Compile Include="Compilation\Macros\UnderlineMacro.cs" />
     <Compile Include="Compilation\Macros\VideoMacro.cs" />
+    <Compile Include="Compilation\Macros\InternalLinkMacro.cs" />
     <Compile Include="EscapeRegexPatterns.cs" />
     <Compile Include="Formatting\Formatter.cs" />
     <Compile Include="Formatting\RenderedScopeEventArgs.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Formatting\Renderers\VideoRendering\VimeoVideoRenderer.cs" />
     <Compile Include="Formatting\Renderers\VideoRendering\WindowsMediaPlayerVideoRenderer.cs" />
     <Compile Include="Formatting\Renderers\VideoRendering\YouTubeVideoRenderer.cs" />
+    <Compile Include="Formatting\Renderers\InternalLinkRenderer.cs" />
     <Compile Include="IWikiEngine.cs" />
     <Compile Include="Macros.cs" />
     <Compile Include="Parsing\Augmenters\IndentationScopeAugmenter.cs" />

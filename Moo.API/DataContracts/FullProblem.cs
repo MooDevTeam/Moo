@@ -64,5 +64,8 @@ namespace Moo.API.DataContracts
 
         [DataMember]
         public bool? TestCaseHidden { get; set; }
+
+        [DataMember]
+        public bool? JudgeInfoHidden { get; set; }
     }
 }

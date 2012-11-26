@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Data.Objects;
 using Moo.Core.DB;
@@ -75,11 +76,18 @@ namespace Moo.Debug
 
         static void Main(string[] args)
         {
-            Console.WriteLine(new WikiPlex.WikiEngine().Render("{code: c++ }\n"
-            +"int main(){\n"
-            +"\tstd::cin>>a>>b;\n"
-            +"\tstd::cout<<a+b;\n"
-            +"{code: c++}\n"));
+            string base64 = "TXpLeU1qYmw1UUlB";
+            byte[] compressed = Convert.FromBase64String(base64);
+            Console.OpenStandardOutput().Write(compressed, 0, compressed.Length);
+            using (MemoryStream mem = new MemoryStream(compressed))
+            {
+                using (DeflateStream deflate = new DeflateStream(mem, CompressionMode.Decompress))
+                {
+                    byte[] buffer = new byte[10*1024];
+                    int len=deflate.Read(buffer, 0, buffer.Length);
+                    Console.Write(Encoding.Default.GetString(buffer,0,len));
+                }
+            }
         }
     }
 }

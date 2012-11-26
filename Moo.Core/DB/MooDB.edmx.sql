@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 11/15/2012 16:11:46
+-- Date Created: 11/26/2012 14:14:55
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -235,6 +235,7 @@ CREATE TABLE [dbo].[Problems] (
     [TestCaseLocked] bit  NOT NULL,
     [EnableTesting] bit  NOT NULL,
     [TestCaseHidden] bit  NOT NULL,
+    [JudgeInfoHidden] bit  NOT NULL,
     [CreatedBy_ID] int  NOT NULL
 );
 GO
@@ -336,7 +337,10 @@ CREATE TABLE [dbo].[Contests] (
     [HideProblemOnEnd] bit  NOT NULL,
     [HideTestCaseOnEnd] bit  NOT NULL,
     [LockArticleOnStart] bit  NOT NULL,
-    [LockArticleOnEnd] bit  NOT NULL
+    [LockArticleOnEnd] bit  NOT NULL,
+    [HideJudgeInfoOnStart] bit  NOT NULL,
+    [HideJudgeInfoOnEnd] bit  NOT NULL,
+    [ViewResultAnyTime] bit  NOT NULL
 );
 GO
 
@@ -422,7 +426,7 @@ GO
 -- Creating table 'UserAttendContest'
 CREATE TABLE [dbo].[UserAttendContest] (
     [User_ID] int  NOT NULL,
-    [UserAttendContest_User_ID] int  NOT NULL
+    [Contest_ID] int  NOT NULL
 );
 GO
 
@@ -436,6 +440,13 @@ GO
 -- Creating table 'ArticleTag'
 CREATE TABLE [dbo].[ArticleTag] (
     [ArticleTag_Tag_ID] int  NOT NULL,
+    [Tag_ID] int  NOT NULL
+);
+GO
+
+-- Creating table 'ProblemTag'
+CREATE TABLE [dbo].[ProblemTag] (
+    [Problem_ID] int  NOT NULL,
     [Tag_ID] int  NOT NULL
 );
 GO
@@ -558,10 +569,10 @@ ADD CONSTRAINT [PK_TestCases_TranditionalTestCase]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
--- Creating primary key on [User_ID], [UserAttendContest_User_ID] in table 'UserAttendContest'
+-- Creating primary key on [User_ID], [Contest_ID] in table 'UserAttendContest'
 ALTER TABLE [dbo].[UserAttendContest]
 ADD CONSTRAINT [PK_UserAttendContest]
-    PRIMARY KEY NONCLUSTERED ([User_ID], [UserAttendContest_User_ID] ASC);
+    PRIMARY KEY NONCLUSTERED ([User_ID], [Contest_ID] ASC);
 GO
 
 -- Creating primary key on [Contest_ID], [Problem_ID] in table 'ContestProblem'
@@ -574,6 +585,12 @@ GO
 ALTER TABLE [dbo].[ArticleTag]
 ADD CONSTRAINT [PK_ArticleTag]
     PRIMARY KEY NONCLUSTERED ([ArticleTag_Tag_ID], [Tag_ID] ASC);
+GO
+
+-- Creating primary key on [Problem_ID], [Tag_ID] in table 'ProblemTag'
+ALTER TABLE [dbo].[ProblemTag]
+ADD CONSTRAINT [PK_ProblemTag]
+    PRIMARY KEY NONCLUSTERED ([Problem_ID], [Tag_ID] ASC);
 GO
 
 -- --------------------------------------------------
@@ -757,10 +774,10 @@ ADD CONSTRAINT [FK_UserAttendContest_User]
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
--- Creating foreign key on [UserAttendContest_User_ID] in table 'UserAttendContest'
+-- Creating foreign key on [Contest_ID] in table 'UserAttendContest'
 ALTER TABLE [dbo].[UserAttendContest]
 ADD CONSTRAINT [FK_UserAttendContest_Contest]
-    FOREIGN KEY ([UserAttendContest_User_ID])
+    FOREIGN KEY ([Contest_ID])
     REFERENCES [dbo].[Contests]
         ([ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -768,7 +785,7 @@ ADD CONSTRAINT [FK_UserAttendContest_Contest]
 -- Creating non-clustered index for FOREIGN KEY 'FK_UserAttendContest_Contest'
 CREATE INDEX [IX_FK_UserAttendContest_Contest]
 ON [dbo].[UserAttendContest]
-    ([UserAttendContest_User_ID]);
+    ([Contest_ID]);
 GO
 
 -- Creating foreign key on [User_ID] in table 'Records'
@@ -982,6 +999,29 @@ ADD CONSTRAINT [FK_ArticleTag_Tag]
 -- Creating non-clustered index for FOREIGN KEY 'FK_ArticleTag_Tag'
 CREATE INDEX [IX_FK_ArticleTag_Tag]
 ON [dbo].[ArticleTag]
+    ([Tag_ID]);
+GO
+
+-- Creating foreign key on [Problem_ID] in table 'ProblemTag'
+ALTER TABLE [dbo].[ProblemTag]
+ADD CONSTRAINT [FK_ProblemTag_Problem]
+    FOREIGN KEY ([Problem_ID])
+    REFERENCES [dbo].[Problems]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Tag_ID] in table 'ProblemTag'
+ALTER TABLE [dbo].[ProblemTag]
+ADD CONSTRAINT [FK_ProblemTag_Tag]
+    FOREIGN KEY ([Tag_ID])
+    REFERENCES [dbo].[Tags]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ProblemTag_Tag'
+CREATE INDEX [IX_FK_ProblemTag_Tag]
+ON [dbo].[ProblemTag]
     ([Tag_ID]);
 GO
 

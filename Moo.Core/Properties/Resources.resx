@@ -148,7 +148,7 @@
     <value>&lt;color:red&gt;*评测机貌似出去遛弯了……*&lt;/color&gt;</value>
   </data>
   <data name="MooTester_TestCaseX" xml:space="preserve">
-    <value># *[url:测试点#{0}|?page=testCase&amp;id={0}]*</value>
+    <value># *[TestCase:{0}]*</value>
   </data>
   <data name="MooTester_TesterIP" xml:space="preserve">
     <value>127.0.0.1</value>
