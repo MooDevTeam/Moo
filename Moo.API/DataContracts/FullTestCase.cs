@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace Moo.API.DataContracts
 {
     [DataContract]
-    [KnownType(typeof(FullTranditionalTestCase))]
+    [KnownType(typeof(FullTraditionalTestCase))]
     [KnownType(typeof(FullSpecialJudgedTestCase))]
     [KnownType(typeof(FullInteractiveTestCase))]
     [KnownType(typeof(FullAnswerOnlyTestCase))]

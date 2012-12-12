@@ -16,14 +16,7 @@ namespace Moo.Debug
         static string ReadResponse(WebRequest request)
         {
             WebResponse response;
-            try
-            {
-                response = request.GetResponse();
-            }
-            catch(WebException e)
-            {
-                response = e.Response;
-            }
+            response = request.GetResponse();
             using (response)
             {
                 using (Stream stream = response.GetResponseStream())
@@ -43,6 +36,7 @@ namespace Moo.Debug
             request.ContentType = "text/json";
             request.ContentLength = dataBytes.Length;
             request.Headers.Add("Auth", Auth);
+            request.Timeout = System.Threading.Timeout.Infinite;
             request.GetRequestStream().Write(dataBytes, 0, dataBytes.Length);
             return ReadResponse(request);
         }
@@ -55,6 +49,7 @@ namespace Moo.Debug
             request.ContentType = "text/json";
             request.ContentLength = dataBytes.Length;
             request.Headers.Add("Auth", Auth);
+            request.Timeout = System.Threading.Timeout.Infinite;
             request.GetRequestStream().Write(dataBytes, 0, dataBytes.Length);
             return ReadResponse(request);
         }
@@ -63,6 +58,7 @@ namespace Moo.Debug
         {
             WebRequest request = HttpWebRequest.Create(ROOT + uri);
             request.Headers.Add("Auth", Auth);
+            request.Timeout = System.Threading.Timeout.Infinite;
             return ReadResponse(request);
         }
 
@@ -70,24 +66,19 @@ namespace Moo.Debug
         {
             WebRequest request = HttpWebRequest.Create(ROOT + uri);
             request.Method = "DELETE";
+            request.Timeout = System.Threading.Timeout.Infinite;
             request.Headers.Add("Auth", Auth);
             return ReadResponse(request);
         }
 
         static void Main(string[] args)
         {
-            string base64 = "TXpLeU1qYmw1UUlB";
-            byte[] compressed = Convert.FromBase64String(base64);
-            Console.OpenStandardOutput().Write(compressed, 0, compressed.Length);
-            using (MemoryStream mem = new MemoryStream(compressed))
+            var tool = new System.Web.Script.Serialization.JavaScriptSerializer();
+            Console.Write(tool.Serialize(new
             {
-                using (DeflateStream deflate = new DeflateStream(mem, CompressionMode.Decompress))
-                {
-                    byte[] buffer = new byte[10*1024];
-                    int len=deflate.Read(buffer, 0, buffer.Length);
-                    Console.Write(Encoding.Default.GetString(buffer,0,len));
-                }
-            }
+                ID = 123,
+                Name = "onetwogoo\"\\"
+            }));
         }
     }
 }

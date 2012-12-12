@@ -15,17 +15,17 @@ namespace Moo.Core.Tester.MooTester
     {
         delegate TestResult SocketToTestResult(Socket socket);
 
-        public TestResult TestTranditional(string source, string language, IEnumerable<TranditionalTestCase> cases)
+        public TestResult TestTraditional(string source, string language, IEnumerable<TraditionalTestCase> cases)
         {
-            return WithSocket(socket => InnerTestTranditional(socket, source, language, cases));
+            return WithSocket(socket => InnerTestTraditional(socket, source, language, cases));
         }
 
-        TestResult InnerTestTranditional(Socket socket, string source, string language, IEnumerable<TranditionalTestCase> cases)
+        TestResult InnerTestTraditional(Socket socket, string source, string language, IEnumerable<TraditionalTestCase> cases)
         {
             string execFile = Compile(socket, source, Command.GetCommand(language, "src2exe"));
             int score = 0;
             StringBuilder sb = new StringBuilder(Properties.Resources.MooTester_CompilerSuccess).AppendLine().AppendLine();
-            foreach (TranditionalTestCase testCase in cases)
+            foreach (TraditionalTestCase testCase in cases)
             {
                 sb.AppendFormat(Properties.Resources.MooTester_TestCaseX, testCase.ID);
 
@@ -34,8 +34,8 @@ namespace Moo.Core.Tester.MooTester
                     Type = Message.MessageType.Test,
                     Content = new TestIn()
                     {
-                        CmpPath = Properties.Resources.MooTester_TranditionalJudger,
-                        ExecPath = Command.GetCommand(language,"execute").Replace("{Execute}",execFile),
+                        CmpPath = Properties.Resources.MooTester_TraditionalJudger,
+                        ExecPath = Command.GetCommand(language, "execute").Replace("{Execute}", execFile),
                         Memory = testCase.MemoryLimit,
                         Time = testCase.TimeLimit,
                         Input = testCase.Input,
@@ -44,7 +44,7 @@ namespace Moo.Core.Tester.MooTester
                 }.ToBytes());
                 Out testResult = new Out(socket);
 
-                int currentScore=0;
+                int currentScore = 0;
                 switch (testResult.Type)
                 {
                     case Out.ResultType.Success:
@@ -73,7 +73,7 @@ namespace Moo.Core.Tester.MooTester
                         sb.Append(Properties.Resources.MooTester_TestUndefinedError);
                         break;
                 }
-                score+=currentScore;
+                score += currentScore;
                 sb.AppendLine(string.Format(Properties.Resources.MooTester_TestInfo, currentScore, testResult.Time, testResult.Memory, testResult.Message.Replace('\r', ' ').Replace('\n', ' ')));
             }
 
@@ -103,8 +103,8 @@ namespace Moo.Core.Tester.MooTester
                     Type = Message.MessageType.Test,
                     Content = new TestIn()
                     {
-                        CmpPath = testCase.Judger.Path,
-                        ExecPath = Command.GetCommand(language,"execute").Replace("{Execute}",execFile),
+                        CmpPath = Config.UploadFileDirectory+testCase.Judger.FileName,
+                        ExecPath = Command.GetCommand(language, "execute").Replace("{Execute}", execFile),
                         Memory = testCase.MemoryLimit,
                         Time = testCase.TimeLimit,
                         Input = testCase.Input,
@@ -113,7 +113,7 @@ namespace Moo.Core.Tester.MooTester
                 }.ToBytes());
                 Out testResult = new Out(socket);
 
-                int currentScore=0;
+                int currentScore = 0;
                 switch (testResult.Type)
                 {
                     case Out.ResultType.Success:
@@ -169,7 +169,7 @@ namespace Moo.Core.Tester.MooTester
                 sb.AppendFormat(Properties.Resources.MooTester_TestCaseX, testCase.ID);
 
                 string cmd = Command.GetCommand(language, "obj2exe");
-                string objects = objectFile + " \"" + testCase.Invoker.Path + "\"";
+                string objects = objectFile + " \"" +Config.UploadFileDirectory+ testCase.Invoker.FileName + "\"";
                 cmd = cmd.Replace("{Object}", objects);
 
                 string execFile = Compile(socket, "", cmd);
@@ -181,14 +181,14 @@ namespace Moo.Core.Tester.MooTester
                         Time = testCase.TimeLimit,
                         Memory = testCase.MemoryLimit,
                         CmpPath = "",
-                        ExecPath = Command.GetCommand(language,"execute").Replace("{Execute}",execFile),
+                        ExecPath = Command.GetCommand(language, "execute").Replace("{Execute}", execFile),
                         Input = testCase.TestData,
                         Output = new byte[0]
                     }
                 }.ToBytes());
 
                 Out testResult = new Out(socket);
-                int currentScore=0;
+                int currentScore = 0;
                 switch (testResult.Type)
                 {
                     case Out.ResultType.Success:
@@ -245,7 +245,7 @@ namespace Moo.Core.Tester.MooTester
                     Content = new TestIn()
                     {
                         CmpPath = "",
-                        ExecPath = testCase.Judger.Path,
+                        ExecPath = Config.UploadFileDirectory + testCase.Judger.FileName,
                         Input = MergeAnswerAndTestData(answers.ContainsKey(testCase.ID) ? answers[testCase.ID] : "", testCase.TestData),
                         Memory = long.Parse(Properties.Resources.MooTester_TestAnswerOnlyMemory),
                         Time = long.Parse(Properties.Resources.MooTester_TestAnswerOnlyTime),
@@ -254,7 +254,7 @@ namespace Moo.Core.Tester.MooTester
                 }.ToBytes());
 
                 Out testResult = new Out(socket);
-                int currentScore=0;
+                int currentScore = 0;
                 switch (testResult.Type)
                 {
                     case Out.ResultType.Success:
@@ -349,8 +349,9 @@ namespace Moo.Core.Tester.MooTester
         int GetScore(ref string message)
         {
             int result = 0;
-            foreach(Match match in Regex.Matches(message, @"{Score:(\d+)}")){
-                result+=int.Parse(match.Groups[1].Value);
+            foreach (Match match in Regex.Matches(message, @"{Score:(\d+)}"))
+            {
+                result += int.Parse(match.Groups[1].Value);
             }
             message = Regex.Replace(message, @"{Score:\d+}", "");
             return result;

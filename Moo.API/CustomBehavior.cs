@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ServiceModel;
 using System.ServiceModel.Configuration;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
@@ -28,18 +29,24 @@ namespace Moo.API
             IErrorHandler handler = new ErrorHandler();
             foreach (ChannelDispatcher chDisp in serviceHostBase.ChannelDispatchers)
             {
-                chDisp.ErrorHandlers.Add(handler);
-                foreach (EndpointDispatcher epDisp in chDisp.Endpoints)
+                if (chDisp.BindingName.Contains("WebHttpBinding"))
                 {
-                    epDisp.DispatchRuntime.MessageInspectors.Add(new Authenticator());
+                    chDisp.ErrorHandlers.Add(handler);
+                    foreach (EndpointDispatcher epDisp in chDisp.Endpoints)
+                    {
+                        epDisp.DispatchRuntime.MessageInspectors.Add(new Authenticator());
+                    }
                 }
             }
 
             foreach (ServiceEndpoint endpoint in serviceDescription.Endpoints)
             {
-                foreach (OperationDescription operation in endpoint.Contract.Operations)
+                if (endpoint.Binding.GetType() == typeof(WebHttpBinding))
                 {
-                    operation.Behaviors.Add(new CustomMessageFormatter.Behavior());
+                    foreach (OperationDescription operation in endpoint.Contract.Operations)
+                    {
+                        operation.Behaviors.Add(new CustomMessageFormatter.Behavior());
+                    }
                 }
             }
         }

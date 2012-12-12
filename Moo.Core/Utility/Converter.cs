@@ -40,7 +40,7 @@ namespace Moo.Core.Utility
             }
             return sb.ToString();
         }
-        public static byte[] ToByteArray(string hexString)
+        public static byte[] FromHexString(string hexString)
         {
             byte[] result = new byte[hexString.Length / 2];
             for (int i = 0; i < result.Length; i++)

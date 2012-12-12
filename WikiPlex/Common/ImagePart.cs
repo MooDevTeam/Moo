@@ -28,7 +28,7 @@
         /// <summary>
         /// Gets the url of the image.
         /// </summary>
-        public string ImageUrl { get; private set; }
+        public string ImageUrl { get; set; }
 
         /// <summary>
         /// Gets the url of the link.

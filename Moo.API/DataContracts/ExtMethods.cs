@@ -113,9 +113,9 @@ namespace Moo.API.DataContracts
             };
         }
 
-        public static FullTranditionalTestCase ToFullTranditionalTestCase(this TranditionalTestCase testCase)
+        public static FullTraditionalTestCase ToFullTraditionalTestCase(this TraditionalTestCase testCase)
         {
-            return new FullTranditionalTestCase()
+            return new FullTraditionalTestCase()
             {
                 ID = testCase.ID,
                 Answer = testCase.Answer,
@@ -178,7 +178,6 @@ namespace Moo.API.DataContracts
                 Email = user.Email,
                 ID = user.ID,
                 Name = user.Name,
-                PreferredLanguage = user.PreferredLanguage,
                 Role = user.Role.ID,
                 Score = user.Score
             };
@@ -264,33 +263,6 @@ namespace Moo.API.DataContracts
             };
         }
 
-        public static BriefMail ToBriefMail(this Mail mail)
-        {
-            return new BriefMail()
-            {
-                CreateTime = mail.CreateTime,
-                From = mail.From.ID,
-                ID = mail.ID,
-                IsRead = mail.IsRead,
-                Name = mail.Name,
-                To = mail.To.ID
-            };
-        }
-
-        public static FullMail ToFullMail(this Mail mail)
-        {
-            return new FullMail()
-            {
-                CreateTime = mail.CreateTime,
-                From = mail.From.ID,
-                Content = mail.Content,
-                ID = mail.ID,
-                IsRead = mail.IsRead,
-                Name = mail.Name,
-                To = mail.To.ID
-            };
-        }
-
         public static BriefContest ToBriefContest(this Contest contest)
         {
             return new BriefContest()
@@ -340,7 +312,6 @@ namespace Moo.API.DataContracts
             {
                 ID=role.ID,
                 Name=role.Name,
-                DisplayName=role.DisplayName,
             };
         }
     }

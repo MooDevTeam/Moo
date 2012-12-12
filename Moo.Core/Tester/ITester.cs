@@ -7,7 +7,7 @@ namespace Moo.Core.Tester
 {
     public interface ITester
     {
-        TestResult TestTranditional(string source, string language, IEnumerable<TranditionalTestCase> cases);
+        TestResult TestTraditional(string source, string language, IEnumerable<TraditionalTestCase> cases);
         TestResult TestSpecialJudged(string source, string language, IEnumerable<SpecialJudgedTestCase> cases);
         TestResult TestInteractive(string source, string language, IEnumerable<InteractiveTestCase> cases);
         TestResult TestAnswerOnly(IDictionary<int,string> answers, IEnumerable<AnswerOnlyTestCase> cases);

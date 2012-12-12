@@ -53,11 +53,6 @@ namespace Moo.Core.Security
         ModifyUser,
         ModifyUserRole,
 
-        //Mails
-        CreateMail,
-        ReadMail,
-        DeleteMail,
-
         //Contests
         ReadContest,
         ReadContestResult,
@@ -82,5 +77,18 @@ namespace Moo.Core.Security
         CreateArticleRevision,
         ReadArticleRevision,
         DeleteArticleRevision,
+
+        //Message
+        CreateMessage,
+        DeletePublicMessage,
+        DeletePrivateMessage,
+
+        //Tag
+        CreateTag,
+        ModifyTag,
+        DeleteTag,
+
+        //Management
+        GarbageCollect
     }
 }

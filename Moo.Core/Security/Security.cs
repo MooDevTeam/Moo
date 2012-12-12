@@ -19,14 +19,25 @@ namespace Moo.Core.Security
             get { return Thread.CurrentPrincipal.Identity as SiteUser; }
         }
 
-        public static void Authenticate(string sToken)
+        public static bool Authenticate(string sToken)
         {
-            string[] splited = sToken.Split(',');
-            int userID = int.Parse(splited[0]);
-            int iToken = int.Parse(splited[1]);
-
-            if (SiteUsers.ByID[userID].Token != iToken) throw new Exception();
-            Thread.CurrentPrincipal = new CustomPrincipal() { Identity = SiteUsers.ByID[userID] };
+            if (sToken != null)
+            {
+                string[] splited = sToken.Split(',');
+                if (splited.Length == 2)
+                {
+                    int userID, iToken;
+                    if (int.TryParse(splited[0], out userID) && int.TryParse(splited[1], out iToken))
+                    {
+                        if (SiteUsers.ByID.ContainsKey(userID) && SiteUsers.ByID[userID].Token == iToken)
+                        {
+                            Thread.CurrentPrincipal = new CustomPrincipal() { Identity = SiteUsers.ByID[userID] };
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         public static string Login(int userID, string password)
@@ -52,7 +63,15 @@ namespace Moo.Core.Security
 
         public static void Logout()
         {
-            SiteUsers.ByID.Remove(CurrentUser.ID);
+            Logout(CurrentUser.ID);
+        }
+
+        public static void Logout(int id)
+        {
+            if (SiteUsers.ByID.ContainsKey(id))
+            {
+                SiteUsers.ByID.Remove(id);
+            }
         }
     }
 }

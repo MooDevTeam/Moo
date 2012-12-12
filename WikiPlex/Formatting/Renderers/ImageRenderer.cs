@@ -26,6 +26,7 @@ namespace WikiPlex.Formatting.Renderers
             get
             {
                 return new[] { 
+                                ScopeName.ImageFile,
                                 ScopeName.ImageWithLinkNoAltLeftAlign, ScopeName.ImageWithLinkNoAltRightAlign, 
                                 ScopeName.ImageWithLinkNoAlt, ScopeName.ImageWithLinkWithAltLeftAlign, 
                                 ScopeName.ImageWithLinkWithAltRightAlign, ScopeName.ImageWithLinkWithAlt,
@@ -70,6 +71,7 @@ namespace WikiPlex.Formatting.Renderers
         {
             switch (scopeName)
             {
+                case ScopeName.ImageFile:
                 case ScopeName.ImageLeftAlign:
                 case ScopeName.ImageLeftAlignWithAlt:
                 case ScopeName.ImageWithLinkNoAltLeftAlign:
@@ -97,6 +99,8 @@ namespace WikiPlex.Formatting.Renderers
         {
             switch (scopeName)
             {
+                case ScopeName.ImageFile:
+                    return RenderImageFile;
                 case ScopeName.ImageLeftAlign:
                 case ScopeName.ImageRightAlign:
                 case ScopeName.ImageNoAlign:
@@ -134,6 +138,14 @@ namespace WikiPlex.Formatting.Renderers
             return null;
         }
 
+        private static string RenderImageFile(string input, FloatAlignment alignment, Func<string, string> encode)
+        {
+            string format = "<img src=\"file/{0}\" alt=\"\" {1} />";
+            ImagePart parts = Utility.ExtractImageParts(input, ImagePartExtras.None, false);
+
+            return string.Format(format, parts.ImageUrl, parts.Dimensions);
+        }
+
         private static string RenderImageNoLinkMacro(string input, FloatAlignment alignment, Func<string, string> encode)
         {
             string format = alignment == FloatAlignment.None ? ImageNoLink : ImageNoLinkWithStyle;
@@ -154,7 +166,7 @@ namespace WikiPlex.Formatting.Renderers
         {
             string format = alignment == FloatAlignment.None ? ImageNoLinkAndAlt : ImageNoLinkAndAltWithStyle;
             ImagePart parts = Utility.ExtractImageParts(input, ImagePartExtras.ContainsText);
-            
+
             return string.Format(format, alignment.GetStyle(), alignment.GetPadding(), encode(parts.ImageUrl), encode(parts.Text), parts.Dimensions);
         }
 

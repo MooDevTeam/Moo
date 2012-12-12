@@ -28,6 +28,7 @@
         public const string HeadingTwoBegin = "Heading Two Begin Tag";
         public const string HeadingTwoEnd = "Heading Two End Tag";
         public const string HorizontalRule = "Horizontal Rule Tag";
+        public const string ImageFile = "Image File";
         public const string ImageLeftAlign = "Image Tag - Left Alignment";
         public const string ImageLeftAlignWithAlt = "Image Tag With Alt - Left Alignment";
         public const string ImageNoAlign = "Image Tag - No Alignment";

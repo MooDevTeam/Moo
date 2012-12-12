@@ -56,7 +56,7 @@ namespace Moo.Core.Text
                                  select u).SingleOrDefault<User>();
                     if (user != null)
                     {
-                        string link = "[url:@" + user.Name + "|?page=user&id=" + user.ID + "]";
+                        string link = "[url:@" + user.Name + "|#!page=user&id=" + user.ID + "]";
                         sb.Remove(i, end - i);
                         sb.Insert(i, link);
                         i += link.Length;

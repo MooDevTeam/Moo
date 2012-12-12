@@ -280,30 +280,6 @@ namespace Moo.Core.Security
             }
         }
 
-        Dictionary<Function, List<Func<Mail, bool?>>> MailRules
-        {
-            get
-            {
-                return new Dictionary<Function, List<Func<Mail, bool?>>>
-                {
-                    {Function.CreateMail,new List<Func<Mail,bool?>>{
-                        m=>me.Role>=SiteRole.NormalUser?(bool?)true:null
-                    }},
-                    {Function.ReadMail,new List<Func<Mail,bool?>>{
-                        m=>m.To.ID!=me.ID && m.From.ID!=me.ID?(bool?)false:null,
-                        m=>me.Role>=SiteRole.Reader?(bool?)true:null
-                    }},
-                    {Function.DeleteMail,new List<Func<Mail,bool?>>{
-                        m=>m.To.ID!=me.ID && m.From.ID!=me.ID?(bool?)false:null,
-                        m=>me.Role<=SiteRole.Reader?(bool?)false:null,
-                        m=>me.Role>=SiteRole.Worker?(bool?)true:null,
-                        m=>m.To.ID==me.ID?(bool?)true:null,
-                        m=>!m.IsRead?(bool?)true:null
-                    }},
-                };
-            }
-        }
-
         Dictionary<Function, List<Func<Contest, bool?>>> ContestRules
         {
             get
@@ -330,6 +306,83 @@ namespace Moo.Core.Security
                     {Function.ReadContest,new List<Func<Contest,bool?>>{
                         c=>me.Role>=SiteRole.Reader?(bool?)true:null
                     }}
+                };
+            }
+        }
+
+        Dictionary<Function, List<Func<Message, bool?>>> MessageRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<Message, bool?>>>
+                {
+                    {Function.CreateMessage,new List<Func<Message,bool?>>{
+                        m=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }},
+                    {Function.DeletePublicMessage,new List<Func<Message,bool?>>{
+                        m=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.DeletePrivateMessage,new List<Func<Message,bool?>>{
+                        m=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }}
+                };
+            }
+        }
+
+        Dictionary<Function, List<Func<UploadedFile, bool?>>> FileRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<UploadedFile, bool?>>>
+                {
+                    {Function.ReadFile,new List<Func<UploadedFile,bool?>>{
+                        f=>me.Role>=SiteRole.Reader?(bool?)true:null
+                    }},
+                    {Function.CreateFile,new List<Func<UploadedFile,bool?>>{
+                        f=>me.Role>=SiteRole.NormalUser?(bool?)true:null
+                    }},
+                    {Function.ModifyFile,new List<Func<UploadedFile,bool?>>{
+                        f=>me.Role<=SiteRole.Reader?(bool?)false:null,
+                        f=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        f=>me.ID==f.CreatedBy.ID?(bool?)true:null
+                    }},
+                    {Function.DeleteFile,new List<Func<UploadedFile,bool?>>{
+                        f=>me.Role<=SiteRole.Reader?(bool?)false:null,
+                        f=>me.Role>=SiteRole.Worker?(bool?)true:null,
+                        f=>me.ID==f.CreatedBy.ID?(bool?)true:null
+                    }}
+                };
+            }
+        }
+
+        Dictionary<Function, List<Func<Tag, bool?>>> TagRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<Tag, bool?>>>
+                {
+                    {Function.CreateTag,new List<Func<Tag,bool?>>{
+                        t=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.ModifyTag,new List<Func<Tag,bool?>>{
+                        t=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
+                    {Function.DeleteTag,new List<Func<Tag,bool?>>{
+                        t=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }}
+                };
+            }
+        }
+
+        Dictionary<Function, List<Func<bool?>>> OtherRules
+        {
+            get
+            {
+                return new Dictionary<Function, List<Func<bool?>>>
+                {
+                    {Function.GarbageCollect,new List<Func<bool?>>{
+                        ()=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
                 };
             }
         }
@@ -393,22 +446,42 @@ namespace Moo.Core.Security
             {
                 return CheckRules(@object as ArticleRevision, ArticleRevisionRules, function);
             }
-            else if (@object is Mail)
-            {
-                return CheckRules(@object as Mail, MailRules, function);
-            }
             else if (@object is Contest)
             {
                 return CheckRules(@object as Contest, ContestRules, function);
             }
+            else if (@object is Message)
+            {
+                return CheckRules(@object as Message, MessageRules, function);
+            }
+            else if (@object is UploadedFile)
+            {
+                return CheckRules(@object as UploadedFile, FileRules, function);
+            }
+            else if (@object is Tag)
+            {
+                return CheckRules(@object as Tag, TagRules, function);
+            }
             else if (@object == null)
-                throw new NullReferenceException("试图检测针对Null的权限");
+            {
+                if (!OtherRules.ContainsKey(function))
+                {
+                    throw new NotImplementedException("糟糕！未知的权限项！");
+                }
+                foreach (var func in OtherRules[function])
+                {
+                    bool? result = func();
+                    if (result != null) return (bool)result;
+                }
+                return false;
+            }
             else
                 throw new NotImplementedException("糟糕！权限模块不完整！");
         }
 
         bool CheckRules<T>(T @object, Dictionary<Function, List<Func<T, bool?>>> rules, Function function)
         {
+            if (!rules.ContainsKey(function)) throw new NotImplementedException("糟糕！未知的权限项！");
             foreach (var func in rules[function])
             {
                 bool? result = func(@object);

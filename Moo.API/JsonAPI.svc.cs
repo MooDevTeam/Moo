@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
@@ -42,16 +44,10 @@ namespace Moo.API
             return text;
         }
         [OperationContract]
-        public object Debug()
+        [WebGet]
+        public string Debug()
         {
-            using (MooDB db = new MooDB())
-            {
-                return db.Problems.Select(p => new
-                {
-                    ID = p.ID,
-                    Name = p.Name
-                });
-            }
+            return Process.GetCurrentProcess().WorkingSet64.ToString();
         }
         #endregion
 
@@ -63,17 +59,59 @@ namespace Moo.API
         }
 
         [OperationContract]
+        [WebGet(UriTemplate = "MemoryUsage")]
+        public long GetMemoryUsage()
+        {
+            return Process.GetCurrentProcess().WorkingSet64;
+        }
+
+        [OperationContract]
         public void GarbageCollect()
         {
+            Access.Required(null, null, Function.GarbageCollect);
+            lock (typeof(Binary))
+            {
+                Binary.AutoPop();
+            }
             GC.Collect();
         }
         #endregion
 
         #region Security
+
+        [OperationContract]
+        [WebGet(UriTemplate = "PublicKey")]
+        public object GetPublicKey()
+        {
+            string format = QueryParameters["format"];
+            if (format == "hex")
+            {
+                return new
+                {
+                    Modulus = Converter.ToHexString(RSAHelper.PublicKey.Modulus),
+                    Exponent = Converter.ToHexString(RSAHelper.PublicKey.Exponent)
+                };
+            }
+            else
+            {
+                return new
+                {
+                    Modulus = Convert.ToBase64String(RSAHelper.PublicKey.Modulus),
+                    Exponent = Convert.ToBase64String(RSAHelper.PublicKey.Exponent)
+                };
+            }
+        }
+
         [OperationContract]
         public string Login(int userID, string password)
         {
-            return Security.Login(userID, password);
+            password = Encoding.UTF8.GetString(RSAHelper.Decrypt(Convert.FromBase64String(password)));
+            string result = Security.Login(userID, password);
+            if (result != null)
+            {
+                WebSockets.WebSocketsAPIHandler.Kick(userID);
+            }
+            return result;
         }
 
         [OperationContract]
@@ -86,6 +124,7 @@ namespace Moo.API
         [OperationContract]
         public void Logout()
         {
+            WebSockets.WebSocketsAPIHandler.Kick(Security.CurrentUser.ID);
             Security.Logout();
         }
         #endregion
@@ -117,7 +156,9 @@ namespace Moo.API
             int? top = OptionalIntParameter("top");
             int? tagID = OptionalIntParameter("tagID");
             string nameContains = QueryParameters["nameContains"];
-            string nameStartWith = QueryParameters["nameStartWith"];
+            string order = QueryParameters["order"];
+            string full = QueryParameters["full"];
+
             using (MooDB db = new MooDB())
             {
                 IQueryable<Problem> problems = db.Problems;
@@ -134,12 +175,15 @@ namespace Moo.API
                 {
                     problems = problems.Where(p => p.Name.Contains(nameContains));
                 }
-                if (nameStartWith != null)
-                {
-                    problems = problems.Where(p => p.Name.StartsWith(nameStartWith));
-                }
 
-                problems = problems.OrderByDescending(p => p.ID);
+                if (order == "asc")
+                {
+                    problems = problems.OrderBy(p => p.ID);
+                }
+                else
+                {
+                    problems = problems.OrderByDescending(p => p.ID);
+                }
 
                 if (skip != null)
                 {
@@ -150,29 +194,46 @@ namespace Moo.API
                     problems = problems.Take((int)top);
                 }
 
-                return (from p in problems
-                        let myRecords = from r in db.Records
-                                        where r.Problem.ID == p.ID && r.User.ID == Security.CurrentUser.ID
-                                              && r.JudgeInfo != null && r.JudgeInfo.Score >= 0
-                                        select r
-                        let testCases = from t in db.TestCases.OfType<TranditionalTestCase>()
-                                        where t.Problem.ID == p.ID
-                                        select t.Score
-                        let fullScore = testCases.Any() ? (int?)testCases.Sum() : null
-                        select new
-                        {
-                            ID = p.ID,
-                            Problem = new
+                if (full != null)
+                {
+                    return (from p in problems
+                            let myRecords = from r in db.Records
+                                            where r.Problem.ID == p.ID && r.User.ID == Security.CurrentUser.ID
+                                                  && r.JudgeInfo != null && r.JudgeInfo.Score >= 0
+                                            select r
+                            let testCases = from t in db.TestCases.OfType<TraditionalTestCase>()
+                                            where t.Problem.ID == p.ID
+                                            select t.Score
+                            let fullScore = testCases.Any() ? (int?)testCases.Sum() : null
+                            select new
                             {
                                 ID = p.ID,
-                                Name = p.Name,
-                            },
-                            AverageScore = p.SubmissionUser != 0 ? (double?)(p.ScoreSum / (double)p.SubmissionUser) : null,
-                            MyScore = myRecords.Any() ? (int?)myRecords.Max(r => r.JudgeInfo.Score) : null,
-                            FullScore = fullScore,
-                            SubmissionTimes = p.SubmissionTimes,
-                            SubmissionUser = p.SubmissionUser,
-                        }).ToList();
+                                Problem = new
+                                {
+                                    ID = p.ID,
+                                    Name = p.Name,
+                                },
+                                Type = p.Type,
+                                AverageScore = p.JudgeInfoHidden ? null : p.SubmissionUser != 0 ? (double?)(p.ScoreSum / (double)p.SubmissionUser) : null,
+                                MyScore = p.JudgeInfoHidden ? null : myRecords.Any() ? (int?)myRecords.Max(r => r.JudgeInfo.Score) : null,
+                                FullScore = fullScore,
+                                SubmissionTimes = p.SubmissionTimes,
+                                SubmissionUser = p.SubmissionUser,
+                            }).ToList();
+                }
+                else
+                {
+                    return problems.Select(p => new
+                    {
+                        ID = p.ID,
+                        Problem = new
+                        {
+                            ID = p.ID,
+                            Name = p.Name
+                        },
+                        Type = p.Type
+                    }).ToList();
+                }
             }
         }
 
@@ -194,7 +255,7 @@ namespace Moo.API
         [WebInvoke(UriTemplate = "Problems", Method = "POST")]
         public int CreateProblem(CreateProblemData problem)
         {
-            if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
+            if (!new[] { "Traditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
             {
                 throw new NotSupportedException("不支持的题目类型：" + problem.Type);
             }
@@ -325,7 +386,7 @@ namespace Moo.API
                 }
                 if (problem.Type != null)
                 {
-                    if (!new[] { "Tranditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
+                    if (!new[] { "Traditional", "SpecialJudged", "Interactive", "AnswerOnly" }.Contains(problem.Type))
                     {
                         throw new NotSupportedException("不支持的题目类型：" + problem.Type);
                     }
@@ -716,7 +777,6 @@ namespace Moo.API
                     PublicCode = (bool)record.PublicCode,
                     User = currentUser,
                 };
-                currentUser.PreferredLanguage = record.Language;
 
                 problem.SubmissionTimes++;
                 if (!(from r in db.Records
@@ -857,6 +917,16 @@ namespace Moo.API
 
                 Access.Required(db, info, Function.DeleteJudgeInfo);
 
+                db.Messages.AddObject(new Message
+                {
+                    Content = "我对您的[Record:" + record.ID + "]进行了重测。\r\n"
+                    + "原始得分为*" + info.Score + "*。\r\n"
+                    + "原始测评信息为\r\n" + info.Info,
+                    From = Security.CurrentUser.GetDBUser(db),
+                    To = record.User,
+                    CreateTime = DateTime.Now,
+                });
+
                 record.JudgeInfo = null;
                 db.JudgeInfos.DeleteObject(info);
                 db.SaveChanges();
@@ -908,6 +978,7 @@ namespace Moo.API
                         ID = t.CreatedBy.ID,
                         Name = t.CreatedBy.Name
                     },
+                    CreateTime = t.CreateTime,
                     Type = t.GetType().Name
                 }).ToList();
             }
@@ -928,35 +999,36 @@ namespace Moo.API
 
                 Access.Required(db, testCase, Function.ReadTestCase);
 
-                if (testCase is TranditionalTestCase)
+                if (testCase is TraditionalTestCase)
                 {
-                    TranditionalTestCase asTranditional = testCase as TranditionalTestCase;
+                    TraditionalTestCase asTraditional = testCase as TraditionalTestCase;
                     return new
                     {
-                        ID = asTranditional.ID,
+                        ID = asTraditional.ID,
                         Problem = new
                         {
-                            ID = asTranditional.Problem.ID,
-                            Name = asTranditional.Problem.Name
+                            ID = asTraditional.Problem.ID,
+                            Name = asTraditional.Problem.Name
                         },
                         CreatedBy = new
                         {
-                            ID = asTranditional.CreatedBy.ID,
-                            Name = asTranditional.CreatedBy.Name
+                            ID = asTraditional.CreatedBy.ID,
+                            Name = asTraditional.CreatedBy.Name
                         },
-                        Type = "TranditionalTestCase",
-                        TimeLimit = asTranditional.TimeLimit,
-                        MemoryLimit = asTranditional.MemoryLimit,
-                        Score = asTranditional.Score,
+                        CreateTime = asTraditional.CreateTime,
+                        Type = "TraditionalTestCase",
+                        TimeLimit = asTraditional.TimeLimit,
+                        MemoryLimit = asTraditional.MemoryLimit,
+                        Score = asTraditional.Score,
                         Input = new
                         {
-                            Preview = Encoding.Default.GetString(asTranditional.Input, 0, Math.Min(asTranditional.Input.Length, PREVIEW_BYTES)),
-                            BlobID = Binary.Add(asTranditional.Input, "TestCase" + asTranditional.ID + "Input")
+                            Preview = Encoding.Default.GetString(asTraditional.Input, 0, Math.Min(asTraditional.Input.Length, PREVIEW_BYTES)),
+                            BlobID = Binary.Add(asTraditional.Input, "TestCase" + asTraditional.ID + "Input")
                         },
                         Answer = new
                         {
-                            Preview = Encoding.Default.GetString(asTranditional.Answer, 0, Math.Min(asTranditional.Answer.Length, PREVIEW_BYTES)),
-                            BlobID = Binary.Add(asTranditional.Answer, "TestCase" + asTranditional.ID + "Answer")
+                            Preview = Encoding.Default.GetString(asTraditional.Answer, 0, Math.Min(asTraditional.Answer.Length, PREVIEW_BYTES)),
+                            BlobID = Binary.Add(asTraditional.Answer, "TestCase" + asTraditional.ID + "Answer")
                         },
                     };
                 }
@@ -976,6 +1048,7 @@ namespace Moo.API
                             ID = asSpecialJudged.CreatedBy.ID,
                             Name = asSpecialJudged.CreatedBy.Name
                         },
+                        CreateTime = asSpecialJudged.CreateTime,
                         Type = "SpecialJudgedTestCase",
                         TimeLimit = asSpecialJudged.TimeLimit,
                         MemoryLimit = asSpecialJudged.MemoryLimit,
@@ -989,7 +1062,7 @@ namespace Moo.API
                             Preview = Encoding.Default.GetString(asSpecialJudged.Answer, 0, Math.Min(asSpecialJudged.Answer.Length, PREVIEW_BYTES)),
                             BlobID = Binary.Add(asSpecialJudged.Answer, "TestCase" + asSpecialJudged.ID + "Answer")
                         },
-                        Juder = new
+                        Judger = new
                         {
                             ID = asSpecialJudged.Judger.ID,
                             Name = asSpecialJudged.Judger.Name
@@ -1012,6 +1085,7 @@ namespace Moo.API
                             ID = asInteractive.CreatedBy.ID,
                             Name = asInteractive.CreatedBy.Name
                         },
+                        CreateTime = asInteractive.CreateTime,
                         Type = "InteractiveTestCase",
                         TimeLimit = asInteractive.TimeLimit,
                         MemoryLimit = asInteractive.MemoryLimit,
@@ -1043,6 +1117,7 @@ namespace Moo.API
                             ID = asAnswerOnly.CreatedBy.ID,
                             Name = asAnswerOnly.CreatedBy.Name
                         },
+                        CreateTime = asAnswerOnly.CreateTime,
                         Type = "AnswerOnlyTestCase",
                         TestData = new
                         {
@@ -1066,7 +1141,7 @@ namespace Moo.API
         #region CreateTestCase
         #region DataContracts
         [DataContract]
-        [KnownType(typeof(CreateTranditionalTestCaseData))]
+        [KnownType(typeof(CreateTraditionalTestCaseData))]
         [KnownType(typeof(CreateSpecialJudgedTestCaseData))]
         [KnownType(typeof(CreateInteractiveTestCaseData))]
         [KnownType(typeof(CreateAnswerOnlyTestCaseData))]
@@ -1076,13 +1151,13 @@ namespace Moo.API
         }
 
         [DataContract]
-        public class CreateTranditionalTestCaseData : CreateTestCaseData
+        public class CreateTraditionalTestCaseData : CreateTestCaseData
         {
             [DataMember]
-            public int InputBlobID;
+            public Guid InputBlobID;
 
             [DataMember]
-            public int AnswerBlobID;
+            public Guid AnswerBlobID;
 
             [DataMember]
             public int Score;
@@ -1099,11 +1174,10 @@ namespace Moo.API
                     throw new ArgumentException("输入编号无效");
                 if (!Binary.Has(AnswerBlobID))
                     throw new ArgumentException("答案编号无效");
-                return new TranditionalTestCase
+                return new TraditionalTestCase
                 {
-                    Answer = Binary.Get(AnswerBlobID),
-                    CreatedBy = Security.CurrentUser.GetDBUser(db),
-                    Input = Binary.Get(InputBlobID),
+                    Answer = Binary.Get(AnswerBlobID, true),
+                    Input = Binary.Get(InputBlobID, true),
                     MemoryLimit = MemoryLimit,
                     Score = Score,
                     TimeLimit = TimeLimit
@@ -1115,19 +1189,16 @@ namespace Moo.API
         public class CreateSpecialJudgedTestCaseData : CreateTestCaseData
         {
             [DataMember]
-            public int AnswerBlobID;
+            public Guid AnswerBlobID;
 
             [DataMember]
-            public int InputBlobID;
+            public Guid InputBlobID;
 
             [DataMember]
             public int MemoryLimit;
 
             [DataMember]
             public int TimeLimit;
-
-            [DataMember]
-            public int Score;
 
             [DataMember]
             public int JudgerID;
@@ -1142,11 +1213,11 @@ namespace Moo.API
                                        where f.ID == JudgerID
                                        select f).SingleOrDefault<UploadedFile>();
                 if (judger == null) throw new ArgumentException("无此文件");
+
                 return new SpecialJudgedTestCase
                 {
-                    Answer = Binary.Get(AnswerBlobID),
-                    CreatedBy = Security.CurrentUser.GetDBUser(db),
-                    Input = Binary.Get(InputBlobID),
+                    Answer = Binary.Get(AnswerBlobID, true),
+                    Input = Binary.Get(InputBlobID, true),
                     Judger = judger,
                     MemoryLimit = MemoryLimit,
                     TimeLimit = TimeLimit
@@ -1158,7 +1229,7 @@ namespace Moo.API
         public class CreateInteractiveTestCaseData : CreateTestCaseData
         {
             [DataMember]
-            public int TestDataID;
+            public Guid TestDataBlobID;
 
             [DataMember]
             public int TimeLimit;
@@ -1171,18 +1242,18 @@ namespace Moo.API
 
             public override TestCase ToTestCase(MooDB db)
             {
-                if (!Binary.Has(TestDataID))
+                if (!Binary.Has(TestDataBlobID))
                     throw new ArgumentException("测试资料编号无效");
                 UploadedFile invoker = (from f in db.UploadedFiles
                                         where f.ID == InvokerID
                                         select f).SingleOrDefault<UploadedFile>();
                 if (invoker == null) throw new ArgumentException("无此文件");
+
                 return new InteractiveTestCase
                 {
-                    CreatedBy = Security.CurrentUser.GetDBUser(db),
                     Invoker = invoker,
                     MemoryLimit = MemoryLimit,
-                    TestData = Binary.Get(TestDataID),
+                    TestData = Binary.Get(TestDataBlobID, true),
                     TimeLimit = TimeLimit,
                 };
             }
@@ -1192,24 +1263,24 @@ namespace Moo.API
         public class CreateAnswerOnlyTestCaseData : CreateTestCaseData
         {
             [DataMember]
-            public int TestDataID;
+            public Guid TestDataBlobID;
 
             [DataMember]
             public int JudgerID;
 
             public override TestCase ToTestCase(MooDB db)
             {
-                if (!Binary.Has(TestDataID))
+                if (!Binary.Has(TestDataBlobID))
                     throw new ArgumentException("测试资料编号无效");
                 UploadedFile judger = (from f in db.UploadedFiles
                                        where f.ID == JudgerID
                                        select f).SingleOrDefault<UploadedFile>();
                 if (judger == null) throw new ArgumentException("无此文件");
+
                 return new AnswerOnlyTestCase
                 {
-                    CreatedBy = Security.CurrentUser.GetDBUser(db),
                     Judger = judger,
-                    TestData = Binary.Get(TestDataID)
+                    TestData = Binary.Get(TestDataBlobID, true)
                 };
             }
         }
@@ -1228,7 +1299,9 @@ namespace Moo.API
                 if (problem == null) throw new ArgumentException("无此题目");
 
                 TestCase newTestCase = testCase.ToTestCase(db);
+                newTestCase.CreatedBy = Security.CurrentUser.GetDBUser(db);
                 newTestCase.Problem = problem;
+                newTestCase.CreateTime = DateTime.Now;
 
                 Access.Required(db, newTestCase, Function.CreateTestCase);
 
@@ -1239,8 +1312,8 @@ namespace Moo.API
         }
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Tranditional", Method = "POST")]
-        public int CreateTranditionalTestCase(string problemID, CreateTranditionalTestCaseData testCase)
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Traditional", Method = "POST")]
+        public int CreateTraditionalTestCase(string problemID, CreateTraditionalTestCaseData testCase)
         {
             return CreateTestCase(problemID, testCase);
         }
@@ -1267,6 +1340,7 @@ namespace Moo.API
         }
         #endregion
 
+        #region ModifyTestCase
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/{id}", Method = "PUT")]
         public void ModifyTestCase(string problemID, string id, FullTestCase testCase)
@@ -1281,10 +1355,10 @@ namespace Moo.API
 
                 Access.Required(db, theTestCase, Function.ModifyTestCase);
 
-                if (theTestCase is TranditionalTestCase && testCase is FullTranditionalTestCase)
+                if (theTestCase is TraditionalTestCase && testCase is FullTraditionalTestCase)
                 {
-                    TranditionalTestCase oldT = theTestCase as TranditionalTestCase;
-                    FullTranditionalTestCase newT = testCase as FullTranditionalTestCase;
+                    TraditionalTestCase oldT = theTestCase as TraditionalTestCase;
+                    FullTraditionalTestCase newT = testCase as FullTraditionalTestCase;
                     if (newT.Answer != null)
                     {
                         oldT.Answer = newT.Answer;
@@ -1386,8 +1460,8 @@ namespace Moo.API
         }
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Tranditional/{id}", Method = "PUT")]
-        public void ModifyTranditionalTestCase(string problemID, string id, FullTranditionalTestCase testCase)
+        [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/Traditional/{id}", Method = "PUT")]
+        public void ModifyTraditionalTestCase(string problemID, string id, FullTraditionalTestCase testCase)
         {
             ModifyTestCase(problemID, id, testCase);
         }
@@ -1412,6 +1486,7 @@ namespace Moo.API
         {
             ModifyTestCase(problemID, id, testCase);
         }
+        #endregion
 
         [OperationContract]
         [WebInvoke(UriTemplate = "Problems/{problemID}/TestCases/{id}", Method = "DELETE")]
@@ -1466,7 +1541,7 @@ namespace Moo.API
 
         [OperationContract]
         [WebGet(UriTemplate = "Users")]
-        public List<BriefUser> ListUser()
+        public object ListUser()
         {
             int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
             int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
@@ -1487,13 +1562,25 @@ namespace Moo.API
                 {
                     users = users.Take((int)top);
                 }
-                return users.ToList().Select(u => u.ToBriefUser()).ToList();
+                return users.Select(u => new
+                {
+                    ID = u.ID,
+                    User = new
+                    {
+                        ID = u.ID,
+                        Name = u.Name,
+                        Email = u.Email
+                    },
+                    Role = u.Role.Name,
+                    BriefDescription = u.BriefDescription,
+
+                }).ToList();
             }
         }
 
         [OperationContract]
         [WebGet(UriTemplate = "Users/{id}")]
-        public FullUser GetUser(string id)
+        public object GetUser(string id)
         {
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
@@ -1505,7 +1592,16 @@ namespace Moo.API
 
                 Access.Required(db, user, Function.ReadUser);
 
-                return user.ToFullUser();
+                return new
+                {
+                    ID = user.ID,
+                    Name = user.Name,
+                    Email = user.Email,
+                    BriefDescription = user.BriefDescription,
+                    Description = user.Description,
+                    Role = user.Role.Name,
+                    CreateTime = user.CreateTime,
+                };
             }
         }
 
@@ -1530,7 +1626,7 @@ namespace Moo.API
                     Email = user.Email,
                     Name = user.Name,
                     Password = Converter.ToSHA256Hash(user.Password),
-                    PreferredLanguage = "c++",
+                    CreateTime = DateTime.Now,
                     Role = new SiteRoles(db).NormalUser,
                     Score = 0,
                 };
@@ -1548,9 +1644,41 @@ namespace Moo.API
         }
         #endregion
 
+        #region ModifyUser
+        [DataContract]
+        public class ModifyUserData
+        {
+            [DataMember]
+            public string Name;
+
+            string passwordCheck;
+            [DataMember]
+            public string PasswordCheck
+            {
+                get { return passwordCheck; }
+                set { passwordCheck = Encoding.UTF8.GetString(RSAHelper.Decrypt(Convert.FromBase64String(value))); }
+            }
+
+            string password;
+            [DataMember]
+            public string Password
+            {
+                get { return password; }
+                set { password = Encoding.UTF8.GetString(RSAHelper.Decrypt(Convert.FromBase64String(value))); }
+            }
+            [DataMember]
+            public string Role;
+            [DataMember]
+            public string BriefDescription;
+            [DataMember]
+            public string Description;
+            [DataMember]
+            public string Email;
+        }
+
         [OperationContract]
         [WebInvoke(UriTemplate = "Users/{id}", Method = "PUT")]
-        public void ModifyUser(string id, FullUser user)
+        public void ModifyUser(string id, ModifyUserData user)
         {
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
@@ -1580,36 +1708,43 @@ namespace Moo.API
                 }
                 if (user.Password != null)
                 {
+                    if (Converter.ToSHA256Hash(user.PasswordCheck) != theUser.Password)
+                        throw new InvalidOperationException("旧有密码不正确");
                     theUser.Password = Converter.ToSHA256Hash(user.Password);
-                }
-                if (user.PreferredLanguage != null)
-                {
-                    theUser.PreferredLanguage = user.PreferredLanguage;
                 }
                 if (user.Role != null)
                 {
                     Access.Required(db, theUser, Function.ModifyUserRole);
-                    Role role = (from r in db.Roles
-                                 where r.ID == user.Role
-                                 select r).SingleOrDefault<Role>();
-                    if (role == null) throw new ArgumentException("无此角色");
-                    theUser.Role = role;
+                    SiteRoles roles = new SiteRoles(db);
+                    switch (user.Role)
+                    {
+                        case "Organizer":
+                            theUser.Role = roles.Organizer;
+                            break;
+                        case "Worker":
+                            theUser.Role = roles.Worker;
+                            break;
+                        case "NormalUser":
+                            theUser.Role = roles.NormalUser;
+                            break;
+                        case "Reader":
+                            theUser.Role = roles.Reader;
+                            break;
+                        default:
+                            throw new ArgumentException("无效的角色");
+                    }
                 }
+
                 db.SaveChanges();
+
+                if (SiteUsers.ByID.ContainsKey(theUser.ID))
+                {
+                    SiteUsers.ByID[theUser.ID].Initialize(theUser);
+                }
             }
         }
         #endregion
 
-        #region Roles
-        [OperationContract]
-        [WebGet(UriTemplate = "Roles")]
-        public List<FullRole> GetRole()
-        {
-            using (MooDB db = new MooDB())
-            {
-                return db.Roles.Select(r => r.ToFullRole()).ToList();
-            }
-        }
         #endregion
 
         #region Post
@@ -2344,16 +2479,21 @@ namespace Moo.API
         {
             int? skip = OptionalIntParameter("skip");
             int? top = OptionalIntParameter("top");
-            string nameStartWith = QueryParameters["nameStartWith"];
+            int? id = OptionalIntParameter("id");
+            string nameContains = QueryParameters["nameContains"];
             using (MooDB db = new MooDB())
             {
                 IQueryable<Tag> tags = db.Tags;
-                if (nameStartWith != null)
+                if (nameContains != null)
                 {
-                    tags = tags.Where(t => t.Name.StartsWith(nameStartWith));
+                    tags = tags.Where(t => t.Name.Contains(nameContains));
+                }
+                if (id != null)
+                {
+                    tags = tags.Where(t => t.ID == id);
                 }
 
-                tags = tags.OrderBy(t => t.ID);
+                tags = tags.OrderByDescending(t => t.ID);
 
                 if (skip != null)
                 {
@@ -2367,135 +2507,88 @@ namespace Moo.API
                 return tags.Select(t => new
                 {
                     ID = t.ID,
-                    Name = t.Name
+                    Name = t.Name,
+                    ProblemNumber = t.Problem.Count,
+                    ArticleNumber = t.Article.Count
                 }).ToList();
+            }
+        }
+
+        #region CreateTag
+        [DataContract]
+        public class CreateTagData
+        {
+            [DataMember]
+            public string Name;
+        }
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Tags", Method = "POST")]
+        public int CreateTag(CreateTagData tag)
+        {
+            using (MooDB db = new MooDB())
+            {
+                Tag newTag = new Tag
+                {
+                    Name = tag.Name,
+                };
+
+                Access.Required(db, newTag, Function.CreateTag);
+                db.Tags.AddObject(newTag);
+                db.SaveChanges();
+                return newTag.ID;
             }
         }
         #endregion
 
-        #region Mails
-        [OperationContract]
-        [WebGet(UriTemplate = "Mails/Count")]
-        public int CountMail()
+        #region ModifyTag
+        [DataContract]
+        public class ModifyTagData
         {
-            string nameContains = QueryParameters["nameContains"];
-            using (MooDB db = new MooDB())
-            {
-                int currenUserID = Security.CurrentUser.ID;
-                IQueryable<Mail> mails = from m in db.Mails
-                                         where m.To.ID == currenUserID || m.From.ID == currenUserID
-                                         select m;
-                if (nameContains != null)
-                {
-                    mails = mails.Where(m => m.Name.Contains(nameContains));
-                }
-
-                return mails.Count();
-            }
+            [DataMember]
+            public string Name;
         }
-
         [OperationContract]
-        [WebGet(UriTemplate = "Mails")]
-        public List<BriefMail> ListMail()
-        {
-            int? skip = QueryParameters["skip"] == null ? null : (int?)int.Parse(QueryParameters["skip"]);
-            int? top = QueryParameters["top"] == null ? null : (int?)int.Parse(QueryParameters["top"]);
-            string nameContains = QueryParameters["nameContains"];
-            using (MooDB db = new MooDB())
-            {
-                int currenUserID = Security.CurrentUser.ID;
-                IQueryable<Mail> mails = from m in db.Mails
-                                         where m.To.ID == currenUserID || m.From.ID == currenUserID
-                                         select m;
-                if (nameContains != null)
-                {
-                    mails = mails.Where(m => m.Name.Contains(nameContains));
-                }
-
-                mails = mails.OrderByDescending(m => m.ID);
-
-                if (skip != null)
-                {
-                    mails = mails.Skip((int)skip);
-                }
-                if (top != null)
-                {
-                    mails = mails.Take((int)top);
-                }
-
-                return mails.ToList().Select(m => m.ToBriefMail()).ToList();
-            }
-        }
-
-        [OperationContract]
-        [WebGet(UriTemplate = "Mails/{id}")]
-        public FullMail GetMail(string id)
+        [WebInvoke(UriTemplate = "Tags/{id}", Method = "PUT")]
+        public void ModifyTag(string id, ModifyTagData tag)
         {
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
-                Mail mail = (from m in db.Mails
-                             where m.ID == iid
-                             select m).SingleOrDefault<Mail>();
-                if (mail == null) throw new ArgumentException("无此邮件");
+                Tag theTag = (from t in db.Tags
+                              where t.ID == iid
+                              select t).SingleOrDefault<Tag>();
+                if (theTag == null) throw new ArgumentException("无此标签");
 
-                Access.Required(db, mail, Function.ReadMail);
+                Access.Required(db, theTag, Function.ModifyTag);
 
-                if (mail.To.ID == Security.CurrentUser.ID)
+                if (tag.Name != null)
                 {
-                    mail.IsRead = true;
+                    theTag.Name = tag.Name;
                 }
-                db.SaveChanges();
 
-                return mail.ToFullMail();
+                db.SaveChanges();
             }
         }
+        #endregion
 
         [OperationContract]
-        [WebInvoke(UriTemplate = "Mails", Method = "POST")]
-        public int CreateMail(FullMail mail)
-        {
-            using (MooDB db = new MooDB())
-            {
-                User userTo = (from u in db.Users
-                               where u.ID == mail.To
-                               select u).SingleOrDefault<User>();
-                if (userTo != null) throw new ArgumentException("无此用户");
-                //if (userTo.ID == Security.CurrentUser.ID) throw new InvalidOperationException("不允许对自己发送邮件");
-
-                Mail newMail = new Mail
-                {
-                    Content = mail.Content,
-                    CreateTime = DateTime.Now,
-                    From = Security.CurrentUser.GetDBUser(db),
-                    IsRead = false,
-                    Name = mail.Name,
-                    To = userTo
-                };
-
-                Access.Required(db, newMail, Function.CreateMail);
-
-                db.Mails.AddObject(newMail);
-                db.SaveChanges();
-                return newMail.ID;
-            }
-        }
-
-        [OperationContract]
-        [WebInvoke(UriTemplate = "Mails/{id}", Method = "DELETE")]
-        public void DeleteMail(string id)
+        [WebInvoke(UriTemplate = "Tags/{id}", Method = "DELETE")]
+        public void DeleteTag(string id)
         {
             int iid = int.Parse(id);
             using (MooDB db = new MooDB())
             {
-                Mail mail = (from m in db.Mails
-                             where m.ID == iid
-                             select m).SingleOrDefault<Mail>();
-                if (mail == null) throw new ArgumentException("无此邮件");
+                Tag tag = (from t in db.Tags
+                           where t.ID == iid
+                           select t).SingleOrDefault<Tag>();
+                if (tag == null) throw new ArgumentException("无此标签");
 
-                Access.Required(db, mail, Function.DeleteMail);
+                Access.Required(db, tag, Function.DeleteTag);
 
-                db.Mails.DeleteObject(mail);
+                tag.Problem.Clear();
+                tag.Article.Clear();
+
+                db.Tags.DeleteObject(tag);
                 db.SaveChanges();
             }
         }
@@ -2963,6 +3056,421 @@ namespace Moo.API
                 Access.Required(db, contest, Function.ModifyContest);
 
                 contest.Problem.Remove(problem);
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region Messages
+        [OperationContract]
+        [WebGet(UriTemplate = "Messages/Contacts")]
+        public object GetContacts()
+        {
+            int? skip = OptionalIntParameter("skip");
+            int? top = OptionalIntParameter("top");
+            using (MooDB db = new MooDB())
+            {
+                var fromMe = from m in db.Messages
+                             where m.To != null && m.From.ID == Security.CurrentUser.ID && !m.DeletedByFrom
+                             group m by m.To into ms
+                             select ms.Key;
+                var toMe = from m in db.Messages
+                           where m.To.ID == Security.CurrentUser.ID && !m.DeletedByTo
+                           group m by m.From into ms
+                           select ms.Key;
+                var contacts = fromMe.Union(toMe);
+
+                if (skip != null)
+                {
+                    contacts = contacts.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    contacts = contacts.Take((int)top);
+                }
+
+                return contacts.Select(u => new
+                {
+                    ID = u.ID,
+                    Name = u.Name,
+                    Email = u.Email
+                }).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Messages")]
+        public object GetMessage()
+        {
+            int? with = OptionalIntParameter("with");
+            int? skip = OptionalIntParameter("skip");
+            int? top = OptionalIntParameter("top");
+            int? idGT = OptionalIntParameter("idGT");
+            int? idLT = OptionalIntParameter("idLT");
+            string order = QueryParameters["order"];
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<Message> messages;
+                if (with == null)
+                {
+                    messages = from m in db.Messages
+                               where m.To == null
+                               select m;
+                }
+                else
+                {
+                    messages = from m in db.Messages
+                               where m.To.ID == with && m.From.ID == Security.CurrentUser.ID && !m.DeletedByFrom
+                                  || m.From.ID == with && m.To.ID == Security.CurrentUser.ID && !m.DeletedByTo
+                               select m;
+                }
+
+                if (idGT != null)
+                {
+                    messages = messages.Where(m => m.ID > idGT);
+                }
+
+                if (idLT != null)
+                {
+                    messages = messages.Where(m => m.ID < idLT);
+                }
+
+                if (order == "asc")
+                {
+                    messages = messages.OrderBy(m => m.ID);
+                }
+                else
+                {
+                    messages = messages.OrderByDescending(m => m.ID);
+                }
+
+                if (skip != null)
+                {
+                    messages = messages.Skip((int)skip);
+                }
+                if (top != null)
+                {
+                    messages = messages.Take((int)top);
+                }
+
+                return messages.Select(m => new
+                {
+                    ID = m.ID,
+                    From = new
+                    {
+                        ID = m.From.ID,
+                        Name = m.From.Name,
+                        Email = m.From.Email
+                    },
+                    To = new
+                    {
+                        ID = m.To == null ? null : (int?)m.To.ID,
+                        Name = m.To == null ? null : m.To.Name,
+                        Email = m.To == null ? null : m.To.Email
+                    },
+                    CreateTime = m.CreateTime,
+                    Content = m.Content,
+                }).ToList();
+            }
+        }
+
+        #region CreateMessage
+        [DataContract]
+        public class CreateMessageData
+        {
+            [DataMember]
+            public int? ToID;
+
+            [DataMember]
+            public string Content;
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Messages", Method = "POST")]
+        public int CreateMessage(CreateMessageData message)
+        {
+            using (MooDB db = new MooDB())
+            {
+                User to = null;
+                if (message.ToID != null)
+                {
+                    to = (from u in db.Users
+                          where u.ID == message.ToID
+                          select u).SingleOrDefault<User>();
+                    if (to == null) throw new Exception("无此用户");
+                }
+
+                Message newMessage = new Message
+                {
+                    Content = message.Content,
+                    CreateTime = DateTime.Now,
+                    From = Security.CurrentUser.GetDBUser(db),
+                    To = to,
+                };
+
+                Access.Check(db, newMessage, Function.CreateMessage);
+
+                db.Messages.AddObject(newMessage);
+                db.SaveChanges();
+
+                WebSockets.WebSocketsAPIHandler.NotifyNewMessage(to);
+
+                return newMessage.ID;
+            }
+        }
+        #endregion
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Messages", Method = "DELETE")]
+        public void DeleteMessage()
+        {
+            int? with = OptionalIntParameter("with");
+            using (MooDB db = new MooDB())
+            {
+                if (with == null)
+                {
+                    Access.Required(db, new Message(), Function.DeletePublicMessage);
+
+                    var toDelete = from m in db.Messages
+                                   where m.To == null
+                                   select m;
+                    foreach (Message msg in toDelete)
+                    {
+                        db.Messages.DeleteObject(msg);
+                    }
+                }
+                else
+                {
+                    Access.Required(db, new Message(), Function.DeletePrivateMessage);
+
+                    var fromMe = from m in db.Messages
+                                 where m.From.ID == Security.CurrentUser.ID && m.To.ID == with
+                                 select m;
+                    foreach (Message msg in fromMe)
+                    {
+                        msg.DeletedByFrom = true;
+                        if (msg.DeletedByTo)
+                        {
+                            db.Messages.DeleteObject(msg);
+                        }
+                    }
+
+                    var toMe = from m in db.Messages
+                               where m.To.ID == Security.CurrentUser.ID && m.From.ID == with
+                               select m;
+                    foreach (Message msg in toMe)
+                    {
+                        msg.DeletedByTo = true;
+                        if (msg.DeletedByFrom)
+                        {
+                            db.Messages.DeleteObject(msg);
+                        }
+                    }
+                }
+
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        #region Files
+        [OperationContract]
+        [WebGet(UriTemplate = "Files")]
+        public object ListFiles()
+        {
+            int? skip = OptionalIntParameter("skip");
+            int? top = OptionalIntParameter("top");
+            string nameContains = QueryParameters["nameContains"];
+            int? id = OptionalIntParameter("id");
+            using (MooDB db = new MooDB())
+            {
+                IQueryable<UploadedFile> files = db.UploadedFiles;
+
+                if (nameContains != null)
+                {
+                    files = files.Where(f => f.Name.Contains(nameContains));
+                }
+
+                if (id != null)
+                {
+                    files = files.Where(f => f.ID == id);
+                }
+
+                files = files.OrderByDescending(f => f.ID);
+
+                if (skip != null)
+                {
+                    files = files.Skip((int)skip);
+                }
+
+                if (top != null)
+                {
+                    files = files.Take((int)top);
+                }
+
+                return files.Select(f => new
+                {
+                    ID = f.ID,
+                    File = new
+                    {
+                        ID = f.ID,
+                        Name = f.Name
+                    },
+                    CreatedBy = new
+                    {
+                        ID = f.CreatedBy.ID,
+                        Name = f.CreatedBy.Name
+                    }
+                }).ToList();
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Files/{id}")]
+        public object GetFile(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                UploadedFile file = (from f in db.UploadedFiles
+                                     where f.ID == iid
+                                     select f).SingleOrDefault<UploadedFile>();
+                if (file == null) throw new ArgumentException("无此文件");
+
+                Access.Required(db, file, Function.ReadFile);
+
+                return new
+                {
+                    ID = file.ID,
+                    Name = file.Name,
+                    Extension = new FileInfo(Config.UploadFileDirectory + file.FileName).Extension,
+                    CreatedBy = new
+                    {
+                        ID = file.CreatedBy.ID,
+                        Name = file.CreatedBy.Name
+                    },
+                    Length = new FileInfo(Config.UploadFileDirectory + file.FileName).Length,
+                    Description = file.Description,
+                };
+            }
+        }
+
+        #region CreateFile
+        [DataContract]
+        public class CreateFileData
+        {
+            [DataMember]
+            public Guid BlobID;
+
+            [DataMember]
+            public string Name;
+
+            [DataMember]
+            public string Description;
+        }
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Files", Method = "POST")]
+        public int CreateFile(CreateFileData file)
+        {
+            using (MooDB db = new MooDB())
+            {
+                string fileName = Path.GetFileName(Config.UploadFileDirectory + file.Name);
+                if (File.Exists(Config.UploadFileDirectory + fileName))
+                {
+                    fileName = Rand.RAND.Next() + fileName;
+                    if (File.Exists(Config.UploadFileDirectory + fileName))
+                    {
+                        throw new ArgumentException("文件名称冲突");
+                    }
+                }
+                UploadedFile newFile = new UploadedFile
+                {
+                    CreatedBy = Security.CurrentUser.GetDBUser(db),
+                    Description = file.Description,
+                    FileName = fileName,
+                    Name = file.Name
+                };
+
+                Access.Required(db, newFile, Function.CreateFile);
+
+                File.WriteAllBytes(Config.UploadFileDirectory + fileName, Binary.Get(file.BlobID, true));
+
+                db.SaveChanges();
+                return newFile.ID;
+            }
+        }
+        #endregion
+
+        #region ModifyFile
+        [DataContract]
+        public class ModifyFileData
+        {
+            [DataMember]
+            public string Name;
+            [DataMember]
+            public string Description;
+        };
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Files/{id}", Method = "PUT")]
+        public void ModifyFile(string id, ModifyFileData file)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                UploadedFile theFile = (from f in db.UploadedFiles
+                                        where f.ID == iid
+                                        select f).SingleOrDefault<UploadedFile>();
+                if (theFile == null) throw new ArgumentException("无此文件");
+
+                Access.Required(db, theFile, Function.ModifyFile);
+
+                if (file.Name != null)
+                {
+                    theFile.Name = file.Name;
+                }
+                if (file.Description != null)
+                {
+                    theFile.Description = file.Description;
+                }
+
+                db.SaveChanges();
+            }
+        }
+        #endregion
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "Files/{id}", Method = "DELETE")]
+        public void DeleteFile(string id)
+        {
+            int iid = int.Parse(id);
+            using (MooDB db = new MooDB())
+            {
+                UploadedFile file = (from f in db.UploadedFiles
+                                     where f.ID == iid
+                                     select f).SingleOrDefault<UploadedFile>();
+                if (file == null) throw new ArgumentException("无此文件");
+
+                var spj = from t in db.TestCases.OfType<SpecialJudgedTestCase>()
+                          where t.Judger.ID == file.ID
+                          select t;
+                var interactive = from t in db.TestCases.OfType<InteractiveTestCase>()
+                                  where t.Invoker.ID == file.ID
+                                  select t;
+                var answerOnly = from t in db.TestCases.OfType<AnswerOnlyTestCase>()
+                                 where t.Judger.ID == file.ID
+                                 select t;
+                if (spj.Any() || interactive.Any() || answerOnly.Any())
+                {
+                    throw new ArgumentException("尚有测试点使用此文件");
+                }
+
+                Access.Required(db, file, Function.DeleteFile);
+
+                File.Delete(Config.UploadFileDirectory + file.FileName);
+
+                db.UploadedFiles.DeleteObject(file);
                 db.SaveChanges();
             }
         }

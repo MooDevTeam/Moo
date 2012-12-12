@@ -31,7 +31,7 @@ namespace WikiPlex.Formatting.Renderers
             }
         }
 
-        const string FORMAT = "<a href=\"?page={0}&id={2}\" onclick=\"Page.item.{0}.load({{id:{2}}}); return false;\">第{2}号{1}</a>";
+        const string FORMAT = "<a href=\"#!page={0}&id={2}\" onclick=\"Page.item.{0}.load({{id:{2}}}); return false;\">第{2}号{1}</a>";
 
         protected override string PerformExpand(string scopeName, string input, System.Func<string, string> htmlEncode, System.Func<string, string> attributeEncode)
         {

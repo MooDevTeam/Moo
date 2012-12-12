@@ -28,6 +28,15 @@ namespace WikiPlex.Compilation.Macros
                 return new List<MacroRule>()
                            {
                                new MacroRule(
+                                   @"(?i)(\[image:\s*)(\d+(?:,[^\]]*)?)(\s*\])",
+                                   new Dictionary<int,string>
+                                   {
+                                       {1,ScopeName.Remove},
+                                       {2,ScopeName.ImageFile},
+                                       {3,ScopeName.Remove}
+                                   }
+                                   ),
+                               new MacroRule(
                                    @"(?i)(<\[image:)((?>https?://[^\]\|]*\|https?://[^\]\|]*))(\])",
                                    new Dictionary<int, string>
                                        {

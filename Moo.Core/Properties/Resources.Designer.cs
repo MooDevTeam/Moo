@@ -289,9 +289,9 @@ namespace Moo.Core.Properties {
         /// <summary>
         ///   查找类似 D:\v-Judge_Kernel\Special_Judge.exe 的本地化字符串。
         /// </summary>
-        public static string MooTester_TranditionalJudger {
+        public static string MooTester_TraditionalJudger {
             get {
-                return ResourceManager.GetString("MooTester_TranditionalJudger", resourceCulture);
+                return ResourceManager.GetString("MooTester_TraditionalJudger", resourceCulture);
             }
         }
         

@@ -174,7 +174,7 @@
   <data name="MooTester_TestWA" xml:space="preserve">
     <value>&lt;color:red&gt;答案错误。&lt;/color&gt;</value>
   </data>
-  <data name="MooTester_TranditionalJudger" xml:space="preserve">
+  <data name="MooTester_TraditionalJudger" xml:space="preserve">
     <value>D:\v-Judge_Kernel\Special_Judge.exe</value>
   </data>
   <data name="MooTester_TestCompareError" xml:space="preserve">

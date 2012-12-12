@@ -38,6 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
@@ -84,8 +85,10 @@
     <Compile Include="Tester\TestResult.cs" />
     <Compile Include="Text\WikiParser.cs" />
     <Compile Include="Utility\AutoPopDictionary.cs" />
+    <Compile Include="Utility\Config.cs" />
     <Compile Include="Utility\Converter.cs" />
     <Compile Include="Utility\Rand.cs" />
+    <Compile Include="Utility\RSAHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="DB\MooDB.edmx">

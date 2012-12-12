@@ -54,8 +54,8 @@ namespace Moo.Core.Daemon
             TestResult result;
             switch (record.Problem.Type)
             {
-                case "Tranditional":
-                    result = TestTranditional(db, record);
+                case "Traditional":
+                    result = TestTraditional(db, record);
                     break;
                 case "SpecialJudged":
                     result = TestSpecialJudged(db, record);
@@ -99,12 +99,12 @@ namespace Moo.Core.Daemon
             record.JudgeInfo.Info = result.Info;
         }
 
-        TestResult TestTranditional(MooDB db, Record record)
+        TestResult TestTraditional(MooDB db, Record record)
         {
-            IEnumerable<TranditionalTestCase> cases = from t in db.TestCases.OfType<TranditionalTestCase>()
+            IEnumerable<TraditionalTestCase> cases = from t in db.TestCases.OfType<TraditionalTestCase>()
                                                       where t.Problem.ID == record.Problem.ID
                                                       select t;
-            return tester.TestTranditional(record.Code, record.Language, cases);
+            return tester.TestTraditional(record.Code, record.Language, cases);
         }
 
         TestResult TestSpecialJudged(MooDB db, Record record)

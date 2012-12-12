@@ -17,9 +17,6 @@ namespace Moo.API
                 if (!db.DatabaseExists())
                 {
                     DatabaseInstaller.Install(db);
-                }
-                if (db.Users.Count() <= 1)
-                {
                     MooTestData.AddTestData(db);
                 }
             }
@@ -44,7 +41,7 @@ namespace Moo.API
             HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
             if (HttpContext.Current.Request.HttpMethod == "OPTIONS")
             {
-                HttpContext.Current.Response.AddHeader("Cache-Control", "no-cache");
+                //HttpContext.Current.Response.AddHeader("Cache-Control", "no-cache");
                 HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS, PUT");
                 HttpContext.Current.Response.AddHeader("Access-Control-Allow-Headers", HttpContext.Current.Request.Headers["Access-Control-Request-Headers"]);
                 HttpContext.Current.Response.AddHeader("Access-Control-Max-Age", "1728000");
