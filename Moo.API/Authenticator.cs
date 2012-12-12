@@ -15,21 +15,19 @@ namespace Moo.API
         static readonly string[] ALLOWED_OPERATIONS = new string[]{
             "", "HelpPageInvoke",
             "Echo", "Debug",
-            "Login", "GetUserByName", "CreateUser"
+            "Login", "GetUserByName", "CreateUser","GetPublicKey",
+            "ParseWiki"
         };
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
+            WebOperationContext.Current.OutgoingResponse.Headers.Add("Cache-Control", "no-cache");
             if (request.Properties.ContainsKey("HttpOperationName"))
             {
                 string operation = (string)request.Properties["HttpOperationName"];
                 if (!ALLOWED_OPERATIONS.Contains(operation))
                 {
-                    try
-                    {
-                        string sToken = WebOperationContext.Current.IncomingRequest.Headers["Auth"];
-                        Security.Authenticate(sToken);
-                    }
-                    catch
+                    string sToken = WebOperationContext.Current.IncomingRequest.Headers["Auth"];
+                    if (!Security.Authenticate(sToken))
                     {
                         throw new WebFaultException(System.Net.HttpStatusCode.Unauthorized);
                     }

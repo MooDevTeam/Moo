@@ -44,7 +44,6 @@ namespace Moo.Core.Security
         DeleteRecord,
 
         //JudgeInfos
-        CreateJudgeInfo,
         ReadJudgeInfo,
         DeleteJudgeInfo,
 
@@ -54,13 +53,9 @@ namespace Moo.Core.Security
         ModifyUser,
         ModifyUserRole,
 
-        //Mails
-        CreateMail,
-        ReadMail,
-        DeleteMail,
-
         //Contests
         ReadContest,
+        ReadContestResult,
         CreateContest,
         ModifyContest,
         AttendContest,
@@ -83,10 +78,17 @@ namespace Moo.Core.Security
         ReadArticleRevision,
         DeleteArticleRevision,
 
-        //Catagories
-        CreateCatagory,
-        ReadCatagory,
-        ModifyCatagory,
-        DeleteCatagory
+        //Message
+        CreateMessage,
+        DeletePublicMessage,
+        DeletePrivateMessage,
+
+        //Tag
+        CreateTag,
+        ModifyTag,
+        DeleteTag,
+
+        //Management
+        GarbageCollect
     }
 }

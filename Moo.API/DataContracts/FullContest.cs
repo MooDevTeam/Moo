@@ -75,6 +75,15 @@ namespace Moo.API.DataContracts
         public bool? LockArticleOnEnd { get; set; }
 
         [DataMember]
+        public bool? ViewResultAnyTime { get; set; }
+
+        [DataMember]
+        public bool? HideJudgeInfoOnStart { get; set; }
+
+        [DataMember]
+        public bool? HideJudgeInfoOnEnd { get; set; }
+
+        [DataMember]
         public List<int> User { get; set; }
 
         [DataMember]

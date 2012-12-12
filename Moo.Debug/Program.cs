@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Data.Objects;
 using Moo.Core.DB;
@@ -15,14 +16,7 @@ namespace Moo.Debug
         static string ReadResponse(WebRequest request)
         {
             WebResponse response;
-            try
-            {
-                response = request.GetResponse();
-            }
-            catch(WebException e)
-            {
-                response = e.Response;
-            }
+            response = request.GetResponse();
             using (response)
             {
                 using (Stream stream = response.GetResponseStream())
@@ -42,6 +36,7 @@ namespace Moo.Debug
             request.ContentType = "text/json";
             request.ContentLength = dataBytes.Length;
             request.Headers.Add("Auth", Auth);
+            request.Timeout = System.Threading.Timeout.Infinite;
             request.GetRequestStream().Write(dataBytes, 0, dataBytes.Length);
             return ReadResponse(request);
         }
@@ -54,6 +49,7 @@ namespace Moo.Debug
             request.ContentType = "text/json";
             request.ContentLength = dataBytes.Length;
             request.Headers.Add("Auth", Auth);
+            request.Timeout = System.Threading.Timeout.Infinite;
             request.GetRequestStream().Write(dataBytes, 0, dataBytes.Length);
             return ReadResponse(request);
         }
@@ -62,6 +58,7 @@ namespace Moo.Debug
         {
             WebRequest request = HttpWebRequest.Create(ROOT + uri);
             request.Headers.Add("Auth", Auth);
+            request.Timeout = System.Threading.Timeout.Infinite;
             return ReadResponse(request);
         }
 
@@ -69,17 +66,19 @@ namespace Moo.Debug
         {
             WebRequest request = HttpWebRequest.Create(ROOT + uri);
             request.Method = "DELETE";
+            request.Timeout = System.Threading.Timeout.Infinite;
             request.Headers.Add("Auth", Auth);
             return ReadResponse(request);
         }
 
         static void Main(string[] args)
         {
-            Auth = Post("Login", "{\"userName\":\"onetwogoo\",\"password\":\"123456\"}");
-            Auth = Auth.Substring(1, Auth.Length - 2);
-            Console.WriteLine("Got Token <{0}>",Auth);
-            Console.WriteLine(Get("Problems?skip=100"));
-            //Console.WriteLine(Post("Problems", "{\"problem\":{\"Name\":\"Easy Problem\",\"Type\":\"Tranditional\"}}"));
+            var tool = new System.Web.Script.Serialization.JavaScriptSerializer();
+            Console.Write(tool.Serialize(new
+            {
+                ID = 123,
+                Name = "onetwogoo\"\\"
+            }));
         }
     }
 }

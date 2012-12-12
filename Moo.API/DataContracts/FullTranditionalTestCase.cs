@@ -5,7 +5,7 @@ using System.Web;
 using System.Runtime.Serialization;
 namespace Moo.API.DataContracts
 {
-    public class FullTranditionalTestCase : FullTestCase
+    public class FullTraditionalTestCase : FullTestCase
     {
         [DataMember]
         public byte[] Input { get; set; }

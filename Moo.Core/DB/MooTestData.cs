@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.IO;
 using Moo.Core.Utility;
 using Moo.Core.Security;
 namespace Moo.Core.DB
@@ -18,9 +19,8 @@ namespace Moo.Core.DB
         }
         public static void AddTestData(MooDB db)
         {
+            #region Users
             SiteRoles siteRoles = new SiteRoles(db);
-
-            //Users
             User MrPhone = new User()
             {
                 Name = "onetwogoo",
@@ -30,7 +30,7 @@ namespace Moo.Core.DB
                 Email = "onetwogoo@live.com",
                 Role = siteRoles.Organizer,
                 Score = 256,
-                PreferredLanguage = "c++"
+                CreateTime = DateTime.Now
             };
             db.Users.AddObject(MrPhone);
 
@@ -43,7 +43,7 @@ namespace Moo.Core.DB
                 Email = "sunjiayu_2006@126.com",
                 Role = siteRoles.Worker,
                 Score = 128,
-                PreferredLanguage = "c++"
+                CreateTime = DateTime.Now
             };
             db.Users.AddObject(ShaBi);
 
@@ -56,7 +56,7 @@ namespace Moo.Core.DB
                 Email = "helloyuhao@gmail.com",
                 Role = siteRoles.NormalUser,
                 Score = 1000,
-                PreferredLanguage = "pascal"
+                CreateTime = DateTime.Now
             };
             db.Users.AddObject(Baby);
 
@@ -69,27 +69,49 @@ namespace Moo.Core.DB
                 Email = "",
                 Role = siteRoles.Reader,
                 Score = 0,
-                PreferredLanguage = "c"
+                CreateTime = DateTime.Now
             });
+            #endregion
 
-            //Problems
+            #region Tags
+            Tag solution = new Tag()
+            {
+                Name = "题解"
+            };
+            db.Tags.AddObject(solution);
+            Tag forFun = new Tag()
+            {
+                Name = "娱乐"
+            };
+            db.Tags.AddObject(forFun);
+            Tag dp = new Tag()
+            {
+                Name = "动态规划"
+            };
+            #endregion
+
+            #region Problems
             Problem APlusB = new Problem()
             {
                 Name = "A+B问题",
-                Type = "Tranditional",
-                SubmissionCount = 10,
+                Type = "Traditional",
+                SubmissionTimes = 10,
+                EnableTesting = true,
                 ScoreSum = 100,
                 SubmissionUser = 1,
                 MaximumScore = 30,
                 CreateTime = DateTime.Now,
                 CreatedBy = MrPhone
             };
+            APlusB.Tag.Add(dp);
+            db.Problems.AddObject(APlusB);
 
             Problem CPlusD = new Problem()
             {
                 Name = "C+D问题",
-                Type = "Tranditional",
-                SubmissionCount = 20,
+                Type = "Traditional",
+                SubmissionTimes = 20,
+                EnableTesting = true,
                 ScoreSum = 5,
                 SubmissionUser = 2,
                 MaximumScore = 120,
@@ -101,8 +123,9 @@ namespace Moo.Core.DB
             Problem EPlusF = new Problem()
             {
                 Name = "E+F问题",
-                Type = "Tranditional",
-                SubmissionCount = 40,
+                Type = "Traditional",
+                SubmissionTimes = 40,
+                EnableTesting = true,
                 ScoreSum = 300,
                 SubmissionUser = 4,
                 MaximumScore = 110,
@@ -136,126 +159,17 @@ namespace Moo.Core.DB
                 CreateTime = DateTime.Now.AddSeconds(5),
                 CreatedBy = MrPhone
             };
+            #endregion
 
-            //File
-            UploadedFile file = new UploadedFile()
-            {
-                Name = "SPJ for Cat",
-                Description = "给Cat的SPJ",
-                Path = "D:\\Cat.exe",
-                CreatedBy = MrPhone
-            };
-            db.UploadedFiles.AddObject(file);
-
-            //Test Cases
-            db.TestCases.AddObject(new TranditionalTestCase()
-            {
-                Problem = CPlusD,
-                Input = Encoding.ASCII.GetBytes("qwertyuioplkjhgfdsazxcvbnm"),
-                Answer = Encoding.ASCII.GetBytes("mnbvcxzasdfghjklpoiuytrewq"),
-                TimeLimit = 1000,
-                MemoryLimit = 1024 * 1024 * 6,
-                Score = 12,
-                CreatedBy = MrPhone
-            });
-            db.SaveChanges();
-
-            db.TestCases.AddObject(new TranditionalTestCase()
-            {
-                Problem = APlusB,
-                Input = Encoding.ASCII.GetBytes("1 2"),
-                Answer = Encoding.ASCII.GetBytes("3"),
-                TimeLimit = 1000,
-                MemoryLimit = 60 * 1024 * 1024,
-                Score = 50,
-                CreatedBy = MrPhone
-            });
-
-            db.TestCases.AddObject(new TranditionalTestCase()
-            {
-                Problem = APlusB,
-                Input = Encoding.ASCII.GetBytes("100 345"),
-                Answer = Encoding.ASCII.GetBytes("445"),
-                TimeLimit = 1000,
-                MemoryLimit = 60 * 1024 * 1024,
-                Score = 50,
-                CreatedBy = MrPhone
-            });
-
-            db.TestCases.AddObject(new SpecialJudgedTestCase()
-            {
-                Problem = Cat,
-                Input = Encoding.ASCII.GetBytes("1 2"),
-                Answer = Encoding.ASCII.GetBytes("Miao~"),
-                TimeLimit = 1000,
-                MemoryLimit = 60 * 1024 * 1024,
-                Judger = file,
-                CreatedBy = MrPhone
-            });
-
-            file = new UploadedFile()
-            {
-                Name = "Invoker for EasyA+B",
-                Description = "EasyA+B的调用程序",
-                Path = "D:\\EasyA+B.o",
-                CreatedBy = MrPhone
-            };
-
-            db.TestCases.AddObject(new InteractiveTestCase()
-            {
-                Problem = EasyAPlusB,
-                TestData = Encoding.ASCII.GetBytes("1123 3212"),
-                TimeLimit = 1000,
-                MemoryLimit = 60 * 1024 * 1024,
-                Invoker = file,
-                CreatedBy = MrPhone
-            });
-
-            db.TestCases.AddObject(new InteractiveTestCase()
-            {
-                Problem = EasyAPlusB,
-                TestData = Encoding.ASCII.GetBytes("1 3"),
-                TimeLimit = 1000,
-                MemoryLimit = 60 * 1024 * 1024,
-                Invoker = file,
-                CreatedBy = MrPhone
-            });
-
-            file = new UploadedFile()
-            {
-                Name = "Judger Of Answer A+B",
-                Description = "*测评程序*啊",
-                Path = "D:\\AnswerA+B.exe",
-                CreatedBy = MrPhone
-            };
-
-            AnswerOnlyTestCase answerOnlyTestCase1 = new AnswerOnlyTestCase()
-            {
-                Problem = AnswerAPlusB,
-                TestData = Encoding.ASCII.GetBytes("23 345"),
-                Judger = file,
-                CreatedBy = MrPhone
-            };
-            db.TestCases.AddObject(answerOnlyTestCase1);
-
-            AnswerOnlyTestCase answerOnlyTestCase2 = new AnswerOnlyTestCase()
-            {
-                Problem = AnswerAPlusB,
-                TestData = Encoding.ASCII.GetBytes("453 123"),
-                Judger = file,
-                CreatedBy = MrPhone
-            };
-            db.TestCases.AddObject(answerOnlyTestCase2);
-
-            //Problem Revision
+            #region Problem Revision
             db.ProblemRevisions.AddObject(new ProblemRevision()
-             {
-                 Problem = APlusB,
-                 Content = "输入A,B。输出A+B。啊！输错了！",
-                 Reason = "蛋疼",
-                 CreatedBy = ShaBi,
-                 CreateTime = DateTime.Now
-             });
+            {
+                Problem = APlusB,
+                Content = "输入A,B。输出A+B。啊！输错了！",
+                Reason = "蛋疼",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now
+            });
 
             db.ProblemRevisions.AddObject(new ProblemRevision()
             {
@@ -328,11 +242,184 @@ namespace Moo.Core.DB
                 CreatedBy = MrPhone,
                 CreateTime = DateTime.Now
             };
+            #endregion
 
-            //Post
+            #region Articles
+            Article howToAC = new Article()
+            {
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now,
+                Name = "如何才能AC呢",
+            };
+            howToAC.Tag.Add(solution);
+            howToAC.Tag.Add(forFun);
+            db.Articles.AddObject(howToAC);
+
+            Article aPlusBSolution = new Article()
+            {
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now,
+                Name = "A+B正解",
+                Problem = APlusB
+            };
+            aPlusBSolution.Tag.Add(solution);
+            db.Articles.AddObject(aPlusBSolution);
+            #endregion
+
+            #region Article Revision
+            db.ArticleRevisions.AddObject(new ArticleRevision
+            {
+                Article = howToAC,
+                Content = "AC就是<color:green>Accepted</color>，而在Moo上，评测信息则是<color:green>正确</color>。所以，理论上无法*AC*.",
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now,
+                Reason = "建立文章"
+            });
+            db.SaveChanges();
+            howToAC.LatestRevision = new ArticleRevision
+            {
+                Article = howToAC,
+                Content = "--AC就是<color:green>Accepted</color>，而在Moo上，评测信息则是<color:green>正确</color>。所以，理论上无法*AC*.--\n"
+                    + "楼上纯属扯淡",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now,
+                Reason = "扯"
+            };
+
+            aPlusBSolution.LatestRevision = new ArticleRevision
+            {
+                Article = aPlusBSolution,
+                Content = "就XXX，然后XXX，就好了~",
+                CreatedBy = ShaBi,
+                CreateTime = DateTime.Now,
+                Reason = "哈哈"
+            };
+            #endregion
+
+            #region Files
+            UploadedFile file = new UploadedFile()
+            {
+                Name = "SPJ for Cat",
+                Description = "给Cat的SPJ",
+                FileName = "Cat.exe",
+                CreatedBy = MrPhone
+            };
+            db.UploadedFiles.AddObject(file);
+            #endregion
+
+            #region Test Cases
+            db.TestCases.AddObject(new TraditionalTestCase()
+            {
+                Problem = CPlusD,
+                Input = Encoding.ASCII.GetBytes("qwertyuioplkjhgfdsazxcvbnm"),
+                Answer = Encoding.ASCII.GetBytes("mnbvcxzasdfghjklpoiuytrewq"),
+                TimeLimit = 1000,
+                MemoryLimit = 1024 * 1024 * 6,
+                Score = 12,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            });
+            db.SaveChanges();
+
+            db.TestCases.AddObject(new TraditionalTestCase()
+            {
+                Problem = APlusB,
+                Input = Encoding.ASCII.GetBytes("1 2"),
+                Answer = Encoding.ASCII.GetBytes("3"),
+                TimeLimit = 1000,
+                MemoryLimit = 60 * 1024 * 1024,
+                Score = 50,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            });
+
+            db.TestCases.AddObject(new TraditionalTestCase()
+            {
+                Problem = APlusB,
+                Input = Encoding.ASCII.GetBytes("100 345"),
+                Answer = Encoding.ASCII.GetBytes("445"),
+                TimeLimit = 1000,
+                MemoryLimit = 60 * 1024 * 1024,
+                Score = 50,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            });
+
+            db.TestCases.AddObject(new SpecialJudgedTestCase()
+            {
+                Problem = Cat,
+                Input = Encoding.ASCII.GetBytes("1 2"),
+                Answer = Encoding.ASCII.GetBytes("Miao~"),
+                TimeLimit = 1000,
+                MemoryLimit = 60 * 1024 * 1024,
+                Judger = file,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            });
+
+            file = new UploadedFile()
+            {
+                Name = "Invoker for EasyA+B",
+                Description = "EasyA+B的调用程序",
+                FileName = "EasyA+B.o",
+                CreatedBy = MrPhone
+            };
+
+            db.TestCases.AddObject(new InteractiveTestCase()
+            {
+                Problem = EasyAPlusB,
+                TestData = Encoding.ASCII.GetBytes("1123 3212"),
+                TimeLimit = 1000,
+                MemoryLimit = 60 * 1024 * 1024,
+                Invoker = file,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            });
+
+            db.TestCases.AddObject(new InteractiveTestCase()
+            {
+                Problem = EasyAPlusB,
+                TestData = Encoding.ASCII.GetBytes("1 3"),
+                TimeLimit = 1000,
+                MemoryLimit = 60 * 1024 * 1024,
+                Invoker = file,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            });
+
+            file = new UploadedFile()
+            {
+                Name = "Judger Of Answer A+B",
+                Description = "*测评程序*啊",
+                FileName = "AnswerA+B.exe",
+                CreatedBy = MrPhone
+            };
+
+            AnswerOnlyTestCase answerOnlyTestCase1 = new AnswerOnlyTestCase()
+            {
+                Problem = AnswerAPlusB,
+                TestData = Encoding.ASCII.GetBytes("23 345"),
+                Judger = file,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            };
+            db.TestCases.AddObject(answerOnlyTestCase1);
+
+            AnswerOnlyTestCase answerOnlyTestCase2 = new AnswerOnlyTestCase()
+            {
+                Problem = AnswerAPlusB,
+                TestData = Encoding.ASCII.GetBytes("453 123"),
+                Judger = file,
+                CreatedBy = MrPhone,
+                CreateTime = DateTime.Now
+            };
+            db.TestCases.AddObject(answerOnlyTestCase2);
+            #endregion
+
+            #region Posts
             Post post = new Post()
             {
-                Name = "讨论一下出题人心理",
+                Name = "主页吐槽专用贴",
                 Problem = APlusB,
                 ReplyTime = DateTime.Now,
                 OnTop = true,
@@ -343,7 +430,7 @@ namespace Moo.Core.DB
             {
                 Post = post,
                 CreateTime = DateTime.Now,
-                Content = "出--这么水--的题，找死啊",
+                Content = "终于抢到了主页第一个帖子。*沙发*！",
                 CreatedBy = ShaBi,
             });
             db.SaveChanges();
@@ -351,8 +438,16 @@ namespace Moo.Core.DB
             db.PostItems.AddObject(new PostItem()
             {
                 Post = post,
-                CreateTime = DateTime.Now,
-                Content = "靠！作为出题人我压力很大啊!",
+                CreateTime = DateTime.Now.AddSeconds(3),
+                Content = "靠！傻逼给我<color:red>撤</color>，这帖子是我的!测试一下源代码：\n"
+                + "{code: c++}\n"
+                + "#include <iostream>\n"
+                + "using namespace std;\n"
+                + "int main(){\n"
+                + "\tcout<<\"没占上沙发真倒霉\"<<endl;\n"
+                + "\treturn 0;\n"
+                + "}\n"
+                + "{code: c++}\n",
                 CreatedBy = MrPhone
             });
 
@@ -397,79 +492,13 @@ namespace Moo.Core.DB
                 Content = "Moo很好啊。*注意此贴没有对应题目且被锁*",
                 CreatedBy = MrPhone
             });
+            #endregion
 
-            //Mail
-            db.Mails.AddObject(new Mail()
-            {
-                Name = "咱把Moo黑了如何？",
-                Content = "嘿！onetwogoo!把Moo--黑--了吧！",
-                CreateTime = DateTime.Now,
-                IsRead = true,
-                From = ShaBi,
-                To = MrPhone
-            });
-            db.SaveChanges();
-
-            db.Mails.AddObject(new Mail()
-            {
-                Name = "找死啊！",
-                Content = "我会去黑自己网站吗？",
-                CreateTime = DateTime.Now,
-                IsRead = true,
-                From = MrPhone,
-                To = ShaBi
-            });
-            db.SaveChanges();
-
-            db.Mails.AddObject(new Mail()
-            {
-                Name = "没准嘞！",
-                Content = "敢说你没这想法",
-                CreateTime = DateTime.Now,
-                IsRead = true,
-                From = ShaBi,
-                To = MrPhone
-            });
-            db.SaveChanges();
-
-            db.Mails.AddObject(new Mail()
-            {
-                Name = "傻逼",
-                Content = "不解释！",
-                CreateTime = DateTime.Now,
-                IsRead = false,
-                From = MrPhone,
-                To = ShaBi
-            });
-            db.SaveChanges();
-
-            db.Mails.AddObject(new Mail()
-            {
-                Name = "把我弄成组织者如何啊",
-                Content = "???",
-                CreateTime = DateTime.Now,
-                IsRead = false,
-                From = Baby,
-                To = MrPhone
-            });
-            db.SaveChanges();
-
-            db.Mails.AddObject(new Mail()
-            {
-                Name = "美死你",
-                Content = "怎么可能",
-                CreateTime = DateTime.Now,
-                IsRead = true,
-                From = MrPhone,
-                To = Baby
-            });
-            db.SaveChanges();
-
-            //Contest
+            #region Contest
             Contest contest = new Contest()
             {
-                StartTime = DateTime.Now.AddMinutes(1),
-                EndTime = DateTime.Now.AddMinutes(2),
+                StartTime = DateTime.Now.AddMinutes(0.5),
+                EndTime = DateTime.Now.AddMinutes(1.5),
                 Status = "Before",
                 Name = "Moo水题大赛",
                 Description = "全是--水--题啊！",
@@ -493,31 +522,26 @@ namespace Moo.Core.DB
             //contest.Problem.Add(APlusB);
             contest.Problem.Add(CPlusD);
             contest.User.Add(ShaBi);
+            db.Contests.AddObject(contest);
+            #endregion
 
-            //Record
-            JudgeInfo info = new JudgeInfo()
-            {
-                Info = "Test",
-                Score = 10
-            };
-
+            #region Record
             Record record = new Record()
             {
-                Code = "",
-                Language = "cxx",
+                Code = "#include <iostream>\n"
+                    + "using namespace std;"
+                    + "int main(){"
+                    + "  int x,y;"
+                    + "  cin>>x>>y;"
+                    + "  cout<<x+y;"
+                    + "  return 0;"
+                    + "}",
+                Language = "c++",
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
                 Problem = APlusB,
             };
-            record.JudgeInfo = info;
-            info.Record = record;
             db.Records.AddObject(record);
-
-            info = new JudgeInfo()
-            {
-                Info = "test",
-                Score = 30
-            };
 
             record = new Record()
             {
@@ -527,31 +551,26 @@ namespace Moo.Core.DB
                 User = ShaBi,
                 Problem = APlusB,
             };
-            record.JudgeInfo = info;
-            info.Record = record;
             db.Records.AddObject(record);
-
-            info = new JudgeInfo()
-            {
-                Info = "test",
-                Score = 60
-            };
 
             record = new Record()
             {
-                Code = "",
+                Code = "#include <iostream>\n"
+                    + "int main(int argc,char* argv[]) {\n"
+                    + "\tint c,d;\n"
+                    + "\tstd::cin>>c>>d;\n"
+                    + "\tstd::cout<<c+d<<std::endl;\n"
+                    + "}",
                 Language = "c++",
                 CreateTime = DateTime.Now.AddMinutes(1.5),
                 User = ShaBi,
                 Problem = CPlusD,
             };
-            record.JudgeInfo = info;
-            info.Record = record;
             db.Records.AddObject(record);
 
             db.Records.AddObject(new Record()
             {
-                Code = "int APlusB(int x,int y){return 4;}",
+                Code = "int APlusB(int x,int y){\n\treturn 4;\n}",
                 CreateTime = DateTime.Now,
                 Language = "c++",
                 Problem = EasyAPlusB,
@@ -567,8 +586,69 @@ namespace Moo.Core.DB
                 Problem = AnswerAPlusB,
                 User = MrPhone,
             });
+            #endregion
 
+            #region Messages
+            db.Messages.AddObject(new Message()
+            {
+                Content = "抢占版聊第一帖！",
+                CreateTime = DateTime.Now,
+                From = Baby,
+            });
             db.SaveChanges();
+            db.Messages.AddObject(new Message
+            {
+                Content = "<color:red>沙发</color>！",
+                CreateTime = DateTime.Now.AddSeconds(1),
+                From = MrPhone
+            });
+            db.SaveChanges();
+            db.Messages.AddObject(new Message
+            {
+                Content = "{code:c++}\n"
+                    + "#include <iostream>\n"
+                    + "#include <cstdio>\n"
+                    + "using namespace std;\n"
+                    + "int main(){\n"
+                    + "\tcout<<\"Hello Moo\"<<endl;\n"
+                    + "}\n"
+                    + "{code:c++}",
+                CreateTime = DateTime.Now.AddSeconds(2),
+                From = ShaBi
+            });
+
+            for (int i = 0; i < 100; i++)
+            {
+                db.Messages.AddObject(new Message
+                {
+                    Content = "Hello ShaBi " + i,
+                    CreateTime = DateTime.Now.AddSeconds(i),
+                    From = MrPhone,
+                    To = ShaBi,
+                });
+                db.SaveChanges();
+            }
+            db.Messages.AddObject(new Message
+            {
+                Content = "Hello 嘛呀",
+                CreateTime = DateTime.Now.AddSeconds(1),
+                From = ShaBi,
+                To = MrPhone
+            });
+            #endregion
+
+            #region Files
+            File.WriteAllText(Config.UploadFileDirectory + "firstfile.txt", "This is file content");
+            db.UploadedFiles.AddObject(new UploadedFile
+            {
+                CreatedBy = MrPhone,
+                Description = "<color:red>Test Wiki</color>",
+                FileName = "firstfile.txt",
+                Name = "FirstFile.txt"
+            });
+            #endregion
+            db.SaveChanges();
+
         }
     }
 }

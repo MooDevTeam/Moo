@@ -24,15 +24,14 @@ namespace Moo.Core.Text
         {
             SortedSet<User> beAt;
             text = ParseAt(db, text, out beAt);
-           // return new WikiPlex.WikiEngine().Render(text);
-            return null;
+            return new WikiPlex.WikiEngine().Render(text);
         }
 
         class UserComparer : IComparer<User>
         {
             public int Compare(User a, User b)
             {
-                return a.ID.CompareTo(b.ID);
+                return a.ID - b.ID;
             }
         }
 
@@ -57,7 +56,7 @@ namespace Moo.Core.Text
                                  select u).SingleOrDefault<User>();
                     if (user != null)
                     {
-                        string link = "[url:@" + user.Name + "|../User/?id=" + user.ID + "]";
+                        string link = "[url:@" + user.Name + "|#!page=user&id=" + user.ID + "]";
                         sb.Remove(i, end - i);
                         sb.Insert(i, link);
                         i += link.Length;

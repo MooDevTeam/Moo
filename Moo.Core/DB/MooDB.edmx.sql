@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 10/05/2012 17:02:37
+-- Date Created: 12/11/2012 16:14:46
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -44,12 +44,6 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_RecordJudgeInfo]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[JudgeInfos] DROP CONSTRAINT [FK_RecordJudgeInfo];
 GO
-IF OBJECT_ID(N'[dbo].[FK_MailFrom]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Mails] DROP CONSTRAINT [FK_MailFrom];
-GO
-IF OBJECT_ID(N'[dbo].[FK_MailTo]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Mails] DROP CONSTRAINT [FK_MailTo];
-GO
 IF OBJECT_ID(N'[dbo].[FK_LastestRevisionOfProblem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ProblemRevisions] DROP CONSTRAINT [FK_LastestRevisionOfProblem];
 GO
@@ -80,9 +74,6 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_UserTestCase]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TestCases] DROP CONSTRAINT [FK_UserTestCase];
 GO
-IF OBJECT_ID(N'[dbo].[FK_LogUser]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Logs] DROP CONSTRAINT [FK_LogUser];
-GO
 IF OBJECT_ID(N'[dbo].[FK_UploadedFileUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[UploadedFiles] DROP CONSTRAINT [FK_UploadedFileUser];
 GO
@@ -101,11 +92,26 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_ArticleLatestRevision]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ArticleRevisions] DROP CONSTRAINT [FK_ArticleLatestRevision];
 GO
-IF OBJECT_ID(N'[dbo].[FK_ArticleCategory]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Articles] DROP CONSTRAINT [FK_ArticleCategory];
-GO
 IF OBJECT_ID(N'[dbo].[FK_ArticleProblem]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Articles] DROP CONSTRAINT [FK_ArticleProblem];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ArticleTag_Article]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ArticleTag] DROP CONSTRAINT [FK_ArticleTag_Article];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ArticleTag_Tag]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ArticleTag] DROP CONSTRAINT [FK_ArticleTag_Tag];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ProblemTag_Problem]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ProblemTag] DROP CONSTRAINT [FK_ProblemTag_Problem];
+GO
+IF OBJECT_ID(N'[dbo].[FK_ProblemTag_Tag]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ProblemTag] DROP CONSTRAINT [FK_ProblemTag_Tag];
+GO
+IF OBJECT_ID(N'[dbo].[FK_MessageFrom]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Messages] DROP CONSTRAINT [FK_MessageFrom];
+GO
+IF OBJECT_ID(N'[dbo].[FK_MessageTo]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Messages] DROP CONSTRAINT [FK_MessageTo];
 GO
 IF OBJECT_ID(N'[dbo].[FK_SpecialJudgedTestCase_inherits_TestCase]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TestCases_SpecialJudgedTestCase] DROP CONSTRAINT [FK_SpecialJudgedTestCase_inherits_TestCase];
@@ -116,8 +122,8 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_AnswerOnlyTestCase_inherits_TestCase]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[TestCases_AnswerOnlyTestCase] DROP CONSTRAINT [FK_AnswerOnlyTestCase_inherits_TestCase];
 GO
-IF OBJECT_ID(N'[dbo].[FK_TranditionalTestCase_inherits_TestCase]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[TestCases_TranditionalTestCase] DROP CONSTRAINT [FK_TranditionalTestCase_inherits_TestCase];
+IF OBJECT_ID(N'[dbo].[FK_TraditionalTestCase_inherits_TestCase]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TestCases_TraditionalTestCase] DROP CONSTRAINT [FK_TraditionalTestCase_inherits_TestCase];
 GO
 
 -- --------------------------------------------------
@@ -151,17 +157,11 @@ GO
 IF OBJECT_ID(N'[dbo].[JudgeInfos]', 'U') IS NOT NULL
     DROP TABLE [dbo].[JudgeInfos];
 GO
-IF OBJECT_ID(N'[dbo].[Mails]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Mails];
-GO
 IF OBJECT_ID(N'[dbo].[Contests]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Contests];
 GO
 IF OBJECT_ID(N'[dbo].[UploadedFiles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UploadedFiles];
-GO
-IF OBJECT_ID(N'[dbo].[Logs]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Logs];
 GO
 IF OBJECT_ID(N'[dbo].[Articles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Articles];
@@ -169,8 +169,11 @@ GO
 IF OBJECT_ID(N'[dbo].[ArticleRevisions]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ArticleRevisions];
 GO
-IF OBJECT_ID(N'[dbo].[Categories]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Categories];
+IF OBJECT_ID(N'[dbo].[Tags]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Tags];
+GO
+IF OBJECT_ID(N'[dbo].[Messages]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Messages];
 GO
 IF OBJECT_ID(N'[dbo].[TestCases_SpecialJudgedTestCase]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TestCases_SpecialJudgedTestCase];
@@ -181,14 +184,20 @@ GO
 IF OBJECT_ID(N'[dbo].[TestCases_AnswerOnlyTestCase]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TestCases_AnswerOnlyTestCase];
 GO
-IF OBJECT_ID(N'[dbo].[TestCases_TranditionalTestCase]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[TestCases_TranditionalTestCase];
+IF OBJECT_ID(N'[dbo].[TestCases_TraditionalTestCase]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TestCases_TraditionalTestCase];
 GO
 IF OBJECT_ID(N'[dbo].[UserAttendContest]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UserAttendContest];
 GO
 IF OBJECT_ID(N'[dbo].[ContestProblem]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ContestProblem];
+GO
+IF OBJECT_ID(N'[dbo].[ArticleTag]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[ArticleTag];
+GO
+IF OBJECT_ID(N'[dbo].[ProblemTag]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[ProblemTag];
 GO
 
 -- --------------------------------------------------
@@ -204,7 +213,7 @@ CREATE TABLE [dbo].[Users] (
     [Email] nvarchar(max)  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
     [Score] int  NOT NULL,
-    [PreferredLanguage] nvarchar(12)  NOT NULL,
+    [CreateTime] datetime  NOT NULL,
     [Role_ID] int  NOT NULL
 );
 GO
@@ -212,8 +221,7 @@ GO
 -- Creating table 'Roles'
 CREATE TABLE [dbo].[Roles] (
     [ID] int IDENTITY(1,1) NOT NULL,
-    [Name] varchar(12)  NOT NULL,
-    [DisplayName] nvarchar(12)  NOT NULL
+    [Name] varchar(12)  NOT NULL
 );
 GO
 
@@ -222,7 +230,7 @@ CREATE TABLE [dbo].[Problems] (
     [ID] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(40)  NOT NULL,
     [Type] varchar(20)  NOT NULL,
-    [SubmissionCount] int  NOT NULL,
+    [SubmissionTimes] int  NOT NULL,
     [ScoreSum] bigint  NOT NULL,
     [SubmissionUser] int  NOT NULL,
     [MaximumScore] int  NULL,
@@ -235,6 +243,7 @@ CREATE TABLE [dbo].[Problems] (
     [TestCaseLocked] bit  NOT NULL,
     [EnableTesting] bit  NOT NULL,
     [TestCaseHidden] bit  NOT NULL,
+    [JudgeInfoHidden] bit  NOT NULL,
     [CreatedBy_ID] int  NOT NULL
 );
 GO
@@ -254,6 +263,7 @@ GO
 -- Creating table 'TestCases'
 CREATE TABLE [dbo].[TestCases] (
     [ID] int IDENTITY(1,1) NOT NULL,
+    [CreateTime] datetime  NOT NULL,
     [Problem_ID] int  NOT NULL,
     [CreatedBy_ID] int  NOT NULL
 );
@@ -301,18 +311,6 @@ CREATE TABLE [dbo].[JudgeInfos] (
 );
 GO
 
--- Creating table 'Mails'
-CREATE TABLE [dbo].[Mails] (
-    [ID] int IDENTITY(1,1) NOT NULL,
-    [Name] nvarchar(40)  NOT NULL,
-    [Content] nvarchar(max)  NOT NULL,
-    [IsRead] bit  NOT NULL,
-    [CreateTime] datetime  NOT NULL,
-    [From_ID] int  NOT NULL,
-    [To_ID] int  NOT NULL
-);
-GO
-
 -- Creating table 'Contests'
 CREATE TABLE [dbo].[Contests] (
     [ID] int IDENTITY(1,1) NOT NULL,
@@ -336,7 +334,10 @@ CREATE TABLE [dbo].[Contests] (
     [HideProblemOnEnd] bit  NOT NULL,
     [HideTestCaseOnEnd] bit  NOT NULL,
     [LockArticleOnStart] bit  NOT NULL,
-    [LockArticleOnEnd] bit  NOT NULL
+    [LockArticleOnEnd] bit  NOT NULL,
+    [HideJudgeInfoOnStart] bit  NOT NULL,
+    [HideJudgeInfoOnEnd] bit  NOT NULL,
+    [ViewResultAnyTime] bit  NOT NULL
 );
 GO
 
@@ -344,20 +345,9 @@ GO
 CREATE TABLE [dbo].[UploadedFiles] (
     [ID] int IDENTITY(1,1) NOT NULL,
     [Name] nvarchar(40)  NOT NULL,
-    [Path] nvarchar(max)  NOT NULL,
+    [FileName] nvarchar(max)  NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
     [CreatedBy_ID] int  NOT NULL
-);
-GO
-
--- Creating table 'Logs'
-CREATE TABLE [dbo].[Logs] (
-    [ID] int IDENTITY(1,1) NOT NULL,
-    [CreateTime] datetime  NOT NULL,
-    [Level] tinyint  NOT NULL,
-    [Info] nvarchar(max)  NOT NULL,
-    [RemoteAddress] nvarchar(max)  NOT NULL,
-    [User_ID] int  NULL
 );
 GO
 
@@ -367,7 +357,6 @@ CREATE TABLE [dbo].[Articles] (
     [Name] nvarchar(40)  NOT NULL,
     [CreateTime] datetime  NOT NULL,
     [CreatedBy_ID] int  NOT NULL,
-    [Category_ID] int  NOT NULL,
     [Problem_ID] int  NULL
 );
 GO
@@ -377,16 +366,29 @@ CREATE TABLE [dbo].[ArticleRevisions] (
     [ID] int IDENTITY(1,1) NOT NULL,
     [Content] nvarchar(max)  NOT NULL,
     [CreateTime] datetime  NOT NULL,
+    [Reason] nvarchar(40)  NOT NULL,
     [CreatedBy_ID] int  NOT NULL,
     [Article_ID] int  NOT NULL,
     [ArticleLatestRevision_ArticleRevision_ID] int  NULL
 );
 GO
 
--- Creating table 'Categories'
-CREATE TABLE [dbo].[Categories] (
+-- Creating table 'Tags'
+CREATE TABLE [dbo].[Tags] (
     [ID] int IDENTITY(1,1) NOT NULL,
-    [Name] nvarchar(20)  NOT NULL
+    [Name] nvarchar(40)  NOT NULL
+);
+GO
+
+-- Creating table 'Messages'
+CREATE TABLE [dbo].[Messages] (
+    [ID] int IDENTITY(1,1) NOT NULL,
+    [CreateTime] datetime  NOT NULL,
+    [Content] nvarchar(max)  NOT NULL,
+    [DeletedByFrom] bit  NOT NULL,
+    [DeletedByTo] bit  NOT NULL,
+    [From_ID] int  NOT NULL,
+    [To_ID] int  NULL
 );
 GO
 
@@ -419,8 +421,8 @@ CREATE TABLE [dbo].[TestCases_AnswerOnlyTestCase] (
 );
 GO
 
--- Creating table 'TestCases_TranditionalTestCase'
-CREATE TABLE [dbo].[TestCases_TranditionalTestCase] (
+-- Creating table 'TestCases_TraditionalTestCase'
+CREATE TABLE [dbo].[TestCases_TraditionalTestCase] (
     [Input] varbinary(max)  NOT NULL,
     [Answer] varbinary(max)  NOT NULL,
     [TimeLimit] int  NOT NULL,
@@ -433,7 +435,7 @@ GO
 -- Creating table 'UserAttendContest'
 CREATE TABLE [dbo].[UserAttendContest] (
     [User_ID] int  NOT NULL,
-    [UserAttendContest_User_ID] int  NOT NULL
+    [Contest_ID] int  NOT NULL
 );
 GO
 
@@ -441,6 +443,20 @@ GO
 CREATE TABLE [dbo].[ContestProblem] (
     [Contest_ID] int  NOT NULL,
     [Problem_ID] int  NOT NULL
+);
+GO
+
+-- Creating table 'ArticleTag'
+CREATE TABLE [dbo].[ArticleTag] (
+    [Article_ID] int  NOT NULL,
+    [Tag_ID] int  NOT NULL
+);
+GO
+
+-- Creating table 'ProblemTag'
+CREATE TABLE [dbo].[ProblemTag] (
+    [Problem_ID] int  NOT NULL,
+    [Tag_ID] int  NOT NULL
 );
 GO
 
@@ -502,12 +518,6 @@ ADD CONSTRAINT [PK_JudgeInfos]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
--- Creating primary key on [ID] in table 'Mails'
-ALTER TABLE [dbo].[Mails]
-ADD CONSTRAINT [PK_Mails]
-    PRIMARY KEY CLUSTERED ([ID] ASC);
-GO
-
 -- Creating primary key on [ID] in table 'Contests'
 ALTER TABLE [dbo].[Contests]
 ADD CONSTRAINT [PK_Contests]
@@ -517,12 +527,6 @@ GO
 -- Creating primary key on [ID] in table 'UploadedFiles'
 ALTER TABLE [dbo].[UploadedFiles]
 ADD CONSTRAINT [PK_UploadedFiles]
-    PRIMARY KEY CLUSTERED ([ID] ASC);
-GO
-
--- Creating primary key on [ID] in table 'Logs'
-ALTER TABLE [dbo].[Logs]
-ADD CONSTRAINT [PK_Logs]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
@@ -538,9 +542,15 @@ ADD CONSTRAINT [PK_ArticleRevisions]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
--- Creating primary key on [ID] in table 'Categories'
-ALTER TABLE [dbo].[Categories]
-ADD CONSTRAINT [PK_Categories]
+-- Creating primary key on [ID] in table 'Tags'
+ALTER TABLE [dbo].[Tags]
+ADD CONSTRAINT [PK_Tags]
+    PRIMARY KEY CLUSTERED ([ID] ASC);
+GO
+
+-- Creating primary key on [ID] in table 'Messages'
+ALTER TABLE [dbo].[Messages]
+ADD CONSTRAINT [PK_Messages]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
@@ -562,22 +572,34 @@ ADD CONSTRAINT [PK_TestCases_AnswerOnlyTestCase]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
--- Creating primary key on [ID] in table 'TestCases_TranditionalTestCase'
-ALTER TABLE [dbo].[TestCases_TranditionalTestCase]
-ADD CONSTRAINT [PK_TestCases_TranditionalTestCase]
+-- Creating primary key on [ID] in table 'TestCases_TraditionalTestCase'
+ALTER TABLE [dbo].[TestCases_TraditionalTestCase]
+ADD CONSTRAINT [PK_TestCases_TraditionalTestCase]
     PRIMARY KEY CLUSTERED ([ID] ASC);
 GO
 
--- Creating primary key on [User_ID], [UserAttendContest_User_ID] in table 'UserAttendContest'
+-- Creating primary key on [User_ID], [Contest_ID] in table 'UserAttendContest'
 ALTER TABLE [dbo].[UserAttendContest]
 ADD CONSTRAINT [PK_UserAttendContest]
-    PRIMARY KEY NONCLUSTERED ([User_ID], [UserAttendContest_User_ID] ASC);
+    PRIMARY KEY NONCLUSTERED ([User_ID], [Contest_ID] ASC);
 GO
 
 -- Creating primary key on [Contest_ID], [Problem_ID] in table 'ContestProblem'
 ALTER TABLE [dbo].[ContestProblem]
 ADD CONSTRAINT [PK_ContestProblem]
     PRIMARY KEY NONCLUSTERED ([Contest_ID], [Problem_ID] ASC);
+GO
+
+-- Creating primary key on [Article_ID], [Tag_ID] in table 'ArticleTag'
+ALTER TABLE [dbo].[ArticleTag]
+ADD CONSTRAINT [PK_ArticleTag]
+    PRIMARY KEY NONCLUSTERED ([Article_ID], [Tag_ID] ASC);
+GO
+
+-- Creating primary key on [Problem_ID], [Tag_ID] in table 'ProblemTag'
+ALTER TABLE [dbo].[ProblemTag]
+ADD CONSTRAINT [PK_ProblemTag]
+    PRIMARY KEY NONCLUSTERED ([Problem_ID], [Tag_ID] ASC);
 GO
 
 -- --------------------------------------------------
@@ -710,34 +732,6 @@ ON [dbo].[JudgeInfos]
     ([Record_ID]);
 GO
 
--- Creating foreign key on [From_ID] in table 'Mails'
-ALTER TABLE [dbo].[Mails]
-ADD CONSTRAINT [FK_MailFrom]
-    FOREIGN KEY ([From_ID])
-    REFERENCES [dbo].[Users]
-        ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_MailFrom'
-CREATE INDEX [IX_FK_MailFrom]
-ON [dbo].[Mails]
-    ([From_ID]);
-GO
-
--- Creating foreign key on [To_ID] in table 'Mails'
-ALTER TABLE [dbo].[Mails]
-ADD CONSTRAINT [FK_MailTo]
-    FOREIGN KEY ([To_ID])
-    REFERENCES [dbo].[Users]
-        ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_MailTo'
-CREATE INDEX [IX_FK_MailTo]
-ON [dbo].[Mails]
-    ([To_ID]);
-GO
-
 -- Creating foreign key on [LastestRevisionOfProblem_ProblemRevision_ID] in table 'ProblemRevisions'
 ALTER TABLE [dbo].[ProblemRevisions]
 ADD CONSTRAINT [FK_LastestRevisionOfProblem]
@@ -761,10 +755,10 @@ ADD CONSTRAINT [FK_UserAttendContest_User]
     ON DELETE NO ACTION ON UPDATE NO ACTION;
 GO
 
--- Creating foreign key on [UserAttendContest_User_ID] in table 'UserAttendContest'
+-- Creating foreign key on [Contest_ID] in table 'UserAttendContest'
 ALTER TABLE [dbo].[UserAttendContest]
 ADD CONSTRAINT [FK_UserAttendContest_Contest]
-    FOREIGN KEY ([UserAttendContest_User_ID])
+    FOREIGN KEY ([Contest_ID])
     REFERENCES [dbo].[Contests]
         ([ID])
     ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -772,7 +766,7 @@ ADD CONSTRAINT [FK_UserAttendContest_Contest]
 -- Creating non-clustered index for FOREIGN KEY 'FK_UserAttendContest_Contest'
 CREATE INDEX [IX_FK_UserAttendContest_Contest]
 ON [dbo].[UserAttendContest]
-    ([UserAttendContest_User_ID]);
+    ([Contest_ID]);
 GO
 
 -- Creating foreign key on [User_ID] in table 'Records'
@@ -868,20 +862,6 @@ ON [dbo].[TestCases]
     ([CreatedBy_ID]);
 GO
 
--- Creating foreign key on [User_ID] in table 'Logs'
-ALTER TABLE [dbo].[Logs]
-ADD CONSTRAINT [FK_LogUser]
-    FOREIGN KEY ([User_ID])
-    REFERENCES [dbo].[Users]
-        ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_LogUser'
-CREATE INDEX [IX_FK_LogUser]
-ON [dbo].[Logs]
-    ([User_ID]);
-GO
-
 -- Creating foreign key on [CreatedBy_ID] in table 'UploadedFiles'
 ALTER TABLE [dbo].[UploadedFiles]
 ADD CONSTRAINT [FK_UploadedFileUser]
@@ -966,20 +946,6 @@ ON [dbo].[ArticleRevisions]
     ([ArticleLatestRevision_ArticleRevision_ID]);
 GO
 
--- Creating foreign key on [Category_ID] in table 'Articles'
-ALTER TABLE [dbo].[Articles]
-ADD CONSTRAINT [FK_ArticleCategory]
-    FOREIGN KEY ([Category_ID])
-    REFERENCES [dbo].[Categories]
-        ([ID])
-    ON DELETE CASCADE ON UPDATE NO ACTION;
-
--- Creating non-clustered index for FOREIGN KEY 'FK_ArticleCategory'
-CREATE INDEX [IX_FK_ArticleCategory]
-ON [dbo].[Articles]
-    ([Category_ID]);
-GO
-
 -- Creating foreign key on [Problem_ID] in table 'Articles'
 ALTER TABLE [dbo].[Articles]
 ADD CONSTRAINT [FK_ArticleProblem]
@@ -994,13 +960,87 @@ ON [dbo].[Articles]
     ([Problem_ID]);
 GO
 
+-- Creating foreign key on [Article_ID] in table 'ArticleTag'
+ALTER TABLE [dbo].[ArticleTag]
+ADD CONSTRAINT [FK_ArticleTag_Article]
+    FOREIGN KEY ([Article_ID])
+    REFERENCES [dbo].[Articles]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Tag_ID] in table 'ArticleTag'
+ALTER TABLE [dbo].[ArticleTag]
+ADD CONSTRAINT [FK_ArticleTag_Tag]
+    FOREIGN KEY ([Tag_ID])
+    REFERENCES [dbo].[Tags]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ArticleTag_Tag'
+CREATE INDEX [IX_FK_ArticleTag_Tag]
+ON [dbo].[ArticleTag]
+    ([Tag_ID]);
+GO
+
+-- Creating foreign key on [Problem_ID] in table 'ProblemTag'
+ALTER TABLE [dbo].[ProblemTag]
+ADD CONSTRAINT [FK_ProblemTag_Problem]
+    FOREIGN KEY ([Problem_ID])
+    REFERENCES [dbo].[Problems]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Tag_ID] in table 'ProblemTag'
+ALTER TABLE [dbo].[ProblemTag]
+ADD CONSTRAINT [FK_ProblemTag_Tag]
+    FOREIGN KEY ([Tag_ID])
+    REFERENCES [dbo].[Tags]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_ProblemTag_Tag'
+CREATE INDEX [IX_FK_ProblemTag_Tag]
+ON [dbo].[ProblemTag]
+    ([Tag_ID]);
+GO
+
+-- Creating foreign key on [From_ID] in table 'Messages'
+ALTER TABLE [dbo].[Messages]
+ADD CONSTRAINT [FK_MessageFrom]
+    FOREIGN KEY ([From_ID])
+    REFERENCES [dbo].[Users]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MessageFrom'
+CREATE INDEX [IX_FK_MessageFrom]
+ON [dbo].[Messages]
+    ([From_ID]);
+GO
+
+-- Creating foreign key on [To_ID] in table 'Messages'
+ALTER TABLE [dbo].[Messages]
+ADD CONSTRAINT [FK_MessageTo]
+    FOREIGN KEY ([To_ID])
+    REFERENCES [dbo].[Users]
+        ([ID])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_MessageTo'
+CREATE INDEX [IX_FK_MessageTo]
+ON [dbo].[Messages]
+    ([To_ID]);
+GO
+
 -- Creating foreign key on [ID] in table 'TestCases_SpecialJudgedTestCase'
 ALTER TABLE [dbo].[TestCases_SpecialJudgedTestCase]
 ADD CONSTRAINT [FK_SpecialJudgedTestCase_inherits_TestCase]
     FOREIGN KEY ([ID])
     REFERENCES [dbo].[TestCases]
         ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
+    ON DELETE CASCADE ON UPDATE NO ACTION;
 GO
 
 -- Creating foreign key on [ID] in table 'TestCases_InteractiveTestCase'
@@ -1009,7 +1049,7 @@ ADD CONSTRAINT [FK_InteractiveTestCase_inherits_TestCase]
     FOREIGN KEY ([ID])
     REFERENCES [dbo].[TestCases]
         ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
+    ON DELETE CASCADE ON UPDATE NO ACTION;
 GO
 
 -- Creating foreign key on [ID] in table 'TestCases_AnswerOnlyTestCase'
@@ -1018,16 +1058,16 @@ ADD CONSTRAINT [FK_AnswerOnlyTestCase_inherits_TestCase]
     FOREIGN KEY ([ID])
     REFERENCES [dbo].[TestCases]
         ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
+    ON DELETE CASCADE ON UPDATE NO ACTION;
 GO
 
--- Creating foreign key on [ID] in table 'TestCases_TranditionalTestCase'
-ALTER TABLE [dbo].[TestCases_TranditionalTestCase]
-ADD CONSTRAINT [FK_TranditionalTestCase_inherits_TestCase]
+-- Creating foreign key on [ID] in table 'TestCases_TraditionalTestCase'
+ALTER TABLE [dbo].[TestCases_TraditionalTestCase]
+ADD CONSTRAINT [FK_TraditionalTestCase_inherits_TestCase]
     FOREIGN KEY ([ID])
     REFERENCES [dbo].[TestCases]
         ([ID])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
+    ON DELETE CASCADE ON UPDATE NO ACTION;
 GO
 
 -- --------------------------------------------------

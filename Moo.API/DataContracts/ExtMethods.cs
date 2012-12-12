@@ -24,7 +24,7 @@ namespace Moo.API.DataContracts
                 MaximumScore = problem.MaximumScore,
                 AverageScore = problem.SubmissionUser != 0 ? (double?)(problem.ScoreSum / (double)problem.SubmissionUser) : null,
                 MyScore = myRecords.Any() ? (int?)myRecords.Max(r => r.JudgeInfo.Score) : null,
-                SubmissionCount = problem.SubmissionCount,
+                SubmissionTimes= problem.SubmissionTimes,
                 SubmissionUser = problem.SubmissionUser,
                 LatestRevision = problem.LatestRevision == null ? null : (int?)problem.LatestRevision.ID,
                 ArticleLocked = problem.ArticleLocked,
@@ -113,9 +113,9 @@ namespace Moo.API.DataContracts
             };
         }
 
-        public static FullTranditionalTestCase ToFullTranditionalTestCase(this TranditionalTestCase testCase)
+        public static FullTraditionalTestCase ToFullTraditionalTestCase(this TraditionalTestCase testCase)
         {
-            return new FullTranditionalTestCase()
+            return new FullTraditionalTestCase()
             {
                 ID = testCase.ID,
                 Answer = testCase.Answer,
@@ -178,7 +178,6 @@ namespace Moo.API.DataContracts
                 Email = user.Email,
                 ID = user.ID,
                 Name = user.Name,
-                PreferredLanguage = user.PreferredLanguage,
                 Role = user.Role.ID,
                 Score = user.Score
             };
@@ -237,7 +236,6 @@ namespace Moo.API.DataContracts
                 CreateTime = article.CreateTime,
                 LatestRevision = article.LatestRevision == null ? null : (int?)article.LatestRevision.ID,
                 Name = article.Name,
-                Category = article.Category.ID,
                 Problem = article.Problem.ID
             };
         }
@@ -262,42 +260,6 @@ namespace Moo.API.DataContracts
                 CreatedBy = articleRevision.CreatedBy.ID,
                 CreateTime = articleRevision.CreateTime,
                 ID = articleRevision.ID
-            };
-        }
-
-        public static FullCategory ToFullCategory(this Category category)
-        {
-            return new FullCategory()
-            {
-                ID = category.ID,
-                Name = category.Name
-            };
-        }
-
-        public static BriefMail ToBriefMail(this Mail mail)
-        {
-            return new BriefMail()
-            {
-                CreateTime = mail.CreateTime,
-                From = mail.From.ID,
-                ID = mail.ID,
-                IsRead = mail.IsRead,
-                Name = mail.Name,
-                To = mail.To.ID
-            };
-        }
-
-        public static FullMail ToFullMail(this Mail mail)
-        {
-            return new FullMail()
-            {
-                CreateTime = mail.CreateTime,
-                From = mail.From.ID,
-                Content = mail.Content,
-                ID = mail.ID,
-                IsRead = mail.IsRead,
-                Name = mail.Name,
-                To = mail.To.ID
             };
         }
 
@@ -350,7 +312,6 @@ namespace Moo.API.DataContracts
             {
                 ID=role.ID,
                 Name=role.Name,
-                DisplayName=role.DisplayName,
             };
         }
     }

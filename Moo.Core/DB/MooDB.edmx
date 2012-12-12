@@ -4,30 +4,31 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Moo.Core.DB.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Moo.Core.DB.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityContainer Name="MooCoreDBStoreContainer">
-    <EntitySet Name="Users" EntityType="Moo.Core.DB.Store.Users" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Roles" EntityType="Moo.Core.DB.Store.Roles" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Problems" EntityType="Moo.Core.DB.Store.Problems" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Records" EntityType="Moo.Core.DB.Store.Records" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="TestCases" EntityType="Moo.Core.DB.Store.TestCases" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="ProblemRevisions" EntityType="Moo.Core.DB.Store.ProblemRevisions" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Posts" EntityType="Moo.Core.DB.Store.Posts" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="PostItems" EntityType="Moo.Core.DB.Store.PostItems" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="JudgeInfos" EntityType="Moo.Core.DB.Store.JudgeInfos" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Mails" EntityType="Moo.Core.DB.Store.Mails" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Contests" EntityType="Moo.Core.DB.Store.Contests" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="UploadedFiles" EntityType="Moo.Core.DB.Store.UploadedFiles" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Logs" EntityType="Moo.Core.DB.Store.Logs" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Articles" EntityType="Moo.Core.DB.Store.Articles" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="ArticleRevisions" EntityType="Moo.Core.DB.Store.ArticleRevisions" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="Categories" EntityType="Moo.Core.DB.Store.Categories" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="TestCases_SpecialJudgedTestCase" EntityType="Moo.Core.DB.Store.TestCases_SpecialJudgedTestCase" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="TestCases_InteractiveTestCase" EntityType="Moo.Core.DB.Store.TestCases_InteractiveTestCase" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="TestCases_AnswerOnlyTestCase" EntityType="Moo.Core.DB.Store.TestCases_AnswerOnlyTestCase" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="TestCases_TranditionalTestCase" EntityType="Moo.Core.DB.Store.TestCases_TranditionalTestCase" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="UserAttendContest" EntityType="Moo.Core.DB.Store.UserAttendContest" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-    <EntitySet Name="ContestProblem" EntityType="Moo.Core.DB.Store.ContestProblem" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+    <EntitySet Name="Users" EntityType="Moo.Core.DB.Store.Users" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Roles" EntityType="Moo.Core.DB.Store.Roles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Problems" EntityType="Moo.Core.DB.Store.Problems" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Records" EntityType="Moo.Core.DB.Store.Records" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TestCases" EntityType="Moo.Core.DB.Store.TestCases" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ProblemRevisions" EntityType="Moo.Core.DB.Store.ProblemRevisions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Posts" EntityType="Moo.Core.DB.Store.Posts" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PostItems" EntityType="Moo.Core.DB.Store.PostItems" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="JudgeInfos" EntityType="Moo.Core.DB.Store.JudgeInfos" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Contests" EntityType="Moo.Core.DB.Store.Contests" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UploadedFiles" EntityType="Moo.Core.DB.Store.UploadedFiles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Articles" EntityType="Moo.Core.DB.Store.Articles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ArticleRevisions" EntityType="Moo.Core.DB.Store.ArticleRevisions" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Tags" EntityType="Moo.Core.DB.Store.Tags" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Messages" EntityType="Moo.Core.DB.Store.Messages" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TestCases_SpecialJudgedTestCase" EntityType="Moo.Core.DB.Store.TestCases_SpecialJudgedTestCase" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TestCases_InteractiveTestCase" EntityType="Moo.Core.DB.Store.TestCases_InteractiveTestCase" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TestCases_AnswerOnlyTestCase" EntityType="Moo.Core.DB.Store.TestCases_AnswerOnlyTestCase" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TestCases_TraditionalTestCase" EntityType="Moo.Core.DB.Store.TestCases_TraditionalTestCase" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserAttendContest" EntityType="Moo.Core.DB.Store.UserAttendContest" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ContestProblem" EntityType="Moo.Core.DB.Store.ContestProblem" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ArticleTag" EntityType="Moo.Core.DB.Store.ArticleTag" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ProblemTag" EntityType="Moo.Core.DB.Store.ProblemTag" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="RecordProblem" Association="Moo.Core.DB.Store.RecordProblem">
       <End Role="Record" EntitySet="Records" />
       <End Role="Problem" EntitySet="Problems" />
@@ -63,14 +64,6 @@
     <AssociationSet Name="RecordJudgeInfo" Association="Moo.Core.DB.Store.RecordJudgeInfo">
       <End Role="Record" EntitySet="Records" />
       <End Role="JudgeInfo" EntitySet="JudgeInfos" />
-    </AssociationSet>
-    <AssociationSet Name="MailFrom" Association="Moo.Core.DB.Store.MailFrom">
-      <End Role="Mail" EntitySet="Mails" />
-      <End Role="User" EntitySet="Users" />
-    </AssociationSet>
-    <AssociationSet Name="MailTo" Association="Moo.Core.DB.Store.MailTo">
-      <End Role="User" EntitySet="Users" />
-      <End Role="Mail" EntitySet="Mails" />
     </AssociationSet>
     <AssociationSet Name="LastestRevisionOfProblem" Association="Moo.Core.DB.Store.LastestRevisionOfProblem">
       <End Role="Problem" EntitySet="Problems" />
@@ -112,10 +105,6 @@
       <End Role="User" EntitySet="Users" />
       <End Role="TestCase" EntitySet="TestCases" />
     </AssociationSet>
-    <AssociationSet Name="LogUser" Association="Moo.Core.DB.Store.LogUser">
-      <End Role="User" EntitySet="Users" />
-      <End Role="Log" EntitySet="Logs" />
-    </AssociationSet>
     <AssociationSet Name="UploadedFileUser" Association="Moo.Core.DB.Store.UploadedFileUser">
       <End Role="UploadedFile" EntitySet="UploadedFiles" />
       <End Role="User" EntitySet="Users" />
@@ -140,13 +129,33 @@
       <End Role="Article" EntitySet="Articles" />
       <End Role="ArticleRevision" EntitySet="ArticleRevisions" />
     </AssociationSet>
-    <AssociationSet Name="ArticleCategory" Association="Moo.Core.DB.Store.ArticleCategory">
-      <End Role="Article" EntitySet="Articles" />
-      <End Role="Category" EntitySet="Categories" />
-    </AssociationSet>
     <AssociationSet Name="ArticleProblem" Association="Moo.Core.DB.Store.ArticleProblem">
       <End Role="Article" EntitySet="Articles" />
       <End Role="Problem" EntitySet="Problems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ArticleTag_Article" Association="Moo.Core.DB.Store.FK_ArticleTag_Article">
+      <End Role="Article" EntitySet="Articles" />
+      <End Role="ArticleTag" EntitySet="ArticleTag" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ArticleTag_Tag" Association="Moo.Core.DB.Store.FK_ArticleTag_Tag">
+      <End Role="Tag" EntitySet="Tags" />
+      <End Role="ArticleTag" EntitySet="ArticleTag" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProblemTag_Problem" Association="Moo.Core.DB.Store.FK_ProblemTag_Problem">
+      <End Role="Problem" EntitySet="Problems" />
+      <End Role="ProblemTag" EntitySet="ProblemTag" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProblemTag_Tag" Association="Moo.Core.DB.Store.FK_ProblemTag_Tag">
+      <End Role="Tag" EntitySet="Tags" />
+      <End Role="ProblemTag" EntitySet="ProblemTag" />
+    </AssociationSet>
+    <AssociationSet Name="MessageFrom" Association="Moo.Core.DB.Store.MessageFrom">
+      <End Role="Message" EntitySet="Messages" />
+      <End Role="User" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="MessageTo" Association="Moo.Core.DB.Store.MessageTo">
+      <End Role="Message" EntitySet="Messages" />
+      <End Role="User" EntitySet="Users" />
     </AssociationSet>
     <AssociationSet Name="FK_SpecialJudgedTestCase_inherits_TestCase" Association="Moo.Core.DB.Store.FK_SpecialJudgedTestCase_inherits_TestCase">
       <End Role="TestCase" EntitySet="TestCases" />
@@ -160,9 +169,9 @@
       <End Role="TestCase" EntitySet="TestCases" />
       <End Role="AnswerOnlyTestCase" EntitySet="TestCases_AnswerOnlyTestCase" />
     </AssociationSet>
-    <AssociationSet Name="FK_TranditionalTestCase_inherits_TestCase" Association="Moo.Core.DB.Store.FK_TranditionalTestCase_inherits_TestCase">
+    <AssociationSet Name="FK_TraditionalTestCase_inherits_TestCase" Association="Moo.Core.DB.Store.FK_TraditionalTestCase_inherits_TestCase">
       <End Role="TestCase" EntitySet="TestCases" />
-      <End Role="TranditionalTestCase" EntitySet="TestCases_TranditionalTestCase" />
+      <End Role="TraditionalTestCase" EntitySet="TestCases_TraditionalTestCase" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Users">
@@ -176,7 +185,7 @@
     <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Score" Type="int" Nullable="false" />
-    <Property Name="PreferredLanguage" Type="nvarchar" Nullable="false" MaxLength="12" />
+    <Property Name="CreateTime" Type="datetime" Nullable="false" />
     <Property Name="Role_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Roles">
@@ -185,7 +194,6 @@
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="varchar" Nullable="false" MaxLength="12" />
-    <Property Name="DisplayName" Type="nvarchar" Nullable="false" MaxLength="12" />
   </EntityType>
   <EntityType Name="Problems">
     <Key>
@@ -194,7 +202,7 @@
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="Type" Type="varchar" Nullable="false" MaxLength="20" />
-    <Property Name="SubmissionCount" Type="int" Nullable="false" />
+    <Property Name="SubmissionTimes" Type="int" Nullable="false" />
     <Property Name="ScoreSum" Type="bigint" Nullable="false" />
     <Property Name="SubmissionUser" Type="int" Nullable="false" />
     <Property Name="MaximumScore" Type="int" Nullable="true" />
@@ -207,6 +215,7 @@
     <Property Name="TestCaseLocked" Type="bit" Nullable="false" />
     <Property Name="EnableTesting" Type="bit" Nullable="false" />
     <Property Name="TestCaseHidden" Type="bit" Nullable="false" />
+    <Property Name="JudgeInfoHidden" Type="bit" Nullable="false" />
     <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Records">
@@ -226,6 +235,7 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CreateTime" Type="datetime" Nullable="false" />
     <Property Name="Problem_ID" Type="int" Nullable="false" />
     <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
   </EntityType>
@@ -271,18 +281,6 @@
     <Property Name="Info" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Record_ID" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="Mails">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
-    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="IsRead" Type="bit" Nullable="false" />
-    <Property Name="CreateTime" Type="datetime" Nullable="false" />
-    <Property Name="From_ID" Type="int" Nullable="false" />
-    <Property Name="To_ID" Type="int" Nullable="false" />
-  </EntityType>
   <EntityType Name="Contests">
     <Key>
       <PropertyRef Name="ID" />
@@ -309,6 +307,9 @@
     <Property Name="HideTestCaseOnEnd" Type="bit" Nullable="false" />
     <Property Name="LockArticleOnStart" Type="bit" Nullable="false" />
     <Property Name="LockArticleOnEnd" Type="bit" Nullable="false" />
+    <Property Name="HideJudgeInfoOnStart" Type="bit" Nullable="false" />
+    <Property Name="HideJudgeInfoOnEnd" Type="bit" Nullable="false" />
+    <Property Name="ViewResultAnyTime" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="UploadedFiles">
     <Key>
@@ -316,20 +317,9 @@
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
-    <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="FileName" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
     <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
-  </EntityType>
-  <EntityType Name="Logs">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CreateTime" Type="datetime" Nullable="false" />
-    <Property Name="Level" Type="tinyint" Nullable="false" />
-    <Property Name="Info" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="RemoteAddress" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="User_ID" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="Articles">
     <Key>
@@ -339,7 +329,6 @@
     <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="CreateTime" Type="datetime" Nullable="false" />
     <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
-    <Property Name="Category_ID" Type="int" Nullable="false" />
     <Property Name="Problem_ID" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="ArticleRevisions">
@@ -349,16 +338,29 @@
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="CreateTime" Type="datetime" Nullable="false" />
+    <Property Name="Reason" Type="nvarchar" Nullable="false" MaxLength="40" />
     <Property Name="CreatedBy_ID" Type="int" Nullable="false" />
     <Property Name="Article_ID" Type="int" Nullable="false" />
     <Property Name="ArticleLatestRevision_ArticleRevision_ID" Type="int" Nullable="true" />
   </EntityType>
-  <EntityType Name="Categories">
+  <EntityType Name="Tags">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="20" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="40" />
+  </EntityType>
+  <EntityType Name="Messages">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CreateTime" Type="datetime" Nullable="false" />
+    <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DeletedByFrom" Type="bit" Nullable="false" />
+    <Property Name="DeletedByTo" Type="bit" Nullable="false" />
+    <Property Name="From_ID" Type="int" Nullable="false" />
+    <Property Name="To_ID" Type="int" Nullable="true" />
   </EntityType>
   <EntityType Name="TestCases_SpecialJudgedTestCase">
     <Key>
@@ -389,7 +391,7 @@
     <Property Name="ID" Type="int" Nullable="false" />
     <Property Name="Judger_ID" Type="int" Nullable="false" />
   </EntityType>
-  <EntityType Name="TestCases_TranditionalTestCase">
+  <EntityType Name="TestCases_TraditionalTestCase">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
@@ -403,10 +405,10 @@
   <EntityType Name="UserAttendContest">
     <Key>
       <PropertyRef Name="User_ID" />
-      <PropertyRef Name="UserAttendContest_User_ID" />
+      <PropertyRef Name="Contest_ID" />
     </Key>
     <Property Name="User_ID" Type="int" Nullable="false" />
-    <Property Name="UserAttendContest_User_ID" Type="int" Nullable="false" />
+    <Property Name="Contest_ID" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="ContestProblem">
     <Key>
@@ -415,6 +417,22 @@
     </Key>
     <Property Name="Contest_ID" Type="int" Nullable="false" />
     <Property Name="Problem_ID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ArticleTag">
+    <Key>
+      <PropertyRef Name="Article_ID" />
+      <PropertyRef Name="Tag_ID" />
+    </Key>
+    <Property Name="Article_ID" Type="int" Nullable="false" />
+    <Property Name="Tag_ID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ProblemTag">
+    <Key>
+      <PropertyRef Name="Problem_ID" />
+      <PropertyRef Name="Tag_ID" />
+    </Key>
+    <Property Name="Problem_ID" Type="int" Nullable="false" />
+    <Property Name="Tag_ID" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="RecordProblem">
     <End Role="Record" Type="Moo.Core.DB.Store.Records" Multiplicity="*" />
@@ -540,30 +558,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="MailFrom">
-    <End Role="Mail" Type="Moo.Core.DB.Store.Mails" Multiplicity="*" />
-    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="1" />
-    <ReferentialConstraint>
-      <Principal Role="User">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="Mail">
-        <PropertyRef Name="From_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="MailTo">
-    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="1" />
-    <End Role="Mail" Type="Moo.Core.DB.Store.Mails" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="User">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="Mail">
-        <PropertyRef Name="To_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="LastestRevisionOfProblem">
     <End Role="Problem" Type="Moo.Core.DB.Store.Problems" Multiplicity="0..1" />
     <End Role="ProblemRevision" Type="Moo.Core.DB.Store.ProblemRevisions" Multiplicity="*" />
@@ -633,18 +627,6 @@
       </Principal>
       <Dependent Role="TestCase">
         <PropertyRef Name="CreatedBy_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="LogUser">
-    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="0..1" />
-    <End Role="Log" Type="Moo.Core.DB.Store.Logs" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="User">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="Log">
-        <PropertyRef Name="User_ID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -722,20 +704,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="ArticleCategory">
-    <End Role="Article" Type="Moo.Core.DB.Store.Articles" Multiplicity="*" />
-    <End Role="Category" Type="Moo.Core.DB.Store.Categories" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <ReferentialConstraint>
-      <Principal Role="Category">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="Article">
-        <PropertyRef Name="Category_ID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="ArticleProblem">
     <End Role="Article" Type="Moo.Core.DB.Store.Articles" Multiplicity="*" />
     <End Role="Problem" Type="Moo.Core.DB.Store.Problems" Multiplicity="0..1">
@@ -747,6 +715,30 @@
       </Principal>
       <Dependent Role="Article">
         <PropertyRef Name="Problem_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MessageFrom">
+    <End Role="Message" Type="Moo.Core.DB.Store.Messages" Multiplicity="*" />
+    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Message">
+        <PropertyRef Name="From_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="MessageTo">
+    <End Role="Message" Type="Moo.Core.DB.Store.Messages" Multiplicity="*" />
+    <End Role="User" Type="Moo.Core.DB.Store.Users" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Message">
+        <PropertyRef Name="To_ID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -770,7 +762,7 @@
         <PropertyRef Name="ID" />
       </Principal>
       <Dependent Role="UserAttendContest">
-        <PropertyRef Name="UserAttendContest_User_ID" />
+        <PropertyRef Name="Contest_ID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -798,8 +790,58 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_ArticleTag_Article">
+    <End Role="Article" Type="Moo.Core.DB.Store.Articles" Multiplicity="1" />
+    <End Role="ArticleTag" Type="Moo.Core.DB.Store.ArticleTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Article">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ArticleTag">
+        <PropertyRef Name="Article_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ArticleTag_Tag">
+    <End Role="ArticleTag" Type="Moo.Core.DB.Store.ArticleTag" Multiplicity="*" />
+    <End Role="Tag" Type="Moo.Core.DB.Store.Tags" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ArticleTag">
+        <PropertyRef Name="Tag_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProblemTag_Problem">
+    <End Role="Problem" Type="Moo.Core.DB.Store.Problems" Multiplicity="1" />
+    <End Role="ProblemTag" Type="Moo.Core.DB.Store.ProblemTag" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Problem">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ProblemTag">
+        <PropertyRef Name="Problem_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProblemTag_Tag">
+    <End Role="ProblemTag" Type="Moo.Core.DB.Store.ProblemTag" Multiplicity="*" />
+    <End Role="Tag" Type="Moo.Core.DB.Store.Tags" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Tag">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ProblemTag">
+        <PropertyRef Name="Tag_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_SpecialJudgedTestCase_inherits_TestCase">
-    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1" />
+    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="SpecialJudgedTestCase" Type="Moo.Core.DB.Store.TestCases_SpecialJudgedTestCase" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="TestCase">
@@ -811,7 +853,9 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_InteractiveTestCase_inherits_TestCase">
-    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1" />
+    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="InteractiveTestCase" Type="Moo.Core.DB.Store.TestCases_InteractiveTestCase" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="TestCase">
@@ -823,7 +867,9 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_AnswerOnlyTestCase_inherits_TestCase">
-    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1" />
+    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="AnswerOnlyTestCase" Type="Moo.Core.DB.Store.TestCases_AnswerOnlyTestCase" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="TestCase">
@@ -834,14 +880,16 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_TranditionalTestCase_inherits_TestCase">
-    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1" />
-    <End Role="TranditionalTestCase" Type="Moo.Core.DB.Store.TestCases_TranditionalTestCase" Multiplicity="0..1" />
+  <Association Name="FK_TraditionalTestCase_inherits_TestCase">
+    <End Role="TestCase" Type="Moo.Core.DB.Store.TestCases" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="TraditionalTestCase" Type="Moo.Core.DB.Store.TestCases_TraditionalTestCase" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="TestCase">
         <PropertyRef Name="ID" />
       </Principal>
-      <Dependent Role="TranditionalTestCase">
+      <Dependent Role="TraditionalTestCase">
         <PropertyRef Name="ID" />
       </Dependent>
     </ReferentialConstraint>
@@ -896,15 +944,6 @@
             <End Role="Record" EntitySet="Records" />
             <End Role="JudgeInfo" EntitySet="JudgeInfos" />
           </AssociationSet>
-          <EntitySet Name="Mails" EntityType="Moo.Core.DB.Mail" />
-          <AssociationSet Name="MailFrom" Association="Moo.Core.DB.MailFrom">
-            <End Role="Mail" EntitySet="Mails" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <AssociationSet Name="MailTo" Association="Moo.Core.DB.MailTo">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Mail" EntitySet="Mails" />
-          </AssociationSet>
           <AssociationSet Name="LastestRevisionOfProblem" Association="Moo.Core.DB.LastestRevisionOfProblem">
             <End Role="Problem" EntitySet="Problems" />
             <End Role="ProblemRevision" EntitySet="ProblemRevisions" />
@@ -939,11 +978,6 @@
             <End Role="User" EntitySet="Users" />
             <End Role="TestCase" EntitySet="TestCases" />
           </AssociationSet>
-          <EntitySet Name="Logs" EntityType="Moo.Core.DB.Log" />
-          <AssociationSet Name="LogUser" Association="Moo.Core.DB.LogUser">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Log" EntitySet="Logs" />
-          </AssociationSet>
           <AssociationSet Name="UploadedFileUser" Association="Moo.Core.DB.UploadedFileUser">
             <End Role="UploadedFile" EntitySet="UploadedFiles" />
             <End Role="User" EntitySet="Users" />
@@ -954,7 +988,6 @@
           </AssociationSet>
           <EntitySet Name="Articles" EntityType="Moo.Core.DB.Article" />
           <EntitySet Name="ArticleRevisions" EntityType="Moo.Core.DB.ArticleRevision" />
-          <EntitySet Name="Categories" EntityType="Moo.Core.DB.Category" />
           <AssociationSet Name="UserCreateArticle" Association="Moo.Core.DB.UserCreateArticle">
             <End Role="User" EntitySet="Users" />
             <End Role="Article" EntitySet="Articles" />
@@ -971,13 +1004,27 @@
             <End Role="Article" EntitySet="Articles" />
             <End Role="ArticleRevision" EntitySet="ArticleRevisions" />
           </AssociationSet>
-          <AssociationSet Name="ArticleCategory" Association="Moo.Core.DB.ArticleCategory">
-            <End Role="Article" EntitySet="Articles" />
-            <End Role="Category" EntitySet="Categories" />
-          </AssociationSet>
           <AssociationSet Name="ArticleProblem" Association="Moo.Core.DB.ArticleProblem">
             <End Role="Article" EntitySet="Articles" />
             <End Role="Problem" EntitySet="Problems" />
+          </AssociationSet>
+          <EntitySet Name="Tags" EntityType="Moo.Core.DB.Tag" />
+          <AssociationSet Name="ArticleTag" Association="Moo.Core.DB.ArticleTag">
+            <End Role="Article" EntitySet="Articles" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="ProblemTag" Association="Moo.Core.DB.ProblemTag">
+            <End Role="Problem" EntitySet="Problems" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <EntitySet Name="Messages" EntityType="Moo.Core.DB.Message" />
+          <AssociationSet Name="MessageFrom" Association="Moo.Core.DB.MessageFrom">
+            <End Role="Message" EntitySet="Messages" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="MessageTo" Association="Moo.Core.DB.MessageTo">
+            <End Role="Message" EntitySet="Messages" />
+            <End Role="User" EntitySet="Users" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="User">
@@ -993,7 +1040,8 @@
           <Property Type="String" Name="Description" Nullable="false" />
           <Property Type="Int32" Name="Score" Nullable="false" />
           <NavigationProperty Name="Record" Relationship="Moo.Core.DB.UserRecord" FromRole="User" ToRole="Record" />
-          <Property Type="String" Name="PreferredLanguage" Nullable="false" MaxLength="12" />
+          <NavigationProperty Name="Contest" Relationship="Moo.Core.DB.UserAttendContest" FromRole="User" ToRole="Contest" />
+          <Property Type="DateTime" Name="CreateTime" Nullable="false" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -1001,7 +1049,6 @@
           </Key>
           <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="12" Unicode="false" />
-          <Property Type="String" Name="DisplayName" Nullable="false" MaxLength="12" />
         </EntityType>
         <EntityType Name="Problem">
           <Key>
@@ -1012,7 +1059,7 @@
           <Property Type="String" Name="Type" Nullable="false" MaxLength="20" Unicode="false" />
           <NavigationProperty Name="LatestRevision" Relationship="Moo.Core.DB.LastestRevisionOfProblem" FromRole="Problem" ToRole="ProblemRevision" />
           <NavigationProperty Name="Contest" Relationship="Moo.Core.DB.ContestProblem" FromRole="Problem" ToRole="Contest" />
-          <Property Type="Int32" Name="SubmissionCount" Nullable="false" />
+          <Property Type="Int32" Name="SubmissionTimes" Nullable="false" />
           <Property Type="Int64" Name="ScoreSum" Nullable="false" />
           <Property Type="Int32" Name="SubmissionUser" Nullable="false" />
           <Property Type="Int32" Name="MaximumScore" Nullable="true" />
@@ -1026,6 +1073,8 @@
           <Property Type="Boolean" Name="TestCaseLocked" Nullable="false" />
           <Property Type="Boolean" Name="EnableTesting" Nullable="false" />
           <Property Type="Boolean" Name="TestCaseHidden" Nullable="false" />
+          <Property Type="Boolean" Name="JudgeInfoHidden" Nullable="false" />
+          <NavigationProperty Name="Tag" Relationship="Moo.Core.DB.ProblemTag" FromRole="Problem" ToRole="Tag" />
         </EntityType>
         <EntityType Name="Record">
           <Key>
@@ -1053,6 +1102,7 @@
           <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.TestDataProblem" FromRole="TestData" ToRole="Problem" />
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserTestCase" FromRole="TestCase" ToRole="User" />
+          <Property Type="DateTime" Name="CreateTime" Nullable="false" />
         </EntityType>
         <Association Name="TestDataProblem">
           <End Type="Moo.Core.DB.TestCase" Role="TestData" Multiplicity="*">
@@ -1127,7 +1177,7 @@
           </End>
           <End Type="Moo.Core.DB.Post" Role="Post" Multiplicity="*" />
         </Association>
-        <EntityType Name="TranditionalTestCase" BaseType="Moo.Core.DB.TestCase">
+        <EntityType Name="TraditionalTestCase" BaseType="Moo.Core.DB.TestCase">
           <Property Type="Binary" Name="Input" Nullable="false" />
           <Property Type="Binary" Name="Answer" Nullable="false" />
           <Property Type="Int32" Name="TimeLimit" Nullable="false" />
@@ -1148,29 +1198,6 @@
             <OnDelete Action="Cascade" />
           </End>
           <End Type="Moo.Core.DB.JudgeInfo" Role="JudgeInfo" Multiplicity="0..1" />
-        </Association>
-        <EntityType Name="Mail">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
-          <Property Type="String" Name="Content" Nullable="false" />
-          <Property Type="Boolean" Name="IsRead" Nullable="false" />
-          <NavigationProperty Name="From" Relationship="Moo.Core.DB.MailFrom" FromRole="Mail" ToRole="User" />
-          <NavigationProperty Name="To" Relationship="Moo.Core.DB.MailTo" FromRole="Mail" ToRole="User" />
-          <Property Type="DateTime" Name="CreateTime" Nullable="false" />
-        </EntityType>
-        <Association Name="MailFrom">
-          <End Type="Moo.Core.DB.Mail" Role="Mail" Multiplicity="*">
-          </End>
-          <End Type="Moo.Core.DB.User" Role="User" Multiplicity="1">
-          </End>
-        </Association>
-        <Association Name="MailTo">
-          <End Type="Moo.Core.DB.User" Role="User" Multiplicity="1">
-          </End>
-          <End Type="Moo.Core.DB.Mail" Role="Mail" Multiplicity="*" />
         </Association>
         <Association Name="LastestRevisionOfProblem">
           <End Type="Moo.Core.DB.Problem" Role="Problem" Multiplicity="0..1" />
@@ -1204,6 +1231,9 @@
           <Property Type="Boolean" Name="HideTestCaseOnEnd" Nullable="false" />
           <Property Type="Boolean" Name="LockArticleOnStart" Nullable="false" />
           <Property Type="Boolean" Name="LockArticleOnEnd" Nullable="false" />
+          <Property Type="Boolean" Name="HideJudgeInfoOnStart" Nullable="false" />
+          <Property Type="Boolean" Name="HideJudgeInfoOnEnd" Nullable="false" />
+          <Property Type="Boolean" Name="ViewResultAnyTime" Nullable="false" />
         </EntityType>
         <Association Name="UserAttendContest">
           <End Type="Moo.Core.DB.User" Role="User" Multiplicity="*" />
@@ -1223,7 +1253,7 @@
           </Key>
           <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
-          <Property Type="String" Name="Path" Nullable="false" />
+          <Property Type="String" Name="FileName" Nullable="false" />
           <Property Type="String" Name="Description" Nullable="false" />
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UploadedFileUser" FromRole="UploadedFile" ToRole="User" />
         </EntityType>
@@ -1260,21 +1290,6 @@
           <End Type="Moo.Core.DB.User" Role="User" Multiplicity="1" />
           <End Type="Moo.Core.DB.TestCase" Role="TestCase" Multiplicity="*" />
         </Association>
-        <EntityType Name="Log">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="DateTime" Name="CreateTime" Nullable="false" />
-          <Property Type="Byte" Name="Level" Nullable="false" />
-          <Property Type="String" Name="Info" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Moo.Core.DB.LogUser" FromRole="Log" ToRole="User" />
-          <Property Type="String" Name="RemoteAddress" Nullable="false" />
-        </EntityType>
-        <Association Name="LogUser">
-          <End Type="Moo.Core.DB.User" Role="User" Multiplicity="0..1" />
-          <End Type="Moo.Core.DB.Log" Role="Log" Multiplicity="*" />
-        </Association>
         <Association Name="UploadedFileUser">
           <End Type="Moo.Core.DB.UploadedFile" Role="UploadedFile" Multiplicity="*" />
           <End Type="Moo.Core.DB.User" Role="User" Multiplicity="1" />
@@ -1291,9 +1306,9 @@
           <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserCreateArticle" FromRole="Article" ToRole="User" />
           <NavigationProperty Name="LatestRevision" Relationship="Moo.Core.DB.ArticleLatestRevision" FromRole="Article" ToRole="ArticleRevision" />
-          <NavigationProperty Name="Category" Relationship="Moo.Core.DB.ArticleCategory" FromRole="Article" ToRole="Category" />
           <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.ArticleProblem" FromRole="Article" ToRole="Problem" />
           <Property Type="DateTime" Name="CreateTime" Nullable="false" />
+          <NavigationProperty Name="Tag" Relationship="Moo.Core.DB.ArticleTag" FromRole="Article" ToRole="Tag" />
         </EntityType>
         <EntityType Name="ArticleRevision">
           <Key>
@@ -1304,13 +1319,7 @@
           <NavigationProperty Name="CreatedBy" Relationship="Moo.Core.DB.UserCreateArticleRevision" FromRole="ArticleRevision" ToRole="User" />
           <NavigationProperty Name="Article" Relationship="Moo.Core.DB.ArticleArticleRevision" FromRole="ArticleRevision" ToRole="Article" />
           <Property Type="DateTime" Name="CreateTime" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Category">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="Reason" Nullable="false" MaxLength="40" />
         </EntityType>
         <Association Name="UserCreateArticle">
           <End Type="Moo.Core.DB.User" Role="User" Multiplicity="1" />
@@ -1330,17 +1339,48 @@
           <End Type="Moo.Core.DB.Article" Role="Article" Multiplicity="0..1" />
           <End Type="Moo.Core.DB.ArticleRevision" Role="ArticleRevision" Multiplicity="0..1" />
         </Association>
-        <Association Name="ArticleCategory">
-          <End Type="Moo.Core.DB.Article" Role="Article" Multiplicity="*" />
-          <End Type="Moo.Core.DB.Category" Role="Category" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-        </Association>
         <Association Name="ArticleProblem">
           <End Type="Moo.Core.DB.Article" Role="Article" Multiplicity="*" />
           <End Type="Moo.Core.DB.Problem" Role="Problem" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
+        </Association>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" a:StoreGeneratedPattern="Identity" xmlns:a="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="40" />
+          <NavigationProperty Name="Problem" Relationship="Moo.Core.DB.ProblemTag" FromRole="Tag" ToRole="Problem" />
+          <NavigationProperty Name="Article" Relationship="Moo.Core.DB.ArticleTag" FromRole="Tag" ToRole="Article" />
+        </EntityType>
+        <Association Name="ArticleTag">
+          <End Type="Moo.Core.DB.Article" Role="Article" Multiplicity="*" />
+          <End Type="Moo.Core.DB.Tag" Role="Tag" Multiplicity="*" />
+        </Association>
+        <Association Name="ProblemTag">
+          <End Type="Moo.Core.DB.Problem" Role="Problem" Multiplicity="*" />
+          <End Type="Moo.Core.DB.Tag" Role="Tag" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" a:StoreGeneratedPattern="Identity" xmlns:a="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <NavigationProperty Name="From" Relationship="Moo.Core.DB.MessageFrom" FromRole="Message" ToRole="User" />
+          <NavigationProperty Name="To" Relationship="Moo.Core.DB.MessageTo" FromRole="Message" ToRole="User" />
+          <Property Type="DateTime" Name="CreateTime" Nullable="false" />
+          <Property Type="String" Name="Content" Nullable="false" />
+          <Property Type="Boolean" Name="DeletedByFrom" Nullable="false" />
+          <Property Type="Boolean" Name="DeletedByTo" Nullable="false" />
+        </EntityType>
+        <Association Name="MessageFrom">
+          <End Type="Moo.Core.DB.Message" Role="Message" Multiplicity="*" />
+          <End Type="Moo.Core.DB.User" Role="User" Multiplicity="1" />
+        </Association>
+        <Association Name="MessageTo">
+          <End Type="Moo.Core.DB.Message" Role="Message" Multiplicity="*" />
+          <End Type="Moo.Core.DB.User" Role="User" Multiplicity="0..1" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -1358,7 +1398,7 @@
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Score" ColumnName="Score" />
-          <ScalarProperty Name="PreferredLanguage" ColumnName="PreferredLanguage" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1367,7 +1407,6 @@
         <MappingFragment StoreEntitySet="Roles">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1377,7 +1416,7 @@
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Type" ColumnName="Type" />
-          <ScalarProperty Name="SubmissionCount" ColumnName="SubmissionCount" />
+          <ScalarProperty Name="SubmissionTimes" ColumnName="SubmissionTimes" />
           <ScalarProperty Name="ScoreSum" ColumnName="ScoreSum" />
           <ScalarProperty Name="SubmissionUser" ColumnName="SubmissionUser" />
           <ScalarProperty Name="MaximumScore" ColumnName="MaximumScore" />
@@ -1390,6 +1429,7 @@
           <ScalarProperty Name="TestCaseLocked" ColumnName="TestCaseLocked" />
           <ScalarProperty Name="EnableTesting" ColumnName="EnableTesting" />
           <ScalarProperty Name="TestCaseHidden" ColumnName="TestCaseHidden" />
+          <ScalarProperty Name="JudgeInfoHidden" ColumnName="JudgeInfoHidden" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1408,6 +1448,7 @@
       <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.TestCase)">
         <MappingFragment StoreEntitySet="TestCases">
           <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
         </MappingFragment>
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.SpecialJudgedTestCase)">
@@ -1433,8 +1474,8 @@
           <ScalarProperty Name="TestData" ColumnName="TestData" />
         </MappingFragment>
       </EntityTypeMapping>
-      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.TranditionalTestCase)">
-        <MappingFragment StoreEntitySet="TestCases_TranditionalTestCase">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.TraditionalTestCase)">
+        <MappingFragment StoreEntitySet="TestCases_TraditionalTestCase">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Input" ColumnName="Input" />
           <ScalarProperty Name="Answer" ColumnName="Answer" />
@@ -1483,17 +1524,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Mails">
-      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Mail)">
-        <MappingFragment StoreEntitySet="Mails">
-          <ScalarProperty Name="ID" ColumnName="ID" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Content" ColumnName="Content" />
-          <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Contests">
       <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Contest)">
         <MappingFragment StoreEntitySet="Contests">
@@ -1519,6 +1549,9 @@
           <ScalarProperty Name="HideTestCaseOnEnd" ColumnName="HideTestCaseOnEnd" />
           <ScalarProperty Name="LockArticleOnStart" ColumnName="LockArticleOnStart" />
           <ScalarProperty Name="LockArticleOnEnd" ColumnName="LockArticleOnEnd" />
+          <ScalarProperty Name="HideJudgeInfoOnStart" ColumnName="HideJudgeInfoOnStart" />
+          <ScalarProperty Name="HideJudgeInfoOnEnd" ColumnName="HideJudgeInfoOnEnd" />
+          <ScalarProperty Name="ViewResultAnyTime" ColumnName="ViewResultAnyTime" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1527,19 +1560,8 @@
         <MappingFragment StoreEntitySet="UploadedFiles">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Path" ColumnName="Path" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Logs">
-      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Log)">
-        <MappingFragment StoreEntitySet="Logs">
-          <ScalarProperty Name="ID" ColumnName="ID" />
-          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-          <ScalarProperty Name="Level" ColumnName="Level" />
-          <ScalarProperty Name="Info" ColumnName="Info" />
-          <ScalarProperty Name="RemoteAddress" ColumnName="RemoteAddress" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1558,14 +1580,26 @@
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Content" ColumnName="Content" />
           <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Categories">
-      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Category)">
-        <MappingFragment StoreEntitySet="Categories">
+    <EntitySetMapping Name="Tags">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Tag)">
+        <MappingFragment StoreEntitySet="Tags">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Messages">
+      <EntityTypeMapping TypeName="IsTypeOf(Moo.Core.DB.Message)">
+        <MappingFragment StoreEntitySet="Messages">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+          <ScalarProperty Name="Content" ColumnName="Content" />
+          <ScalarProperty Name="DeletedByFrom" ColumnName="DeletedByFrom" />
+          <ScalarProperty Name="DeletedByTo" ColumnName="DeletedByTo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1642,22 +1676,6 @@
         <ScalarProperty Name="ID" ColumnName="ID" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="MailFrom" TypeName="Moo.Core.DB.MailFrom" StoreEntitySet="Mails">
-      <EndProperty Name="User">
-        <ScalarProperty Name="ID" ColumnName="From_ID" />
-      </EndProperty>
-      <EndProperty Name="Mail">
-        <ScalarProperty Name="ID" ColumnName="ID" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="MailTo" TypeName="Moo.Core.DB.MailTo" StoreEntitySet="Mails">
-      <EndProperty Name="User">
-        <ScalarProperty Name="ID" ColumnName="To_ID" />
-      </EndProperty>
-      <EndProperty Name="Mail">
-        <ScalarProperty Name="ID" ColumnName="ID" />
-      </EndProperty>
-    </AssociationSetMapping>
     <AssociationSetMapping Name="LastestRevisionOfProblem" TypeName="Moo.Core.DB.LastestRevisionOfProblem" StoreEntitySet="ProblemRevisions">
       <EndProperty Name="Problem">
         <ScalarProperty Name="ID" ColumnName="LastestRevisionOfProblem_ProblemRevision_ID" />
@@ -1672,7 +1690,7 @@
         <ScalarProperty Name="ID" ColumnName="User_ID" />
       </EndProperty>
       <EndProperty Name="Contest">
-        <ScalarProperty Name="ID" ColumnName="UserAttendContest_User_ID" />
+        <ScalarProperty Name="ID" ColumnName="Contest_ID" />
       </EndProperty>
     </AssociationSetMapping>
     <AssociationSetMapping Name="UserRecord" TypeName="Moo.Core.DB.UserRecord" StoreEntitySet="Records">
@@ -1723,15 +1741,6 @@
         <ScalarProperty Name="ID" ColumnName="ID" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="LogUser" TypeName="Moo.Core.DB.LogUser" StoreEntitySet="Logs">
-      <EndProperty Name="User">
-        <ScalarProperty Name="ID" ColumnName="User_ID" />
-      </EndProperty>
-      <EndProperty Name="Log">
-        <ScalarProperty Name="ID" ColumnName="ID" />
-      </EndProperty>
-      <Condition ColumnName="User_ID" IsNull="false" />
-    </AssociationSetMapping>
     <AssociationSetMapping Name="UploadedFileUser" TypeName="Moo.Core.DB.UploadedFileUser" StoreEntitySet="UploadedFiles">
       <EndProperty Name="User">
         <ScalarProperty Name="ID" ColumnName="CreatedBy_ID" />
@@ -1781,14 +1790,6 @@
       </EndProperty>
       <Condition ColumnName="ArticleLatestRevision_ArticleRevision_ID" IsNull="false" />
     </AssociationSetMapping>
-    <AssociationSetMapping Name="ArticleCategory" TypeName="Moo.Core.DB.ArticleCategory" StoreEntitySet="Articles">
-      <EndProperty Name="Category">
-        <ScalarProperty Name="ID" ColumnName="Category_ID" />
-      </EndProperty>
-      <EndProperty Name="Article">
-        <ScalarProperty Name="ID" ColumnName="ID" />
-      </EndProperty>
-    </AssociationSetMapping>
     <AssociationSetMapping Name="ArticleProblem" TypeName="Moo.Core.DB.ArticleProblem" StoreEntitySet="Articles">
       <EndProperty Name="Problem">
         <ScalarProperty Name="ID" ColumnName="Problem_ID" />
@@ -1797,6 +1798,39 @@
         <ScalarProperty Name="ID" ColumnName="ID" />
       </EndProperty>
       <Condition ColumnName="Problem_ID" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ArticleTag" TypeName="Moo.Core.DB.ArticleTag" StoreEntitySet="ArticleTag">
+      <EndProperty Name="Article">
+        <ScalarProperty Name="ID" ColumnName="Article_ID" />
+      </EndProperty>
+      <EndProperty Name="Tag">
+        <ScalarProperty Name="ID" ColumnName="Tag_ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="ProblemTag" TypeName="Moo.Core.DB.ProblemTag" StoreEntitySet="ProblemTag">
+      <EndProperty Name="Problem">
+        <ScalarProperty Name="ID" ColumnName="Problem_ID" />
+      </EndProperty>
+      <EndProperty Name="Tag">
+        <ScalarProperty Name="ID" ColumnName="Tag_ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MessageFrom" TypeName="Moo.Core.DB.MessageFrom" StoreEntitySet="Messages">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="From_ID" />
+      </EndProperty>
+      <EndProperty Name="Message">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="MessageTo" TypeName="Moo.Core.DB.MessageTo" StoreEntitySet="Messages">
+      <EndProperty Name="User">
+        <ScalarProperty Name="ID" ColumnName="To_ID" />
+      </EndProperty>
+      <EndProperty Name="Message">
+        <ScalarProperty Name="ID" ColumnName="ID" />
+      </EndProperty>
+      <Condition ColumnName="To_ID" IsNull="false" />
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
@@ -1817,11 +1851,11 @@
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram Name="MooDB" ZoomLevel="97">
-        <EntityTypeShape EntityType="Moo.Core.DB.User" Width="1.75" PointX="11.75" PointY="11.5" Height="2.9251310221354174" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Role" Width="1.5" PointX="14.25" PointY="15.25" Height="1.587993164062496" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Problem" Width="1.875" PointX="9.125" PointY="9.625" Height="4.6443082682291674" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Record" Width="1.5" PointX="3.875" PointY="10.75" Height="2.5430916341145817" IsExpanded="true" />
+      <Diagram Name="MooDB" ZoomLevel="100">
+        <EntityTypeShape EntityType="Moo.Core.DB.User" Width="1.75" PointX="8.375" PointY="5.875" Height="2.9251310221354174" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Role" Width="1.5" PointX="10.875" PointY="9.625" Height="1.587993164062496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Problem" Width="1.875" PointX="5.75" PointY="4" Height="4.6443082682291674" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Record" Width="1.5" PointX="0.5" PointY="5.125" Height="2.5430916341145817" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.RecordProblem">
           <ConnectorPoint PointX="5.375" PointY="11.613535970052084" />
           <ConnectorPoint PointX="7.166666666666667" PointY="11.613535970052084" />
@@ -1830,7 +1864,7 @@
           <ConnectorPoint PointX="8.3020833333333339" PointY="11.613535970052084" />
           <ConnectorPoint PointX="9.125" PointY="11.613535970052084" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.TestCase" Width="1.5" PointX="14.25" PointY="12.25" Height="1.587993164062496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.TestCase" Width="1.5" PointX="10.875" PointY="6.625" Height="1.587993164062496" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.TestDataProblem">
           <ConnectorPoint PointX="15" PointY="12.25" />
           <ConnectorPoint PointX="15" PointY="11.25" />
@@ -1840,7 +1874,7 @@
           <ConnectorPoint PointX="11.375" PointY="11.947154134114584" />
           <ConnectorPoint PointX="11" PointY="11.947154134114584" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.ProblemRevision" Width="1.5" PointX="17.25" PointY="11" Height="2.1610522460937496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.ProblemRevision" Width="1.5" PointX="3.875" PointY="3.75" Height="2.1610522460937496" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.ProblemProblemRevision">
           <ConnectorPoint PointX="11" PointY="11.0625" />
           <ConnectorPoint PointX="13.322916666666666" PointY="11.0625" />
@@ -1862,8 +1896,8 @@
           <ConnectorPoint PointX="13.177085833333335" PointY="16.043996582031248" />
           <ConnectorPoint PointX="14.25" PointY="16.043996582031248" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Post" Width="1.5" PointX="11.75" PointY="7.875" Height="2.1610522460937496" IsExpanded="true" />
-        <EntityTypeShape EntityType="Moo.Core.DB.PostItem" Width="1.5" PointX="6.5" PointY="12" Height="1.9700325520833317" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Post" Width="1.5" PointX="8.375" PointY="2.25" Height="2.1610522460937496" IsExpanded="true" />
+        <EntityTypeShape EntityType="Moo.Core.DB.PostItem" Width="1.5" PointX="3.125" PointY="6.375" Height="1.9700325520833317" IsExpanded="true" />
         <AssociationConnector Association="Moo.Core.DB.UserCreatePostItem">
           <ConnectorPoint PointX="7.25" PointY="13.970032552083332" />
           <ConnectorPoint PointX="7.25" PointY="14.393878522135417" />
@@ -1884,33 +1918,18 @@
           <ConnectorPoint PointX="11" PointY="9.8305261230468748" />
           <ConnectorPoint PointX="11.75" PointY="9.8305261230468748" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.TranditionalTestCase" Width="1.5" PointX="23.625" PointY="14.625" Height="1.9700325520833246" />
-        <InheritanceConnector EntityType="Moo.Core.DB.TranditionalTestCase" ManuallyRouted="false">
+        <EntityTypeShape EntityType="Moo.Core.DB.TraditionalTestCase" Width="1.5" PointX="20.25" PointY="9" Height="1.9700325520833246" />
+        <InheritanceConnector EntityType="Moo.Core.DB.TraditionalTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
           <ConnectorPoint PointX="24.375" PointY="14.25" />
           <ConnectorPoint PointX="24.375" PointY="14.625" />
         </InheritanceConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.JudgeInfo" Width="1.5" PointX="6.125" PointY="6.125" Height="1.7790128580729174" />
+        <EntityTypeShape EntityType="Moo.Core.DB.JudgeInfo" Width="1.5" PointX="0.5" PointY="3" Height="1.7790128580729174" />
         <AssociationConnector Association="Moo.Core.DB.RecordJudgeInfo">
           <ConnectorPoint PointX="4.625" PointY="10.75" />
           <ConnectorPoint PointX="4.625" PointY="7.0145064290364587" />
           <ConnectorPoint PointX="6.125" PointY="7.0145064290364587" />
-        </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Mail" Width="1.5" PointX="9.5" PointY="20.625" Height="2.3520719401041674" />
-        <AssociationConnector Association="Moo.Core.DB.MailFrom">
-          <ConnectorPoint PointX="11" PointY="22.055541250813803" />
-          <ConnectorPoint PointX="12.1562475" PointY="22.055541250813803" />
-          <ConnectorPoint PointX="12.1562475" PointY="14.425131022135417" />
-        </AssociationConnector>
-        <AssociationConnector Association="Moo.Core.DB.MailTo">
-          <ConnectorPoint PointX="13.0937525" PointY="14.425131022135417" />
-          <ConnectorPoint PointX="13.0937525" PointY="21.3090181254069" />
-          <ConnectorPoint PointX="12.942709583333334" PointY="21.3090181254069" />
-          <ConnectorPoint PointX="12.776042916666667" PointY="21.3090181254069" />
-          <ConnectorPoint PointX="12.239580833333333" PointY="21.3090181254069" />
-          <ConnectorPoint PointX="12.072914166666665" PointY="21.3090181254069" />
-          <ConnectorPoint PointX="11" PointY="21.3090181254069" />
         </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.LastestRevisionOfProblem">
           <ConnectorPoint PointX="11" PointY="11.40625" />
@@ -1922,7 +1941,7 @@
           <ConnectorPoint PointX="15.083333333333334" PointY="11.40625" />
           <ConnectorPoint PointX="17.25" PointY="11.40625" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Contest" Width="1.875" PointX="9.375" PointY="14.75" Height="5.59940673828125" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Contest" Width="1.875" PointX="6" PointY="9.125" Height="5.59940673828125" />
         <AssociationConnector Association="Moo.Core.DB.UserAttendContest">
           <ConnectorPoint PointX="11.75" PointY="14.425131022135417" />
           <ConnectorPoint PointX="11.25" PointY="14.75" />
@@ -1938,8 +1957,8 @@
           <ConnectorPoint PointX="10.1875" PointY="14.75" />
           <ConnectorPoint PointX="10.1875" PointY="14.269308268229167" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.UploadedFile" Width="1.5" PointX="9.5" PointY="23.5" Height="1.9700325520833388" />
-        <EntityTypeShape EntityType="Moo.Core.DB.SpecialJudgedTestCase" Width="1.5" PointX="21.375" PointY="14.625" Height="1.9700325520833388" />
+        <EntityTypeShape EntityType="Moo.Core.DB.UploadedFile" Width="1.5" PointX="6.125" PointY="17.875" Height="1.9700325520833388" />
+        <EntityTypeShape EntityType="Moo.Core.DB.SpecialJudgedTestCase" Width="1.5" PointX="18" PointY="9" Height="1.9700325520833388" />
         <InheritanceConnector EntityType="Moo.Core.DB.SpecialJudgedTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
@@ -1953,7 +1972,7 @@
           <ConnectorPoint PointX="17.541666666666668" PointY="24.485016276041669" />
           <ConnectorPoint PointX="11" PointY="24.485016276041669" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.InteractiveTestCase" Width="1.5" PointX="19.125" PointY="14.625" Height="1.7790128580729174" />
+        <EntityTypeShape EntityType="Moo.Core.DB.InteractiveTestCase" Width="1.5" PointX="15.75" PointY="9" Height="1.7790128580729174" />
         <InheritanceConnector EntityType="Moo.Core.DB.InteractiveTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
@@ -1967,7 +1986,7 @@
           <ConnectorPoint PointX="17.541666666666668" PointY="23.961255638020834" />
           <ConnectorPoint PointX="11" PointY="23.961255638020834" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.AnswerOnlyTestCase" Width="1.5" PointX="16.875" PointY="14.625" Height="1.3969734700520888" />
+        <EntityTypeShape EntityType="Moo.Core.DB.AnswerOnlyTestCase" Width="1.5" PointX="13.5" PointY="9" Height="1.3969734700520888" />
         <InheritanceConnector EntityType="Moo.Core.DB.AnswerOnlyTestCase" ManuallyRouted="false">
           <ConnectorPoint PointX="15" PointY="13.837993164062496" />
           <ConnectorPoint PointX="15" PointY="14.25" />
@@ -1983,12 +2002,6 @@
           <ConnectorPoint PointX="13.5" PointY="13.043996582031248" />
           <ConnectorPoint PointX="14.25" PointY="13.043996582031248" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Log" Width="1.5" PointX="14.25" PointY="8.25" Height="2.161052246093746" />
-        <AssociationConnector Association="Moo.Core.DB.LogUser">
-          <ConnectorPoint PointX="13.40625" PointY="11.5" />
-          <ConnectorPoint PointX="13.40625" PointY="10.254802246093748" />
-          <ConnectorPoint PointX="14.25" PointY="10.254802246093748" />
-        </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.UploadedFileUser">
           <ConnectorPoint PointX="11" PointY="23.699375319010414" />
           <ConnectorPoint PointX="12.85937625" PointY="23.699375319010414" />
@@ -1998,9 +2011,8 @@
           <ConnectorPoint PointX="11" PointY="13.170731201171876" />
           <ConnectorPoint PointX="11.75" PointY="13.170731201171876" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="Moo.Core.DB.Article" Width="1.5" PointX="6.875" PointY="8.875" Height="2.3520719401041656" />
-        <EntityTypeShape EntityType="Moo.Core.DB.ArticleRevision" Width="1.5" PointX="17.25" PointY="7.75" Height="1.9700325520833335" />
-        <EntityTypeShape EntityType="Moo.Core.DB.Category" Width="1.5" PointX="9.125" PointY="7.25" Height="1.3969734700520817" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Article" Width="1.5" PointX="4.375" PointY="0.625" Height="2.3520719401041656" />
+        <EntityTypeShape EntityType="Moo.Core.DB.ArticleRevision" Width="1.5" PointX="6.5" PointY="0.875" Height="1.9700325520833335" />
         <AssociationConnector Association="Moo.Core.DB.UserCreateArticle">
           <ConnectorPoint PointX="11.75" PointY="14.409504772135417" />
           <ConnectorPoint PointX="10.270833333333334" PointY="14.409504772135417" />
@@ -2041,17 +2053,18 @@
           <ConnectorPoint PointX="16.8125" PointY="9.1310849369303391" />
           <ConnectorPoint PointX="17.25" PointY="9.1310849369303391" />
         </AssociationConnector>
-        <AssociationConnector Association="Moo.Core.DB.ArticleCategory">
-          <ConnectorPoint PointX="8.08203325" PointY="8.875" />
-          <ConnectorPoint PointX="8.08203325" PointY="8.2951971435546881" />
-          <ConnectorPoint PointX="9.125" PointY="8.2951971435546881" />
-        </AssociationConnector>
         <AssociationConnector Association="Moo.Core.DB.ArticleProblem">
           <ConnectorPoint PointX="8.375" PointY="10.426035970052084" />
           <ConnectorPoint PointX="8.5416666666666661" PointY="10.426035970052084" />
           <ConnectorPoint PointX="8.7083333333333339" PointY="10.426035970052084" />
           <ConnectorPoint PointX="9.125" PointY="10.426035970052084" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="Moo.Core.DB.Tag" Width="1.5" PointX="2.375" PointY="0.5" />
+        <AssociationConnector Association="Moo.Core.DB.ArticleTag" />
+        <AssociationConnector Association="Moo.Core.DB.ProblemTag" />
+        <EntityTypeShape EntityType="Moo.Core.DB.Message" Width="1.5" PointX="12.125" PointY="3.25" />
+        <AssociationConnector Association="Moo.Core.DB.MessageFrom" />
+        <AssociationConnector Association="Moo.Core.DB.MessageTo" />
       </Diagram>
     </Diagrams>
   </Designer>

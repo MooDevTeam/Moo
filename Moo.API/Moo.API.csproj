@@ -14,7 +14,7 @@
     <RootNamespace>Moo.API</RootNamespace>
     <AssemblyName>Moo.API</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -25,6 +25,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,8 +34,10 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,9 +47,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WebSockets">
+      <HintPath>..\packages\Microsoft.WebSockets.0.2.3\lib\net45\Microsoft.WebSockets.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.DynamicData" />
@@ -81,6 +89,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authenticator.cs" />
+    <Compile Include="Binary.cs" />
+    <Compile Include="Blob.ashx.cs">
+      <DependentUpon>Blob.ashx</DependentUpon>
+    </Compile>
     <Compile Include="CustomMessageFormatter.cs" />
     <Compile Include="DataContracts\BriefArticleRevision.cs" />
     <Compile Include="DataContracts\BriefContest.cs" />
@@ -90,7 +102,6 @@
     <Compile Include="DataContracts\BriefProblemRevision.cs" />
     <Compile Include="DataContracts\BriefUser.cs" />
     <Compile Include="DataContracts\FullArticleRevision.cs" />
-    <Compile Include="DataContracts\FullCategory.cs" />
     <Compile Include="DataContracts\FullMail.cs" />
     <Compile Include="DataContracts\FullContest.cs" />
     <Compile Include="DataContracts\FullRole.cs" />
@@ -109,6 +120,9 @@
     <Compile Include="DataContracts\FullTestCase.cs" />
     <Compile Include="DataContracts\FullTranditionalTestCase.cs" />
     <Compile Include="DataContracts\FullUser.cs" />
+    <Compile Include="FileHandler.ashx.cs">
+      <DependentUpon>FileHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="JsonAPI.svc.cs">
       <DependentUpon>JsonAPI.svc</DependentUpon>
     </Compile>
@@ -116,7 +130,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MyStaticFileHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebSockets\RequestMessage.cs" />
+    <Compile Include="WebSockets\WebSocketsAPI.ashx.cs">
+      <DependentUpon>WebSocketsAPI.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="WebSockets\WebSocketsAPIHandler.cs" />
+    <Compile Include="WebSockets\ResponseMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Moo.Core\Moo.Core.csproj">
@@ -126,7 +147,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Captcha.ashx" />
+    <Content Include="Blob.ashx" />
+    <Content Include="packages.config" />
+    <Content Include="FileHandler.ashx" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
+    <Content Include="WebSockets\WebSocketsAPI.ashx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -139,12 +164,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52590</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost:52590/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

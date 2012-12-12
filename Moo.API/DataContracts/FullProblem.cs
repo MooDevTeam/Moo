@@ -21,7 +21,7 @@ namespace Moo.API.DataContracts
         public DateTime? CreateTime { get; set; }
 
         [DataMember]
-        public int? SubmissionCount { get; set; }
+        public int? SubmissionTimes { get; set; }
 
         [DataMember]
         public double? AverageScore { get; set; }
@@ -64,5 +64,8 @@ namespace Moo.API.DataContracts
 
         [DataMember]
         public bool? TestCaseHidden { get; set; }
+
+        [DataMember]
+        public bool? JudgeInfoHidden { get; set; }
     }
 }

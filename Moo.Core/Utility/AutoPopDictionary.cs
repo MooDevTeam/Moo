@@ -7,8 +7,8 @@ namespace Moo.Core.Utility
 {
     public class AutoPopDictionary<K, V>
     {
-        Dictionary<K, V> dictionary;
-        Queue<KeyValuePair<DateTime, K>> queue;
+        Dictionary<K, V> dictionary=new Dictionary<K,V>();
+        Queue<KeyValuePair<DateTime, K>> queue=new Queue<KeyValuePair<DateTime,K>>();
 
         public V this[K key]
         {
