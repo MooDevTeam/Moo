@@ -95,6 +95,17 @@ namespace Moo.Debug
             }));
             Auth = Auth.Substring(1, Auth.Length - 2);
             Console.WriteLine(Auth);
+            for (int i = 1000; i < 2000; i++)
+            {
+                string content = Encoding.Unicode.GetString(File.ReadAllBytes(@"D:\Prob\" + i.ToString()));
+                content=content.Replace('\'',' ');
+                Console.WriteLine(Post("Problems",tool.Serialize(new
+                {
+                    Name=i.ToString(),
+                    Type="Traditional",
+                    Content=content
+                })));
+            }
         }
     }
 }
