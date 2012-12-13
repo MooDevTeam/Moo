@@ -13,6 +13,7 @@ namespace Moo.Core.Daemon
     {
         public static FullIndexDaemon Instance = new FullIndexDaemon();
         static SqlConnection conn;
+        IndexInterface indexInterface;
         FullIndexDaemon()
         {
             using (var tconn = new SqlConnection(ConfigurationManager.ConnectionStrings["IndexerDB"].ConnectionString))
@@ -42,7 +43,9 @@ namespace Moo.Core.Daemon
         {
             try
             {
-                var indexInterface = new IndexInterface();
+                if(null==indexInterface)
+                    indexInterface= new IndexInterface();
+                bool reNew = true;
                 foreach (string type in indexInterface.Types)
                 {
                     using (var cmd = new SqlCommand(
@@ -54,19 +57,17 @@ namespace Moo.Core.Daemon
                         "    [content] nvarchar(max)\r\n" +
                         "    CONSTRAINT PK_ID PRIMARY KEY([ID])\r\n" +
                         ")\r\n" +
-                        "EXECUTE sp_fulltext_table @TableName,'create','ft_Indexer','PK_ID'\r\n" +
-                        "EXECUTE sp_fulltext_column @TableName,'content','add'\r\n" +
-                        "EXECUTE sp_fulltext_table @TableName,'activate'\r\n" +
-                        "EXECUTE sp_fulltext_table @TableName,'start_full'\r\n" +
+                        "CREATE FULLTEXT INDEX ON "+type+"([content]) KEY INDEX PK_ID ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n"+
                         "END\r\n", conn
                         ))
                     {
-                        cmd.Parameters.Add(new SqlParameter("TableName", type));
+                        cmd.Parameters.AddWithValue("TableName", type);
                         cmd.ExecuteNonQuery();
                     }
                     IndexItem item;
-                    while (null != (item = indexInterface.Next(type)))
+                    if (null != (item = indexInterface.Next(type)))
                     {
+                        reNew = false;
                         using (var cmd = new SqlCommand(
                             "IF NOT EXISTS(SELECT * FROM " + type + " WHERE [ID]=@ID)\r\n" +
                             "   INSERT INTO " + type + "([ID],[content]) VALUES(@ID,@content)\r\n" +
@@ -74,12 +75,14 @@ namespace Moo.Core.Daemon
                             "   UPDATE " + type + " SET [content]=@content WHERE [ID]=@ID\r\n"
                             , conn))
                         {
-                            cmd.Parameters.Add(new SqlParameter("ID", item.ID));
-                            cmd.Parameters.Add(new SqlParameter("content", item.Content));
+                            cmd.Parameters.AddWithValue("ID", item.ID);
+                            cmd.Parameters.AddWithValue("content", item.Content);
                             cmd.ExecuteNonQuery();
                         }
                     }
                 }
+                if (reNew)
+                    indexInterface = new IndexInterface();
             }
             catch (Exception )
             {

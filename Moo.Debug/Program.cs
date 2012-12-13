@@ -97,13 +97,16 @@ namespace Moo.Debug
             Console.WriteLine(Auth);
             for (int i = 1000; i < 2000; i++)
             {
-                string content = Encoding.Unicode.GetString(File.ReadAllBytes(@"D:\Prob\" + i.ToString()));
+                string content = Encoding.Unicode.GetString(File.ReadAllBytes(@"D:\Prob\" + i.ToString()+".txt"));
                 content=content.Replace('\'',' ');
-                Console.WriteLine(Post("Problems",tool.Serialize(new
+                Console.WriteLine(Post("Problems", tool.Serialize(new
                 {
-                    Name=i.ToString(),
-                    Type="Traditional",
-                    Content=content
+                    problem = new
+                        {
+                            Name = i.ToString(),
+                            Type = "Traditional",
+                            Content = content
+                        }
                 })));
             }
         }
