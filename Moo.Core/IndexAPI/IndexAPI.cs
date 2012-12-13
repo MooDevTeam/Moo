@@ -44,7 +44,7 @@ namespace Moo.Core.IndexAPI
         {
             using (MooDB db = new MooDB())
             {
-                Problem problem = db.Problems.Skip(passedProblemNumber++).FirstOrDefault();
+                Problem problem = db.Problems.OrderBy(p => p.ID).Skip(passedProblemNumber++).FirstOrDefault();
                 if (problem == null) return null;
 
                 List<string> keywords = problem.Tag.Select(t => t.Name).ToList();
