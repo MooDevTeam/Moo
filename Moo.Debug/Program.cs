@@ -11,6 +11,7 @@ namespace Moo.Debug
 {
     class Program
     {
+        static System.Web.Script.Serialization.JavaScriptSerializer tool = new System.Web.Script.Serialization.JavaScriptSerializer();
         static string ROOT = "http://localhost:52590/JsonAPI.svc/";
         static string Auth;
         static string ReadResponse(WebRequest request)
@@ -70,15 +71,30 @@ namespace Moo.Debug
             request.Headers.Add("Auth", Auth);
             return ReadResponse(request);
         }
+        class RSA
+        {
+            public string Modulus;
+            public string Exponent;
+        }
 
         static void Main(string[] args)
         {
-            var tool = new System.Web.Script.Serialization.JavaScriptSerializer();
-            Console.Write(tool.Serialize(new
+            string PublicKey = Get("PublicKey");
+            RSA rsa=tool.Deserialize<RSA>(PublicKey);
+            var rsacsp = new System.Security.Cryptography.RSACryptoServiceProvider();
+            rsacsp.ImportParameters(new System.Security.Cryptography.RSAParameters()
             {
-                ID = 123,
-                Name = "onetwogoo\"\\"
+                Modulus=Convert.FromBase64String(rsa.Modulus),
+                Exponent=Convert.FromBase64String(rsa.Exponent)
+            });
+            byte[] pwd = rsacsp.Encrypt(Encoding.UTF8.GetBytes("ShaBi"), false);
+            Auth = Post("Login", tool.Serialize(new
+            {
+                userID=2,
+                password=Convert.ToBase64String(pwd)
             }));
+            Auth = Auth.Substring(1, Auth.Length - 2);
+            Console.WriteLine(Auth);
         }
     }
 }

@@ -47,7 +47,10 @@ namespace Moo.API
         [WebGet]
         public string Debug()
         {
-            return Process.GetCurrentProcess().WorkingSet64.ToString();
+            using (MooDB db = new MooDB())
+            {
+                return db.Users.Count().ToString();
+            }
         }
         #endregion
 

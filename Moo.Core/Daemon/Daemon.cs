@@ -12,12 +12,14 @@ namespace Moo.Core.Daemon
         {
             ContestDaemon.Instance.Start();
             TestDaemon.Instance.Start();
+            FullIndexDaemon.Instance.Start();
         }
 
         public static void StopAll()
         {
             ContestDaemon.Instance.Stop();
             TestDaemon.Instance.Stop();
+            FullIndexDaemon.Instance.Stop();
         }
 
         Thread thread;
