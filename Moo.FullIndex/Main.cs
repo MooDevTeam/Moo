@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Moo.FullIndex
 {
-    public class vFullIndex : Moo.Core.Daemon.Daemon
+    public class Main : Moo.Core.Daemon.Daemon
     {
+        public static Main Instance = new Main();
         protected override int Run()
         {
             Console.Beep();

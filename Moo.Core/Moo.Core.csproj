@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Daemon\ContestDaemon.cs" />
     <Compile Include="Daemon\Daemon.cs" />
+    <Compile Include="Daemon\FullIndexDaemon.cs" />
     <Compile Include="Daemon\TestDaemon.cs" />
     <Compile Include="DB\DatabaseInstaller.cs" />
     <Compile Include="DB\MooDB.Designer.cs">
