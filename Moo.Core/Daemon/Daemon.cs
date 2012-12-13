@@ -8,6 +8,18 @@ namespace Moo.Core.Daemon
 {
     public abstract class Daemon
     {
+        public static void StartAll()
+        {
+            ContestDaemon.Instance.Start();
+            TestDaemon.Instance.Start();
+        }
+
+        public static void StopAll()
+        {
+            ContestDaemon.Instance.Stop();
+            TestDaemon.Instance.Stop();
+        }
+
         Thread thread;
         volatile bool running;
 

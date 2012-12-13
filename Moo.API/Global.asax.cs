@@ -21,14 +21,12 @@ namespace Moo.API
                 }
             }
 
-            TestDaemon.Instance.Start();
-            ContestDaemon.Instance.Start();
+            Daemon.StartAll();
         }
 
         protected void Application_End(object sender, EventArgs e)
         {
-            TestDaemon.Instance.Stop();
-            ContestDaemon.Instance.Stop();
+            Daemon.StopAll();
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -64,6 +62,6 @@ namespace Moo.API
 
         }
 
-        
+
     }
 }
