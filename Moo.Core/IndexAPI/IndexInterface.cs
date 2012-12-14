@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Moo.Core.DB;
 namespace Moo.Core.IndexAPI
 {
-    public class IndexAPI
+    public class IndexInterface
     {
         /// <summary>
         /// 获取供索引的类型

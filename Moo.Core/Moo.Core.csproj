@@ -62,8 +62,9 @@
       <DependentUpon>MooDB.edmx</DependentUpon>
     </Compile>
     <Compile Include="DB\MooTestData.cs" />
-    <Compile Include="IndexAPI\IndexAPI.cs" />
+    <Compile Include="IndexAPI\IndexInterface.cs" />
     <Compile Include="IndexAPI\IndexItem.cs" />
+    <Compile Include="IndexAPI\Search.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
