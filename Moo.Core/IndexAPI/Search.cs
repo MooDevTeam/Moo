@@ -14,20 +14,37 @@ namespace Moo.Core.IndexAPI
         {
             public int pos, len;
         }
+
+        public class SearchResult
+        {
+            public class ContentSegment
+            {
+                public bool Match;
+                public string Text;
+            }
+            public int ID;
+            public List<ContentSegment> Content;
+        }
         static SqlConnection conn = new SqlConnection("Database=Indexer;" + ConfigurationManager.ConnectionStrings["IndexerDB"].ConnectionString);
 
-        public static IEnumerable<int> search(string keyword, string type, int top)
+        public static IEnumerable<SearchResult> search(string keyword, string type, int top)
         {
-            List<int> ret = new List<int>();
+            List<SearchResult> ret = new List<SearchResult>();
             try
             {
-                using (var cmd = new SqlCommand("SELECT [KEY] FROM FREETEXTTABLE("+type+",content,@keyword,@top) ORDER BY [RANK] DESC", conn))
+                keyword = keyword.Replace('%', ' ');
+                using (var cmd = new SqlCommand(""+
+                    "DECLARE @Table Table([ID] INT,[RANK] INT)\r\n"+
+                    "INSERT INTO @Table\r\n"+
+                    "SELECT TOP @top DISTINCT [ID],[RANK]=1000000 FROM [Suffix"+type+"] WHERE [content] like @key+'%' UNION ALL \r\n"+
+                    "SELECT * FROM FREETEXTTABLE(["+type+"],[content],@key,@top) \r\n"+
+                    "SELECT TOP @top [ID],SUM(RANK) FROM @Table GROUP BY [ID] ORDER BY SUM([RANK]) DESC\r\n", conn))
                 {
-                    cmd.Parameters.Add(new SqlParameter("keyword", keyword));
-                    cmd.Parameters.Add(new SqlParameter("top", top));
+                    cmd.Parameters.AddWithValue("keyword", keyword);
+                    cmd.Parameters.AddWithValue("top", top);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
-                        ret.Add(reader.GetInt32(0));
+                        ret.Add(new SearchResult() { ID = reader.GetInt32(0), Content = new List<SearchResult.ContentSegment>() });
                 }
             }
             catch (Exception)
@@ -36,7 +53,7 @@ namespace Moo.Core.IndexAPI
             }
             return ret;
         }
-        static IEnumerable<string> split(string text)
+        public static IEnumerable<string> split(string text)
         {
             List<string> ret = new List<string>();
             using (var cmd = new SqlCommand("SELECT [display_term] FROM sys.dm_fts_parser(@text,2052,0,0) WHERE [special_term]='Exact Match'", conn))
@@ -55,7 +72,7 @@ namespace Moo.Core.IndexAPI
         public static IEnumerable<MatchRange> getMatchRange(string content, string keyword)
         {
             List<MatchRange> ret = new List<MatchRange>();
-            string[] keywords = split(keyword).ToArray();
+            var keywords = split(keyword);
             foreach (string key in keywords)
             {
                 int position=0;

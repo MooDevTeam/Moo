@@ -58,10 +58,21 @@ namespace Moo.Core.Daemon
                         "    CONSTRAINT PK_ID PRIMARY KEY([ID])\r\n" +
                         ")\r\n" +
                         "CREATE FULLTEXT INDEX ON "+type+"([content]) KEY INDEX PK_ID ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n"+
+                        "END\r\n"+
+                        "IF NOT EXISTS(SELECT * FROM sysobjects WHERE ID=object_id(@SuffixTableName) and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n"+
+                        "BEGIN\r\n"+
+	                    "    CREATE  TABLE Suffix"+type+"\r\n"+
+	                    "    (\r\n"+
+		                "        [ID] INT,\r\n"+
+		                "        [content] nvarchar(50)\r\n"+
+	                    "    )\r\n"+
+	                    "    CREATE NONCLUSTERED INDEX IDX_CONTENT ON Suffix"+type+" ([content])\r\n"+
+                        "    CREATE NONCLUSTERED INDEX IDX_ID ON Suffix"+type+" ([ID])\r\n"+
                         "END\r\n", conn
                         ))
                     {
                         cmd.Parameters.AddWithValue("TableName", type);
+                        cmd.Parameters.AddWithValue("SuffixTableName", "Suffix" + type);
                         cmd.ExecuteNonQuery();
                     }
                     IndexItem item;
@@ -79,6 +90,23 @@ namespace Moo.Core.Daemon
                             cmd.Parameters.AddWithValue("content", item.Content);
                             cmd.ExecuteNonQuery();
                         }
+                        foreach (string keyword in item.Keywords)
+                        {
+                            using (var cmd = new SqlCommand("DELETE FROM Suffix" + type + " WHERE ID=@ID",conn))
+                            {
+                                cmd.Parameters.AddWithValue("ID", item.ID);
+                                cmd.ExecuteNonQuery();
+                            }
+                            for (int i = 0; i < keyword.Length; i++)
+                            {
+                                using (var cmd = new SqlCommand("INSERT INTO Suffix"+type+"([ID],[content]) VALUES(@ID,@keyword)", conn))
+                                {
+                                    cmd.Parameters.AddWithValue("ID", item.ID);
+                                    cmd.Parameters.AddWithValue("keyword", keyword.Substring(i));
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
                     }
                 }
                 if (reNew)
@@ -88,7 +116,7 @@ namespace Moo.Core.Daemon
             {
                 Console.Beep();
             }
-            return 10000;
+            return 100000;
         }
     }
 }
