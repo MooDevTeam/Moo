@@ -18,6 +18,7 @@ namespace Moo.Core.Security
         public int Token { get; set; }
         public string Name { get; set; }
         public SiteRole Role { get; set; }
+        public string Email;
 
         public User GetDBUser(MooDB db)
         {
@@ -31,6 +32,7 @@ namespace Moo.Core.Security
             ID = user.ID;
             Name = user.Name;
             Role = (SiteRole)Enum.Parse(typeof(SiteRole), user.Role.Name);
+            Email = user.Email;
         }
     }
 }

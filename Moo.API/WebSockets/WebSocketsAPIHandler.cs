@@ -36,6 +36,21 @@ namespace Moo.API.WebSockets
             await WebSocketContext.WebSocket.SendAsync(new ArraySegment<byte>(toSend), WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
+        public static void NotifyTestComplete(Record record)
+        {
+            lock (Clients)
+            {
+                if (Clients.ContainsKey(record.User.ID))
+                {
+                    Clients[record.User.ID].Send(new ResponseMessage
+                    {
+                        Type = ResponseMessage.MessageType.TestComplete,
+                        ID = record.ID,
+                    });
+                }
+            }
+        }
+
         public static void NotifyNewMessage(User to)
         {
             if (to == null)
@@ -55,7 +70,9 @@ namespace Moo.API.WebSockets
                         Clients[to.ID].Send(new ResponseMessage
                         {
                             Type = ResponseMessage.MessageType.NewMessage,
-                            ID = Security.CurrentUser.ID
+                            ID = Security.CurrentUser.ID,
+                            Name = Security.CurrentUser.Name,
+                            Email = Security.CurrentUser.Email
                         });
                     }
                 }

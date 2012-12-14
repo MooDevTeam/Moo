@@ -10,7 +10,7 @@ namespace Moo.Core.IndexAPI
 {
     class Search
     {
-        class MatchRange
+        public class MatchRange
         {
             public int pos, len;
         }

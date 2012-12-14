@@ -24,7 +24,7 @@ namespace Moo.API.WebSockets
             NotAuthenticated, AlreadyLogin, AnotherLogin,Kicked,
             Login, Logout,
             Echo, Whoami,
-            NewMessage
+            NewMessage,TestComplete
         }
 
         [ScriptIgnore]
@@ -37,6 +37,8 @@ namespace Moo.API.WebSockets
 
         public int? ID;
         public string Content;
+        public string Name;
+        public string Email;
 
         public override string ToString()
         {

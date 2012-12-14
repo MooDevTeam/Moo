@@ -17,6 +17,9 @@ namespace Moo.Core.Daemon
         ITester tester = new Moo.Core.Tester.MooTester.Tester();
         public static readonly TestDaemon Instance = new TestDaemon();
 
+        public event EventHandler<Record> TestStart;
+        public event EventHandler<Record> TestComplete;
+
         private TestDaemon() { }
 
         protected override int Run()
@@ -42,8 +45,16 @@ namespace Moo.Core.Daemon
                         Info = "<color:blue>*正在评测*</color>"
                     };
                     db.SaveChanges();
+                    if (TestStart != null)
+                    {
+                        TestStart(this, record);
+                    }
                     Test(db, record);
                     db.SaveChanges();
+                    if (TestComplete != null)
+                    {
+                        TestComplete(this, record);
+                    }
                     return 0;
                 }
             }
@@ -102,8 +113,8 @@ namespace Moo.Core.Daemon
         TestResult TestTraditional(MooDB db, Record record)
         {
             IEnumerable<TraditionalTestCase> cases = from t in db.TestCases.OfType<TraditionalTestCase>()
-                                                      where t.Problem.ID == record.Problem.ID
-                                                      select t;
+                                                     where t.Problem.ID == record.Problem.ID
+                                                     select t;
             return tester.TestTraditional(record.Code, record.Language, cases);
         }
 

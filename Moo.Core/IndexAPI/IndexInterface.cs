@@ -46,15 +46,13 @@ namespace Moo.Core.IndexAPI
             {
                 Problem problem = db.Problems.OrderBy(p => p.ID).Skip(passedProblemNumber++).FirstOrDefault();
                 if (problem == null) return null;
-
-                List<string> keywords = problem.Tag.Select(t => t.Name).ToList();
-                keywords.Add(problem.Name);
-
+                
                 return new IndexItem
                 {
                     ID = problem.ID,
                     Content = problem.LatestRevision == null ? null : problem.LatestRevision.Content,
-                    Keywords = keywords
+                    Keywords = problem.Tag.Select(t=>t.Name).ToList(),
+                    Title=problem.Name
                 };
             }
         }

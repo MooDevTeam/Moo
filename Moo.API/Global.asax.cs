@@ -21,6 +21,10 @@ namespace Moo.API
                 }
             }
 
+            TestDaemon.Instance.TestComplete += (o, record) =>
+            {
+                WebSockets.WebSocketsAPIHandler.NotifyTestComplete(record);
+            };
             Daemon.StartAll();
         }
 

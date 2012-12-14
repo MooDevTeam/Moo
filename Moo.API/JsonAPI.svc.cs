@@ -920,14 +920,12 @@ namespace Moo.API
 
                 Access.Required(db, info, Function.DeleteJudgeInfo);
 
-                db.Messages.AddObject(new Message
+                CreateMessage(new CreateMessageData
                 {
+                    ToID = record.User.ID,
                     Content = "我对您的[Record:" + record.ID + "]进行了重测。\r\n"
                     + "原始得分为*" + info.Score + "*。\r\n"
-                    + "原始测评信息为\r\n" + info.Info,
-                    From = Security.CurrentUser.GetDBUser(db),
-                    To = record.User,
-                    CreateTime = DateTime.Now,
+                    + "原始测评信息为\r\n" + info.Info
                 });
 
                 record.JudgeInfo = null;
@@ -3088,7 +3086,7 @@ namespace Moo.API
                                             && !m.DeletedByFrom
                                             select m
                                let toMe = from m in db.Messages
-                                          where m.From.ID == Security.CurrentUser.ID && m.To.ID == Security.CurrentUser.ID
+                                          where m.From.ID == u.ID && m.To.ID == Security.CurrentUser.ID
                                           && !m.DeletedByTo
                                           select m
                                where fromMe.Any() || toMe.Any()
@@ -3173,7 +3171,7 @@ namespace Moo.API
                     messages = messages.Take((int)top);
                 }
 
-                foreach (Message msg in messages)
+                foreach (Message msg in messages.Where(m => m.To.ID == Security.CurrentUser.ID))
                 {
                     msg.HasRead = true;
                 }

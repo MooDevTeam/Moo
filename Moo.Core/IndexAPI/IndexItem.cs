@@ -10,6 +10,7 @@ namespace Moo.Core.IndexAPI
     {
         public int ID;
         public IEnumerable<string> Keywords;
+        public string Title;
         public string Content;
     }
 }
