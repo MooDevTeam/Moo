@@ -9,7 +9,7 @@ namespace Moo.Core.IndexAPI
     public class IndexItem
     {
         public int ID;
-        public IEnumerable<string> Keywords;
+        public List<string> Keywords;
         public string Title;
         public string Content;
     }
