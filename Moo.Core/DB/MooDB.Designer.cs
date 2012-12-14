@@ -2078,7 +2078,8 @@ namespace Moo.Core.DB
         /// <param name="content">Content 属性的初始值。</param>
         /// <param name="deletedByFrom">DeletedByFrom 属性的初始值。</param>
         /// <param name="deletedByTo">DeletedByTo 属性的初始值。</param>
-        public static Message CreateMessage(global::System.Int32 id, global::System.DateTime createTime, global::System.String content, global::System.Boolean deletedByFrom, global::System.Boolean deletedByTo)
+        /// <param name="hasRead">HasRead 属性的初始值。</param>
+        public static Message CreateMessage(global::System.Int32 id, global::System.DateTime createTime, global::System.String content, global::System.Boolean deletedByFrom, global::System.Boolean deletedByTo, global::System.Boolean hasRead)
         {
             Message message = new Message();
             message.ID = id;
@@ -2086,6 +2087,7 @@ namespace Moo.Core.DB
             message.Content = content;
             message.DeletedByFrom = deletedByFrom;
             message.DeletedByTo = deletedByTo;
+            message.HasRead = hasRead;
             return message;
         }
 
@@ -2215,6 +2217,30 @@ namespace Moo.Core.DB
         private global::System.Boolean _DeletedByTo;
         partial void OnDeletedByToChanging(global::System.Boolean value);
         partial void OnDeletedByToChanged();
+    
+        /// <summary>
+        /// 没有元数据文档可用。
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Boolean HasRead
+        {
+            get
+            {
+                return _HasRead;
+            }
+            set
+            {
+                OnHasReadChanging(value);
+                ReportPropertyChanging("HasRead");
+                _HasRead = StructuralObject.SetValidValue(value, "HasRead");
+                ReportPropertyChanged("HasRead");
+                OnHasReadChanged();
+            }
+        }
+        private global::System.Boolean _HasRead;
+        partial void OnHasReadChanging(global::System.Boolean value);
+        partial void OnHasReadChanged();
 
         #endregion
 

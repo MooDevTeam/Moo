@@ -359,6 +359,7 @@
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="DeletedByFrom" Type="bit" Nullable="false" />
     <Property Name="DeletedByTo" Type="bit" Nullable="false" />
+    <Property Name="HasRead" Type="bit" Nullable="false" />
     <Property Name="From_ID" Type="int" Nullable="false" />
     <Property Name="To_ID" Type="int" Nullable="true" />
   </EntityType>
@@ -1373,6 +1374,7 @@
           <Property Type="String" Name="Content" Nullable="false" />
           <Property Type="Boolean" Name="DeletedByFrom" Nullable="false" />
           <Property Type="Boolean" Name="DeletedByTo" Nullable="false" />
+          <Property Type="Boolean" Name="HasRead" Nullable="false" />
         </EntityType>
         <Association Name="MessageFrom">
           <End Type="Moo.Core.DB.Message" Role="Message" Multiplicity="*" />
@@ -1600,6 +1602,7 @@
           <ScalarProperty Name="Content" ColumnName="Content" />
           <ScalarProperty Name="DeletedByFrom" ColumnName="DeletedByFrom" />
           <ScalarProperty Name="DeletedByTo" ColumnName="DeletedByTo" />
+          <ScalarProperty Name="HasRead" ColumnName="HasRead" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
