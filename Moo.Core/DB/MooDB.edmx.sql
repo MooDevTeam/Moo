@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 12/11/2012 16:14:46
+-- Date Created: 12/13/2012 22:06:36
 -- Generated from EDMX file: D:\VSProject\Moo\Moo.Core\DB\MooDB.edmx
 -- --------------------------------------------------
 
@@ -387,6 +387,7 @@ CREATE TABLE [dbo].[Messages] (
     [Content] nvarchar(max)  NOT NULL,
     [DeletedByFrom] bit  NOT NULL,
     [DeletedByTo] bit  NOT NULL,
+    [HasRead] bit  NOT NULL,
     [From_ID] int  NOT NULL,
     [To_ID] int  NULL
 );

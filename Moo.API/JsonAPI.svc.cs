@@ -3072,7 +3072,7 @@ namespace Moo.API
             int? skip = OptionalIntParameter("skip");
             int? top = OptionalIntParameter("top");
             using (MooDB db = new MooDB())
-            {
+            {/*
                 var fromMe = from m in db.Messages
                              where m.To != null && m.From.ID == Security.CurrentUser.ID && !m.DeletedByFrom
                              group m by m.To into ms
@@ -3081,7 +3081,23 @@ namespace Moo.API
                            where m.To.ID == Security.CurrentUser.ID && !m.DeletedByTo
                            group m by m.From into ms
                            select ms.Key;
-                var contacts = fromMe.Union(toMe);
+              */
+                var contacts = from u in db.Users
+                               let fromMe = from m in db.Messages
+                                            where m.To.ID == u.ID && m.From.ID == Security.CurrentUser.ID
+                                            && !m.DeletedByFrom
+                                            select m
+                               let toMe = from m in db.Messages
+                                          where m.From.ID == Security.CurrentUser.ID && m.To.ID == Security.CurrentUser.ID
+                                          && !m.DeletedByTo
+                                          select m
+                               where fromMe.Any() || toMe.Any()
+                               select new
+                               {
+                                   User = u,
+                                   UnRead = toMe.Where(m => !m.HasRead).Count()
+                               };
+
 
                 if (skip != null)
                 {
@@ -3094,9 +3110,10 @@ namespace Moo.API
 
                 return contacts.Select(u => new
                 {
-                    ID = u.ID,
-                    Name = u.Name,
-                    Email = u.Email
+                    ID = u.User.ID,
+                    Name = u.User.Name,
+                    Email = u.User.Email,
+                    UnRead = u.UnRead
                 }).ToList();
             }
         }
@@ -3156,6 +3173,12 @@ namespace Moo.API
                     messages = messages.Take((int)top);
                 }
 
+                foreach (Message msg in messages)
+                {
+                    msg.HasRead = true;
+                }
+                db.SaveChanges();
+
                 return messages.Select(m => new
                 {
                     ID = m.ID,
@@ -3209,6 +3232,7 @@ namespace Moo.API
                     CreateTime = DateTime.Now,
                     From = Security.CurrentUser.GetDBUser(db),
                     To = to,
+                    HasRead = to == null ? true : false
                 };
 
                 Access.Check(db, newMessage, Function.CreateMessage);
