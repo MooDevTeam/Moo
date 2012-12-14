@@ -8,12 +8,14 @@ Moo.Debug/obj
 WikiPlex/bin
 WikiPlex/obj
 <<<<<<< HEAD
+Moo.FullIndex/bin
+Moo.FullIndex/obj
+Moo.v11.suo
+Moo.v11.suo.orig
+=======
 Moo.FullIndex/obj/Debug/build.force
 Moo.v11.suo
 Moo.v11.suo.orig
 Moo.v11.suo
-=======
-Moo.FullIndex/bin
-Moo.FullIndex/obj
-*.suo
->>>>>>> 6f56ee9c8e5b3937b07248bdd70d0b19314991f1
+Moo.v11.suo
+>>>>>>> eb9a248e804716bd9f327b50a9c56c47209eb1dc
