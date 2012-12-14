@@ -1,0 +1,19 @@
+Moo.API/PublicWeb
+Moo.API/bin
+Moo.API/obj
+Moo.Core/bin
+Moo.Core/obj
+Moo.Debug/bin
+Moo.Debug/obj
+WikiPlex/bin
+WikiPlex/obj
+<<<<<<< HEAD
+Moo.FullIndex/obj/Debug/build.force
+Moo.v11.suo
+Moo.v11.suo.orig
+Moo.v11.suo
+=======
+Moo.FullIndex/bin
+Moo.FullIndex/obj
+*.suo
+>>>>>>> 6f56ee9c8e5b3937b07248bdd70d0b19314991f1
