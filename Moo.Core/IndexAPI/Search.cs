@@ -10,7 +10,7 @@ namespace Moo.Core.IndexAPI
 {
     class Search
     {
-        class MatchRange
+        public class MatchRange
         {
             public int pos, len;
         }
@@ -55,7 +55,7 @@ namespace Moo.Core.IndexAPI
         public static IEnumerable<MatchRange> getMatchRange(string content, string keyword)
         {
             List<MatchRange> ret = new List<MatchRange>();
-            string[] keywords = split(keyword).ToArray();
+            var keywords = split(keyword).ToArray();
             foreach (string key in keywords)
             {
                 int position=0;
