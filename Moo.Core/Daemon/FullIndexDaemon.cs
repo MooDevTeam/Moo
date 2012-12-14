@@ -116,7 +116,7 @@ namespace Moo.Core.Daemon
             {
                 Console.Beep();
             }
-            return 10000;
+            return 100000;
         }
     }
 }
