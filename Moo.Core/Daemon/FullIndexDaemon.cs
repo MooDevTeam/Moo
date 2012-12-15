@@ -9,7 +9,7 @@ using System.Configuration;
 using Moo.Core.IndexAPI;
 namespace Moo.Core.Daemon
 {
-    class FullIndexDaemon : Daemon
+    public class FullIndexDaemon : Daemon
     {
         public static FullIndexDaemon Instance = new FullIndexDaemon();
         static SqlConnection conn;
@@ -54,6 +54,7 @@ namespace Moo.Core.Daemon
                         "CREATE TABLE " + type + "\r\n" +
                         "(\r\n" +
                         "    [ID] INT,\r\n" +
+                        "    [title] nvarchar(50),\r\n"+
                         "    [content] nvarchar(max)\r\n" +
                         "    CONSTRAINT PK_ID PRIMARY KEY([ID])\r\n" +
                         ")\r\n" +
@@ -81,15 +82,17 @@ namespace Moo.Core.Daemon
                         reNew = false;
                         using (var cmd = new SqlCommand(
                             "IF NOT EXISTS(SELECT * FROM " + type + " WHERE [ID]=@ID)\r\n" +
-                            "   INSERT INTO " + type + "([ID],[content]) VALUES(@ID,@content)\r\n" +
+                            "   INSERT INTO " + type + "([ID],[title],[content]) VALUES(@ID,@title,@content)\r\n" +
                             "ELSE\r\n" +
-                            "   UPDATE " + type + " SET [content]=@content WHERE [ID]=@ID\r\n"
+                            "   UPDATE " + type + " SET [content]=@content,[title]=@title WHERE [ID]=@ID\r\n"
                             , conn))
                         {
                             cmd.Parameters.AddWithValue("ID", item.ID);
                             cmd.Parameters.AddWithValue("content", item.Content);
+                            cmd.Parameters.AddWithValue("title", item.Title);
                             cmd.ExecuteNonQuery();
                         }
+                        item.Keywords.Add(item.Title);
                         foreach (string keyword in item.Keywords)
                         {
                             using (var cmd = new SqlCommand("DELETE FROM Suffix" + type + " WHERE ID=@ID",conn))
@@ -116,7 +119,7 @@ namespace Moo.Core.Daemon
             {
                 Console.Beep();
             }
-            return 100000;
+            return 0;
         }
     }
 }

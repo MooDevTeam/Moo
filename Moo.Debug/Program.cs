@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Data.Objects;
 using Moo.Core.DB;
+using Moo.Core.IndexAPI;
 namespace Moo.Debug
 {
     class Program
@@ -79,6 +80,30 @@ namespace Moo.Debug
 
         static void Main(string[] args)
         {
+            Moo.Core.Daemon.FullIndexDaemon.Instance.Start();
+            try
+            {
+                while (true)
+                {
+                    string toSearch = Console.ReadLine();
+                    DateTime st = DateTime.Now;
+                    foreach (Search.SearchResult result in Search.Instance.search(toSearch, "Problem", 2))
+                    {
+                        Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
+                        foreach (Search.SearchResult.ContentSegment match in result.Content)
+                        {
+                            Console.Write(" {0} ", match.Text);
+                        }
+                        Console.WriteLine();
+                    }
+                    Console.WriteLine("{0} -------------------------------------------",DateTime.Now-st);
+                }
+            }
+            catch (Exception)
+            {
+            }
+            Moo.Core.Daemon.FullIndexDaemon.Instance.Stop();
+            /*
             string PublicKey = Get("PublicKey");
             RSA rsa=tool.Deserialize<RSA>(PublicKey);
             var rsacsp = new System.Security.Cryptography.RSACryptoServiceProvider();
@@ -109,6 +134,7 @@ namespace Moo.Debug
                         }
                 })));
             }
+             * */
         }
     }
 }
