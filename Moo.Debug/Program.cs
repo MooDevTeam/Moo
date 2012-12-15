@@ -80,21 +80,21 @@ namespace Moo.Debug
 
         static void Main(string[] args)
         {
-            Moo.Core.Daemon.FullIndexDaemon.Instance.Start();
+            //Moo.Core.Daemon.FullIndexDaemon.Instance.Start();
             try
             {
                 while (true)
                 {
                     string toSearch = Console.ReadLine();
                     DateTime st = DateTime.Now;
-                    foreach (Search.SearchResult result in Search.Instance.search(toSearch, "Problem", 2))
+                    foreach (Search.SearchResult result in Search.Instance.search(toSearch, "Problem", 5))
                     {
-                        Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
+                        //Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
                         foreach (Search.SearchResult.ContentSegment match in result.Content)
                         {
-                            Console.Write(" {0} ", match.Text);
+                            //Console.Write(" {0} ", match.Text);
                         }
-                        Console.WriteLine();
+                        //Console.WriteLine();
                     }
                     Console.WriteLine("{0} -------------------------------------------",DateTime.Now-st);
                 }
@@ -102,7 +102,7 @@ namespace Moo.Debug
             catch (Exception)
             {
             }
-            Moo.Core.Daemon.FullIndexDaemon.Instance.Stop();
+            //Moo.Core.Daemon.FullIndexDaemon.Instance.Stop();
             /*
             string PublicKey = Get("PublicKey");
             RSA rsa=tool.Deserialize<RSA>(PublicKey);

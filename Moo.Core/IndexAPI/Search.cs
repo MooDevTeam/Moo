@@ -35,24 +35,16 @@ namespace Moo.Core.IndexAPI
         }
         public IEnumerable<SearchResult> search(string keyword, string type, int top)
         {
-            keyword = keyword.Replace('%', ' ');
             List<string> keywords = split(keyword);
             List<SearchResult> ret = new List<SearchResult>();
             try
             {
                 using (var cmd = new SqlCommand(""+
-                    "DECLARE @T1 Table([ID] INT,[RANK] INT)\r\n"+
-                    "DECLARE @T2 Table([ID] INT,[RANK] INT)\r\n"+
-                    "INSERT INTO @T1\r\n"+
-                    "SELECT  DISTINCT [ID],[RANK]=1000000  FROM [Suffix"+type+"] WHERE [content] like @key+'%' UNION ALL\r\n"+
-                    "SELECT * FROM FREETEXTTABLE(["+type+"],[content],@key)\r\n"+
-                    "INSERT INTO @T2\r\n"+
-                    "SELECT TOP(@top) [ID],SUM([RANK]) FROM @T1 GROUP BY [ID] ORDER BY SUM([RANK]) DESC\r\n"+
-                    "SELECT [@T2].[ID],[title],[content] FROM \r\n"+
-                    "@T2 LEFT JOIN [Problem] ON [@T2].[ID]=[Problem].[ID]\r\n", conn))
+                    "SELECT * FROM [fn_search_"+type+"](@key,@top,@fulltext)", conn))
                 {
                     cmd.Parameters.AddWithValue("key", keyword);
                     cmd.Parameters.AddWithValue("top", top);
+                    cmd.Parameters.AddWithValue("fulltext", keywords.Count);
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -113,6 +105,26 @@ namespace Moo.Core.IndexAPI
             if (last < content.Length - 1)
                 ret.Add(new SearchResult.ContentSegment() { Match = false, Text = content.Substring(last) });
             return ret;
+        }
+        Int32 IndexStatistics(string type)
+        {
+            try
+            {
+                using (var cmd = new SqlCommand("SELECT COUNT(*) FROM [" + type + "] ", conn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            return reader.GetInt32(0);
+                        else
+                            return -1;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
         }
     }
 }

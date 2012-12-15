@@ -14,6 +14,7 @@ namespace Moo.Core.Daemon
         public static FullIndexDaemon Instance = new FullIndexDaemon();
         static SqlConnection conn;
         IndexInterface indexInterface;
+        int sleepTime = 10000;
         FullIndexDaemon()
         {
             using (var tconn = new SqlConnection(ConfigurationManager.ConnectionStrings["IndexerDB"].ConnectionString))
@@ -39,87 +40,141 @@ namespace Moo.Core.Daemon
                 cmd.ExecuteNonQuery();
             }
         }
-        protected override int Run()
+        void init()
         {
-            try
+            indexInterface = new IndexInterface();
+            foreach (string type in indexInterface.Types)
             {
-                if(null==indexInterface)
-                    indexInterface= new IndexInterface();
-                bool reNew = true;
-                foreach (string type in indexInterface.Types)
+                using (var cmd = new SqlCommand(
+                "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [id] =object_id(@TableName)and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n" +
+                "BEGIN\r\n" +
+                "CREATE TABLE " + type + "\r\n" +
+                "(\r\n" +
+                "    [ID] INT,\r\n" +
+                "    [title] nvarchar(50),\r\n" +
+                "    [content] nvarchar(max)\r\n" +
+                "    CONSTRAINT PK_ID PRIMARY KEY([ID])\r\n" +
+                ")\r\n" +
+                "CREATE FULLTEXT INDEX ON " + type + "([content]) KEY INDEX PK_ID ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n" +
+                "END\r\n" +
+                "IF NOT EXISTS(SELECT * FROM sysobjects WHERE ID=object_id(@SuffixTableName) and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n" +
+                "BEGIN\r\n" +
+                "    CREATE  TABLE Suffix" + type + "\r\n" +
+                "    (\r\n" +
+                "        [ID] INT,\r\n" +
+                "        [content] nvarchar(50)\r\n" +
+                "    )\r\n" +
+                "    CREATE NONCLUSTERED INDEX IDX_CONTENT ON Suffix" + type + " ([content])\r\n" +
+                "    CREATE NONCLUSTERED INDEX IDX_ID ON Suffix" + type + " ([ID])\r\n" +
+                "END\r\n", conn
+                ))
                 {
-                    using (var cmd = new SqlCommand(
-                        "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [id] =object_id(@TableName)and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n" +
-                        "BEGIN\r\n" +
-                        "CREATE TABLE " + type + "\r\n" +
-                        "(\r\n" +
-                        "    [ID] INT,\r\n" +
-                        "    [title] nvarchar(50),\r\n"+
-                        "    [content] nvarchar(max)\r\n" +
-                        "    CONSTRAINT PK_ID PRIMARY KEY([ID])\r\n" +
-                        ")\r\n" +
-                        "CREATE FULLTEXT INDEX ON "+type+"([content]) KEY INDEX PK_ID ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n"+
-                        "END\r\n"+
-                        "IF NOT EXISTS(SELECT * FROM sysobjects WHERE ID=object_id(@SuffixTableName) and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n"+
-                        "BEGIN\r\n"+
-	                    "    CREATE  TABLE Suffix"+type+"\r\n"+
-	                    "    (\r\n"+
-		                "        [ID] INT,\r\n"+
-		                "        [content] nvarchar(50)\r\n"+
-	                    "    )\r\n"+
-	                    "    CREATE NONCLUSTERED INDEX IDX_CONTENT ON Suffix"+type+" ([content])\r\n"+
-                        "    CREATE NONCLUSTERED INDEX IDX_ID ON Suffix"+type+" ([ID])\r\n"+
-                        "END\r\n", conn
-                        ))
+                    cmd.Parameters.AddWithValue("TableName", type);
+                    cmd.Parameters.AddWithValue("SuffixTableName", "Suffix" + type);
+                    cmd.ExecuteNonQuery();
+                }
+                int flg;
+                using (var cmd = new SqlCommand("select COUNT(*) from dbo.sysobjects where id = object_id(N'fn_search_"+type+"') and xtype='TF'", conn))
+                {
+                    flg = (int)cmd.ExecuteScalar();
+                }
+                if (flg == 0)
+                {
+                    using (var cmd = new SqlCommand("" +
+                            "CREATE FUNCTION fn_search_" + type + "(@key nvarchar(50),@top int,@fulltext int = 1)\r\n" +
+                            "RETURNS @ReturnTable TABLE([ID] INT,[title] nvarchar(50),[content] varchar(max))\r\n" +
+                            "AS\r\n" +
+                            "BEGIN\r\n" +
+                            "    SELECT @key=REPLACE(@key,'%',' ')\r\n" +
+                            "    SELECT @key=REPLACE(@key,'_',' ')\r\n" +
+                            "    SELECT @key=REPLACE(@key,'[',' ')\r\n" +
+                            "    SELECT @key=REPLACE(@key,']',' ')\r\n" +
+                            "    SELECT @key=REPLACE(@key,'^',' ')\r\n" +
+                            "    DECLARE @T1 Table([ID] INT,[RANK] INT)\r\n" +
+                            "    DECLARE @T2 Table([ID] INT,[RANK] INT)\r\n" +
+                            "    IF @fulltext <> 0\r\n" +
+                            "       INSERT INTO @T1\r\n" +
+                            "       SELECT  DISTINCT [ID],[RANK]=1000000  FROM [Suffix" + type + "] WHERE [content] like @key+'%' UNION ALL\r\n" +
+                            "       SELECT * FROM FREETEXTTABLE([" + type + "],[content],@key)\r\n" +
+                            "    ELSE\r\n" +
+                            "       INSERT INTO @T1\r\n" +
+                            "       SELECT  DISTINCT [ID],[RANK]=1000000  FROM [Suffix" + type + "] WHERE [content] like @key+'%'" +
+                            "    INSERT INTO @T2\r\n" +
+                            "    SELECT TOP(@top) [ID],SUM([RANK]) FROM @T1 GROUP BY [ID] ORDER BY SUM([RANK]) DESC\r\n" +
+                            "    INSERT INTO @ReturnTable\r\n" +
+                            "    SELECT [@T2].[ID],[title],[content] FROM\r\n" +
+                            "    @T2 LEFT JOIN [Problem] ON [@T2].[ID]=[Problem].[ID]\r\n" +
+                            "    RETURN\r\n" +
+                            "END\r\n", conn))
                     {
-                        cmd.Parameters.AddWithValue("TableName", type);
-                        cmd.Parameters.AddWithValue("SuffixTableName", "Suffix" + type);
                         cmd.ExecuteNonQuery();
                     }
-                    IndexItem item;
-                    if (null != (item = indexInterface.Next(type)))
+                }
+            }
+        }
+        void doIndex()
+        {
+            bool reNew = true;
+            foreach (string type in indexInterface.Types)
+            {
+                IndexItem item;
+                if (null != (item = indexInterface.Next(type)))
+                {
+                    reNew = false;
+                    using (var cmd = new SqlCommand(
+                        "IF NOT EXISTS(SELECT * FROM " + type + " WHERE [ID]=@ID)\r\n" +
+                        "   INSERT INTO " + type + "([ID],[title],[content]) VALUES(@ID,@title,@content)\r\n" +
+                        "ELSE\r\n" +
+                        //"IF "+
+                        "   UPDATE " + type + " SET [content]=@content,[title]=@title WHERE [ID]=@ID\r\n"
+                        , conn))
                     {
-                        reNew = false;
-                        using (var cmd = new SqlCommand(
-                            "IF NOT EXISTS(SELECT * FROM " + type + " WHERE [ID]=@ID)\r\n" +
-                            "   INSERT INTO " + type + "([ID],[title],[content]) VALUES(@ID,@title,@content)\r\n" +
-                            "ELSE\r\n" +
-                            "   UPDATE " + type + " SET [content]=@content,[title]=@title WHERE [ID]=@ID\r\n"
-                            , conn))
+                        cmd.Parameters.AddWithValue("ID", item.ID);
+                        cmd.Parameters.AddWithValue("content", item.Content);
+                        cmd.Parameters.AddWithValue("title", item.Title);
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (var cmd = new SqlCommand("DELETE FROM Suffix" + type + " WHERE ID=@ID", conn))
+                    {
+                        cmd.Parameters.AddWithValue("ID", item.ID);
+                        cmd.ExecuteNonQuery();
+                    }
+                    item.Keywords.Add(item.Title);
+                    foreach (string keyword in item.Keywords)
+                    {
+                        for (int i = 0; i < keyword.Length; i++)
                         {
-                            cmd.Parameters.AddWithValue("ID", item.ID);
-                            cmd.Parameters.AddWithValue("content", item.Content);
-                            cmd.Parameters.AddWithValue("title", item.Title);
-                            cmd.ExecuteNonQuery();
-                        }
-                        item.Keywords.Add(item.Title);
-                        foreach (string keyword in item.Keywords)
-                        {
-                            using (var cmd = new SqlCommand("DELETE FROM Suffix" + type + " WHERE ID=@ID",conn))
+                            using (var cmd = new SqlCommand("INSERT INTO Suffix" + type + "([ID],[content]) VALUES(@ID,@keyword)", conn))
                             {
                                 cmd.Parameters.AddWithValue("ID", item.ID);
+                                cmd.Parameters.AddWithValue("keyword", keyword.Substring(i));
                                 cmd.ExecuteNonQuery();
-                            }
-                            for (int i = 0; i < keyword.Length; i++)
-                            {
-                                using (var cmd = new SqlCommand("INSERT INTO Suffix"+type+"([ID],[content]) VALUES(@ID,@keyword)", conn))
-                                {
-                                    cmd.Parameters.AddWithValue("ID", item.ID);
-                                    cmd.Parameters.AddWithValue("keyword", keyword.Substring(i));
-                                    cmd.ExecuteNonQuery();
-                                }
                             }
                         }
                     }
                 }
-                if (reNew)
-                    indexInterface = new IndexInterface();
+            }
+            if (reNew)
+            {
+                indexInterface = null;
+                sleepTime = 10000;
+            }
+        }
+        protected override int Run()
+        {
+            try
+            {
+                if (null == indexInterface)
+                {
+                    init();
+                }
+                doIndex();
             }
             catch (Exception )
             {
                 Console.Beep();
             }
-            return 0;
+            return sleepTime;
         }
     }
 }
