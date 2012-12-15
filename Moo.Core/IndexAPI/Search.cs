@@ -63,7 +63,7 @@ namespace Moo.Core.IndexAPI
             }
             return ret;
         }
-        public List<string> split(string text)
+        List<string> split(string text)
         {
             text = text.Replace('"', ' ');
             List<string> ret = new List<string>();
@@ -80,7 +80,7 @@ namespace Moo.Core.IndexAPI
             }
             return ret;
         }
-        public List<SearchResult.ContentSegment> getMatchRange(string content, List<string> keywords)
+        List<SearchResult.ContentSegment> getMatchRange(string content, List<string> keywords)
         {
             List<SearchResult.ContentSegment> ret = new List<SearchResult.ContentSegment>();
             List<MatchResult> match = new List<MatchResult>();
@@ -106,7 +106,7 @@ namespace Moo.Core.IndexAPI
                 ret.Add(new SearchResult.ContentSegment() { Match = false, Text = content.Substring(last) });
             return ret;
         }
-        Int32 IndexStatistics(string type)
+        public Int32 IndexStatistics(string type)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace Moo.Core.IndexAPI
             }
             catch (Exception)
             {
-                return -1;
+                return -2;
             }
         }
     }
