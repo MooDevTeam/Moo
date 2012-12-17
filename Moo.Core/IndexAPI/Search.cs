@@ -37,29 +37,22 @@ namespace Moo.Core.IndexAPI
         {
             List<string> keywords = split(keyword);
             List<SearchResult> ret = new List<SearchResult>();
-            try
+            using (var cmd = new SqlCommand("" +
+                "SELECT * FROM [fn_search_" + type + "](@key,@top,@fulltext)", conn))
             {
-                using (var cmd = new SqlCommand(""+
-                    "SELECT * FROM [fn_search_"+type+"](@key,@top,@fulltext)", conn))
+                cmd.Parameters.AddWithValue("key", keyword);
+                cmd.Parameters.AddWithValue("top", top);
+                cmd.Parameters.AddWithValue("fulltext", keywords.Count);
+                using (var reader = cmd.ExecuteReader())
                 {
-                    cmd.Parameters.AddWithValue("key", keyword);
-                    cmd.Parameters.AddWithValue("top", top);
-                    cmd.Parameters.AddWithValue("fulltext", keywords.Count);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                            ret.Add(new SearchResult()
-                                {
-                                    ID = reader.GetInt32(0),
-                                    Title = reader.GetString(1),
-                                    Content = getMatchRange(reader.GetString(2), keywords)
-                                });
-                    }
+                    while (reader.Read())
+                        ret.Add(new SearchResult()
+                            {
+                                ID = reader.GetInt32(0),
+                                Title = reader.GetString(1),
+                                Content = getMatchRange(reader.GetString(2), keywords)
+                            });
                 }
-            }
-            catch (Exception)
-            {
-                Console.Beep();
             }
             return ret;
         }
@@ -108,23 +101,17 @@ namespace Moo.Core.IndexAPI
         }
         public Int32 IndexStatistics(string type)
         {
-            try
+            using (var cmd = new SqlCommand("SELECT COUNT(*) FROM [" + type + "] ", conn))
             {
-                using (var cmd = new SqlCommand("SELECT COUNT(*) FROM [" + type + "] ", conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                            return reader.GetInt32(0);
-                        else
-                            return -1;
-                    }
+                    if (reader.Read())
+                        return reader.GetInt32(0);
+                    else
+                        throw new Exception(type + " Get Count Failed.");
                 }
             }
-            catch (Exception)
-            {
-                return -2;
-            }
+
         }
     }
 }
