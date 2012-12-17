@@ -14,6 +14,7 @@ using System.Net.Security;
 using Moo.API.DataContracts;
 using Moo.Core.DB;
 using Moo.Core.Security;
+using Moo.Core.IndexAPI;
 using Moo.Core.Text;
 using Moo.Core.Utility;
 namespace Moo.API
@@ -80,12 +81,20 @@ namespace Moo.API
         [WebGet(UriTemplate = "Search")]
         public object Search()
         {
-            string text = QueryParameters["text"];
-            string type = QueryParameters["type"];
-            int top = int.Parse(QueryParameters["top"]);
-            if (!new Moo.Core.IndexAPI.IndexInterface().Types.Contains(type))
-                throw new ArgumentException("类型无效");
-            return Moo.Core.IndexAPI.Search.Instance.DoSearch(text, type, top);
+            lock (typeof(JsonAPI))
+            {
+                string text = QueryParameters["text"];
+                string type = QueryParameters["type"];
+                int top = int.Parse(QueryParameters["top"]);
+                if (!new IndexInterface().Types.Contains(type))
+                    throw new ArgumentException("类型无效");
+
+                using (var search = new Search())
+                {
+                    var searchResult= search.DoSearch(text, type, top);
+                    return searchResult;
+                }
+            }
         }
         #endregion
 

@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Moo.Core.IndexAPI
 {
-    public class Search
+    public class Search : IDisposable
     {
         class MatchResult
         {
@@ -30,9 +30,13 @@ namespace Moo.Core.IndexAPI
         }
         SqlConnection conn = new SqlConnection("Database=Indexer;" + ConfigurationManager.ConnectionStrings["IndexerDB"].ConnectionString);
 
-        Search()
+        public Search()
         {
             conn.Open();
+        }
+        public void Dispose()
+        {
+            conn.Dispose();
         }
         public IEnumerable<SearchResult> DoSearch(string keyword, string type, int top)
         {
@@ -83,7 +87,7 @@ namespace Moo.Core.IndexAPI
             {
                 foreach (string key in keywords)
                 {
-                    if (i+key.Length<content.Length && key == content.Substring(i, key.Length))
+                    if (i + key.Length < content.Length && key == content.Substring(i, key.Length))
                     {
                         if (last < i)
                         {
