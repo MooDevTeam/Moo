@@ -94,10 +94,10 @@ namespace Moo.Core.IndexAPI
                         if (last < i)
                         {
                             ret.Add(new SearchResult.ContentSegment() { Match = false, Text = content.Substring(last, i - last) });
-                            last = i + key.Length;
                         }
                         ret.Add(new SearchResult.ContentSegment() { Match = true, Text = key });
                         i += key.Length - 1;
+                        last = i + key.Length;
                         break;
                     }
                 }
