@@ -87,14 +87,17 @@ namespace Moo.Debug
                 {
                     string toSearch = Console.ReadLine();
                     DateTime st = DateTime.Now;
-                    foreach (Search.SearchResult result in Search.Instance.DoSearch(toSearch, "Problem", 5))
+                    using (var search = new Search())
                     {
-                        //Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
-                        foreach (Search.SearchResult.ContentSegment match in result.Content)
+                        foreach (Search.SearchResult result in search.DoSearch(toSearch, "Article", 5))
                         {
-                            //Console.Write(" {0} ", match.Text);
+                            Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
+                            foreach (Search.SearchResult.ContentSegment match in result.Content)
+                            {
+                                Console.Write(" {0} ", match.Text);
+                            }
+                            Console.WriteLine();
                         }
-                        //Console.WriteLine();
                     }
                     Console.WriteLine("{0} -------------------------------------------",DateTime.Now-st);
                 }

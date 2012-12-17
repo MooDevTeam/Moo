@@ -107,7 +107,7 @@ namespace Moo.Core.Daemon
                             "    SELECT TOP(@top) [ID],SUM([RANK]) FROM @T1 GROUP BY [ID] ORDER BY SUM([RANK]) DESC\r\n" +
                             "    INSERT INTO @ReturnTable\r\n" +
                             "    SELECT [@T2].[ID],[title],[content] FROM\r\n" +
-                            "    @T2 LEFT JOIN [Problem] ON [@T2].[ID]=[Problem].[ID]\r\n" +
+                            "    @T2 LEFT JOIN ["+type+"] ON [@T2].[ID]=["+type+"].[ID]\r\n" +
                             "    RETURN\r\n" +
                             "END\r\n", conn))
                     {
