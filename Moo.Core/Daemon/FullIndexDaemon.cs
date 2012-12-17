@@ -34,7 +34,7 @@ namespace Moo.Core.Daemon
             using (var cmd = new SqlCommand(
                 "EXECUTE sp_fulltext_database 'enable'\r\n" +
                 "IF NOT EXISTS(SELECT * FROM sys.fulltext_catalogs WHERE [name]='ft_Indexer')\r\n" +
-                "    EXECUTE sp_fulltext_catalog 'ft_Indexer','create','Indexer'\r\n",conn
+                "    EXECUTE sp_fulltext_catalog 'ft_Indexer','create','Indexer'\r\n", conn
                 ))
             {
                 cmd.ExecuteNonQuery();
@@ -74,7 +74,7 @@ namespace Moo.Core.Daemon
                     cmd.ExecuteNonQuery();
                 }
                 int flg;
-                using (var cmd = new SqlCommand("select COUNT(*) from dbo.sysobjects where id = object_id(N'fn_search_"+type+"') and xtype='TF'", conn))
+                using (var cmd = new SqlCommand("select COUNT(*) from dbo.sysobjects where id = object_id(N'fn_search_" + type + "') and xtype='TF'", conn))
                 {
                     flg = (int)cmd.ExecuteScalar();
                 }
@@ -162,18 +162,11 @@ namespace Moo.Core.Daemon
         }
         protected override int Run()
         {
-            try
+            if (null == indexInterface)
             {
-                if (null == indexInterface)
-                {
-                    init();
-                }
-                doIndex();
+                init();
             }
-            catch (Exception )
-            {
-                Console.Beep();
-            }
+            doIndex();
             return sleepTime;
         }
     }

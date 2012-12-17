@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Configuration;
 namespace Moo.Core.Utility
 {
@@ -19,6 +20,10 @@ namespace Moo.Core.Utility
         public static TimeSpan BlobExpires
         {
             get { return TimeSpan.Parse(ConfigurationManager.AppSettings["BlobExpires"]); }
+        }
+        public static FileInfo LogFile
+        {
+            get { return new FileInfo(ConfigurationManager.AppSettings["LogFilePath"]); }
         }
     }
 }

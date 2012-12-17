@@ -33,7 +33,7 @@ namespace Moo.Core.IndexAPI
         {
             conn.Open();
         }
-        public IEnumerable<SearchResult> search(string keyword, string type, int top)
+        public IEnumerable<SearchResult> DoSearch(string keyword, string type, int top)
         {
             List<string> keywords = split(keyword);
             List<SearchResult> ret = new List<SearchResult>();

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-
+using System.IO;
+using Moo.Core.Utility;
 namespace Moo.Core.Daemon
 {
     public abstract class Daemon
@@ -59,11 +60,17 @@ namespace Moo.Core.Daemon
                 {
                     if (e is ThreadInterruptedException)
                     {
-
+                        //Going to Stop
                     }
                     else
                     {
-                        //Should Log?
+                        using (var log = Config.LogFile.AppendText())
+                        {
+                            log.WriteLine(new DateTime());
+                            log.WriteLine(e);
+                        }
+                        //Sleep a while to prevent fill the disk
+                        Thread.Sleep(10000);
                     }
                 }
             }

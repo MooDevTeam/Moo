@@ -87,7 +87,7 @@ namespace Moo.Debug
                 {
                     string toSearch = Console.ReadLine();
                     DateTime st = DateTime.Now;
-                    foreach (Search.SearchResult result in Search.Instance.search(toSearch, "Problem", 5))
+                    foreach (Search.SearchResult result in Search.Instance.DoSearch(toSearch, "Problem", 5))
                     {
                         //Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
                         foreach (Search.SearchResult.ContentSegment match in result.Content)

@@ -45,12 +45,9 @@ namespace Moo.API
         }
         [OperationContract]
         [WebGet]
-        public string Debug()
+        public object Debug()
         {
-            using (MooDB db = new MooDB())
-            {
-                return db.Users.Count().ToString();
-            }
+            return "";
         }
         #endregion
 
@@ -77,6 +74,18 @@ namespace Moo.API
                 Binary.AutoPop();
             }
             GC.Collect();
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "Search")]
+        public object Search()
+        {
+            string text = QueryParameters["text"];
+            string type = QueryParameters["type"];
+            int top = int.Parse(QueryParameters["top"]);
+            if (!new[] { "Problem", "Tag", "Article", "Contest", "User" }.Contains(type))
+                throw new ArgumentException("类型无效");
+            return Moo.Core.IndexAPI.Search.Instance.DoSearch(text, type, top);
         }
         #endregion
 
