@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Threading;
+
 namespace Moo.Core.IndexAPI
 {
     public class Search
     {
-        public static Search Instance = new Search();
         class MatchResult
         {
             public int pos;
