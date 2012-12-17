@@ -15,6 +15,7 @@ namespace Moo.Core.Daemon
         static SqlConnection conn;
         IndexInterface indexInterface;
         int sleepTime = 10000;
+        Dictionary<string,DateTime> timeStamp;
         FullIndexDaemon()
         {
             using (var tconn = new SqlConnection(ConfigurationManager.ConnectionStrings["IndexerDB"].ConnectionString))
@@ -43,8 +44,10 @@ namespace Moo.Core.Daemon
         void init()
         {
             indexInterface = new IndexInterface();
+            timeStamp = new Dictionary<string, DateTime>();
             foreach (string type in indexInterface.Types)
             {
+                timeStamp.Add(type, DateTime.Now);
                 using (var cmd = new SqlCommand(
                 "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [id] =object_id(@TableName)and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n" +
                 "BEGIN\r\n" +
@@ -52,16 +55,17 @@ namespace Moo.Core.Daemon
                 "(\r\n" +
                 "    [ID] INT,\r\n" +
                 "    [title] nvarchar(50),\r\n" +
-                "    [content] nvarchar(max)\r\n" +
-                "    CONSTRAINT PK_ID PRIMARY KEY([ID])\r\n" +
+                "    [content] nvarchar(max),\r\n" +
+                "    [time] datetime\r\n" +
+                "    CONSTRAINT PK_"+type+" PRIMARY KEY([ID])\r\n" +
                 ")\r\n" +
-                "CREATE FULLTEXT INDEX ON " + type + "([content]) KEY INDEX PK_ID ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n" +
+                "CREATE FULLTEXT INDEX ON " + type + "([content]) KEY INDEX PK_"+type+" ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n" +
                 "END\r\n" +
                 "IF NOT EXISTS(SELECT * FROM sysobjects WHERE ID=object_id(@SuffixTableName) and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n" +
                 "BEGIN\r\n" +
                 "    CREATE  TABLE Suffix" + type + "\r\n" +
                 "    (\r\n" +
-                "        [ID] INT,\r\n" +
+                "        [ID] INT FOREIGN KEY([ID]) REFERENCES "+type+"([ID]) ON DELETE CASCADE,\r\n" +
                 "        [content] nvarchar(50)\r\n" +
                 "    )\r\n" +
                 "    CREATE NONCLUSTERED INDEX IDX_CONTENT ON Suffix" + type + " ([content])\r\n" +
@@ -123,15 +127,16 @@ namespace Moo.Core.Daemon
                     reNew = false;
                     using (var cmd = new SqlCommand(
                         "IF NOT EXISTS(SELECT * FROM " + type + " WHERE [ID]=@ID)\r\n" +
-                        "   INSERT INTO " + type + "([ID],[title],[content]) VALUES(@ID,@title,@content)\r\n" +
+                        "   INSERT INTO " + type + "([ID],[title],[content],[time]) VALUES(@ID,@title,@content,@time)\r\n" +
                         "ELSE\r\n" +
                         //"IF "+
-                        "   UPDATE " + type + " SET [content]=@content,[title]=@title WHERE [ID]=@ID\r\n"
+                        "   UPDATE " + type + " SET [content]=@content,[title]=@title,[time]=@time WHERE [ID]=@ID\r\n"
                         , conn))
                     {
                         cmd.Parameters.AddWithValue("ID", item.ID);
                         cmd.Parameters.AddWithValue("content", item.Content);
                         cmd.Parameters.AddWithValue("title", item.Title);
+                        cmd.Parameters.AddWithValue("time", timeStamp[type]);
                         cmd.ExecuteNonQuery();
                     }
                     using (var cmd = new SqlCommand("DELETE FROM Suffix" + type + " WHERE ID=@ID", conn))
@@ -156,6 +161,14 @@ namespace Moo.Core.Daemon
             }
             if (reNew)
             {
+                foreach (string type in indexInterface.Types)
+                {
+                    using (var cmd = new SqlCommand("DELETE FROM [" + type + "] WHERE [time]<>@time", conn))
+                    {
+                        cmd.Parameters.AddWithValue("time", timeStamp[type]);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
                 indexInterface = null;
                 sleepTime = 10000;
             }
