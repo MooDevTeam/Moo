@@ -47,7 +47,7 @@ namespace Moo.API
         [WebGet]
         public object Debug()
         {
-            return "";
+            return Search();
         }
         #endregion
 
@@ -83,7 +83,7 @@ namespace Moo.API
             string text = QueryParameters["text"];
             string type = QueryParameters["type"];
             int top = int.Parse(QueryParameters["top"]);
-            if (!new[] { "Problem", "Tag", "Article", "Contest", "User" }.Contains(type))
+            if (!new Moo.Core.IndexAPI.IndexInterface().Types.Contains(type))
                 throw new ArgumentException("类型无效");
             return Moo.Core.IndexAPI.Search.Instance.DoSearch(text, type, top);
         }

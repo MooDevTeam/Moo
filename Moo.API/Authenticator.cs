@@ -16,7 +16,7 @@ namespace Moo.API
             "", "HelpPageInvoke",
             "Echo", "Debug",
             "Login", "GetUserByName", "CreateUser","GetPublicKey",
-            "ParseWiki"
+            "ParseWiki","Search"
         };
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
