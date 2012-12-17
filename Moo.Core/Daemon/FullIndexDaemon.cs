@@ -51,7 +51,7 @@ namespace Moo.Core.Daemon
                 using (var cmd = new SqlCommand(
                 "IF NOT EXISTS(SELECT * FROM sysobjects WHERE [id] =object_id(@TableName)and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n" +
                 "BEGIN\r\n" +
-                "CREATE TABLE " + type + "\r\n" +
+                "CREATE TABLE [" + type + "]\r\n" +
                 "(\r\n" +
                 "    [ID] INT,\r\n" +
                 "    [title] nvarchar(50),\r\n" +
@@ -59,17 +59,17 @@ namespace Moo.Core.Daemon
                 "    [time] datetime\r\n" +
                 "    CONSTRAINT PK_"+type+" PRIMARY KEY([ID])\r\n" +
                 ")\r\n" +
-                "CREATE FULLTEXT INDEX ON " + type + "([content]) KEY INDEX PK_"+type+" ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n" +
+                "CREATE FULLTEXT INDEX ON [" + type + "]([content]) KEY INDEX PK_"+type+" ON ft_Indexer WITH(CHANGE_TRACKING = AUTO)\r\n" +
                 "END\r\n" +
                 "IF NOT EXISTS(SELECT * FROM sysobjects WHERE ID=object_id(@SuffixTableName) and OBJECTPROPERTY(id, N'IsUserTable') = 1)\r\n" +
                 "BEGIN\r\n" +
-                "    CREATE  TABLE Suffix" + type + "\r\n" +
+                "    CREATE  TABLE [Suffix" + type + "]\r\n" +
                 "    (\r\n" +
-                "        [ID] INT FOREIGN KEY([ID]) REFERENCES "+type+"([ID]) ON DELETE CASCADE,\r\n" +
+                "        [ID] INT FOREIGN KEY([ID]) REFERENCES ["+type+"]([ID]) ON DELETE CASCADE,\r\n" +
                 "        [content] nvarchar(50)\r\n" +
                 "    )\r\n" +
-                "    CREATE NONCLUSTERED INDEX IDX_CONTENT ON Suffix" + type + " ([content])\r\n" +
-                "    CREATE NONCLUSTERED INDEX IDX_ID ON Suffix" + type + " ([ID])\r\n" +
+                "    CREATE NONCLUSTERED INDEX IDX_CONTENT ON [Suffix" + type + "] ([content])\r\n" +
+                "    CREATE NONCLUSTERED INDEX IDX_ID ON [Suffix" + type + "] ([ID])\r\n" +
                 "END\r\n", conn
                 ))
                 {
@@ -126,11 +126,11 @@ namespace Moo.Core.Daemon
                 {
                     reNew = false;
                     using (var cmd = new SqlCommand(
-                        "IF NOT EXISTS(SELECT * FROM " + type + " WHERE [ID]=@ID)\r\n" +
-                        "   INSERT INTO " + type + "([ID],[title],[content],[time]) VALUES(@ID,@title,@content,@time)\r\n" +
+                        "IF NOT EXISTS(SELECT * FROM [" + type + "] WHERE [ID]=@ID)\r\n" +
+                        "   INSERT INTO [" + type + "]([ID],[title],[content],[time]) VALUES(@ID,@title,@content,@time)\r\n" +
                         "ELSE\r\n" +
                         //"IF "+
-                        "   UPDATE " + type + " SET [content]=@content,[title]=@title,[time]=@time WHERE [ID]=@ID\r\n"
+                        "   UPDATE [" + type + "] SET [content]=@content,[title]=@title,[time]=@time WHERE [ID]=@ID\r\n"
                         , conn))
                     {
                         cmd.Parameters.AddWithValue("ID", item.ID);
@@ -139,7 +139,7 @@ namespace Moo.Core.Daemon
                         cmd.Parameters.AddWithValue("time", timeStamp[type]);
                         cmd.ExecuteNonQuery();
                     }
-                    using (var cmd = new SqlCommand("DELETE FROM Suffix" + type + " WHERE ID=@ID", conn))
+                    using (var cmd = new SqlCommand("DELETE FROM [Suffix" + type + "] WHERE ID=@ID", conn))
                     {
                         cmd.Parameters.AddWithValue("ID", item.ID);
                         cmd.ExecuteNonQuery();
@@ -149,7 +149,7 @@ namespace Moo.Core.Daemon
                     {
                         for (int i = 0; i < keyword.Length; i++)
                         {
-                            using (var cmd = new SqlCommand("INSERT INTO Suffix" + type + "([ID],[content]) VALUES(@ID,@keyword)", conn))
+                            using (var cmd = new SqlCommand("INSERT INTO [Suffix" + type + "]([ID],[content]) VALUES(@ID,@keyword)", conn))
                             {
                                 cmd.Parameters.AddWithValue("ID", item.ID);
                                 cmd.Parameters.AddWithValue("keyword", keyword.Substring(i));
