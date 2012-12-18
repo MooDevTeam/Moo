@@ -107,7 +107,7 @@ namespace Moo.Core.IndexAPI
                 }
             }
             if (last < content.Length - 1)
-                ret.Add(new SearchResult.ContentSegment() { Match = false, Text = content.Substring(last) });
+                ret.Add(new SearchResult.ContentSegment() { Match = false, Text = getSeg(content,last,content.Length-last) });
             return ret;
         }
         public Int32 IndexStatistics(string type)

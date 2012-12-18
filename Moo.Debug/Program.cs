@@ -89,7 +89,7 @@ namespace Moo.Debug
                     DateTime st = DateTime.Now;
                     using (var search = new Search())
                     {
-                        foreach (Search.SearchResult result in search.DoSearch(toSearch, "Problem", 5))
+                        foreach (Search.SearchResult result in search.DoSearch(toSearch, "Article", 5))
                         {
                             Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
                             foreach (Search.SearchResult.ContentSegment match in result.Content)
