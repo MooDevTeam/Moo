@@ -93,7 +93,7 @@ namespace Moo.Core.IndexAPI
             {
                 foreach (string key in keywords)
                 {
-                    if (i + key.Length < content.Length && key.Equals(content.Substring(i, key.Length),StringComparison.CurrentCultureIgnoreCase))
+                    if (i + key.Length <= content.Length && key.Equals(content.Substring(i, key.Length),StringComparison.CurrentCultureIgnoreCase))
                     {
                         if (last < i)
                         {
