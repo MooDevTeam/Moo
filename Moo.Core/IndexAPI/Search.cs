@@ -80,9 +80,9 @@ namespace Moo.Core.IndexAPI
         }
         string getSeg(string content, int startIndex, int length)
         {
-            if (length <= 10)
+            if (length <= 17)
                 return content.Substring(startIndex, length);
-            return content.Substring(startIndex, 7) + "...";
+            return content.Substring(startIndex, 7) + "..." + content.Substring(startIndex + length - 7, 7);
         }
         List<SearchResult.ContentSegment> getMatchRange(string content, List<string> keywords)
         {
