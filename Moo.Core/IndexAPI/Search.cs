@@ -94,8 +94,8 @@ namespace Moo.Core.IndexAPI
                             ret.Add(new SearchResult.ContentSegment() { Match = false, Text = content.Substring(last, i - last) });
                         }
                         ret.Add(new SearchResult.ContentSegment() { Match = true, Text = key });
-                        i += key.Length - 1;
                         last = i + key.Length;
+                        i += key.Length - 1;
                         break;
                     }
                 }
