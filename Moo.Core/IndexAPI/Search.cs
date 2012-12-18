@@ -26,7 +26,7 @@ namespace Moo.Core.IndexAPI
             }
             public int ID;
             public List<ContentSegment> Content;
-            public string Title;
+            public List<ContentSegment> Title;
         }
         SqlConnection conn = new SqlConnection("Database=Indexer;" + ConfigurationManager.ConnectionStrings["IndexerDB"].ConnectionString);
 
@@ -54,7 +54,7 @@ namespace Moo.Core.IndexAPI
                         ret.Add(new SearchResult()
                             {
                                 ID = reader.GetInt32(0),
-                                Title = reader.GetString(1),
+                                Title = getMatchRange(reader.GetString(1), new List<string>() { keyword }),
                                 Content = getMatchRange(reader.GetString(2), keywords)
                             });
                 }
@@ -78,6 +78,12 @@ namespace Moo.Core.IndexAPI
             }
             return ret;
         }
+        string getSeg(string content, int startIndex, int length)
+        {
+            if (length <= 10)
+                return content.Substring(startIndex, length);
+            return content.Substring(startIndex, 7) + "...";
+        }
         List<SearchResult.ContentSegment> getMatchRange(string content, List<string> keywords)
         {
             List<SearchResult.ContentSegment> ret = new List<SearchResult.ContentSegment>();
@@ -87,15 +93,15 @@ namespace Moo.Core.IndexAPI
             {
                 foreach (string key in keywords)
                 {
-                    if (i + key.Length < content.Length && key == content.Substring(i, key.Length))
+                    if (i + key.Length < content.Length && key.Equals(content.Substring(i, key.Length),StringComparison.CurrentCultureIgnoreCase))
                     {
                         if (last < i)
                         {
-                            ret.Add(new SearchResult.ContentSegment() { Match = false, Text = content.Substring(last, i - last) });
+                            ret.Add(new SearchResult.ContentSegment() { Match = false, Text = getSeg(content,last, i - last) });
                         }
-                        ret.Add(new SearchResult.ContentSegment() { Match = true, Text = key });
-                        i += key.Length - 1;
+                        ret.Add(new SearchResult.ContentSegment() { Match = true, Text = content.Substring(i,key.Length) });
                         last = i + key.Length;
+                        i += key.Length - 1;
                         break;
                     }
                 }

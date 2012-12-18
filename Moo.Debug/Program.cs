@@ -80,7 +80,7 @@ namespace Moo.Debug
 
         static void Main(string[] args)
         {
-            //Moo.Core.Daemon.FullIndexDaemon.Instance.Start();
+            Moo.Core.Daemon.FullIndexDaemon.Instance.Start();
             try
             {
                 while (true)
@@ -89,7 +89,7 @@ namespace Moo.Debug
                     DateTime st = DateTime.Now;
                     using (var search = new Search())
                     {
-                        foreach (Search.SearchResult result in search.DoSearch(toSearch, "Article", 5))
+                        foreach (Search.SearchResult result in search.DoSearch(toSearch, "Problem", 5))
                         {
                             Console.WriteLine("ID:{0} Title:{1}", result.ID, result.Title);
                             foreach (Search.SearchResult.ContentSegment match in result.Content)
@@ -105,7 +105,7 @@ namespace Moo.Debug
             catch (Exception)
             {
             }
-            //Moo.Core.Daemon.FullIndexDaemon.Instance.Stop();
+            Moo.Core.Daemon.FullIndexDaemon.Instance.Stop();
             /*
             string PublicKey = Get("PublicKey");
             RSA rsa=tool.Deserialize<RSA>(PublicKey);
