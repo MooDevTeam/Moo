@@ -80,7 +80,7 @@ namespace Moo.Core.IndexAPI
                 return new IndexItem
                 {
                     ID = user.ID,
-                    Content = user.BriefDescription + user.Description,
+                    Content = user.BriefDescription + "\r\n" + user.Description,
                     Keywords = new List<string>(),
                     Title = user.Name,
                 };
