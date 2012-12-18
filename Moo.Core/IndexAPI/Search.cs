@@ -106,7 +106,7 @@ namespace Moo.Core.IndexAPI
                     }
                 }
             }
-            if (last < content.Length - 1)
+            if (last < content.Length)
                 ret.Add(new SearchResult.ContentSegment() { Match = false, Text = getSeg(content,last,content.Length-last) });
             return ret;
         }
