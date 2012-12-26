@@ -38,15 +38,16 @@ namespace Moo.Core.IndexAPI
         {
             conn.Dispose();
         }
-        public IEnumerable<SearchResult> DoSearch(string keyword, string type, int top)
+        public IEnumerable<SearchResult> DoSearch(string keyword, string type, int top, int skip)
         {
             List<string> keywords = split(keyword);
             List<SearchResult> ret = new List<SearchResult>();
             using (var cmd = new SqlCommand("" +
-                "SELECT * FROM [fn_search_" + type + "](@key,@top,@fulltext)", conn))
+                "SELECT * FROM [fn_search_" + type + "](@key,@top,@skip,@fulltext)", conn))
             {
                 cmd.Parameters.AddWithValue("key", keyword);
                 cmd.Parameters.AddWithValue("top", top);
+                cmd.Parameters.AddWithValue("skip",skip);
                 cmd.Parameters.AddWithValue("fulltext", keywords.Count);
                 using (var reader = cmd.ExecuteReader())
                 {

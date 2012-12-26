@@ -91,7 +91,7 @@ namespace Moo.API
 
                 using (var search = new Search())
                 {
-                    var searchResult= search.DoSearch(text, type, top);
+                    var searchResult= search.DoSearch(text, type, top,0);
                     return searchResult;
                 }
             }
