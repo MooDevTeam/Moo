@@ -383,6 +383,9 @@ namespace Moo.Core.Security
                     {Function.GarbageCollect,new List<Func<bool?>>{
                         ()=>me.Role>=SiteRole.Worker?(bool?)true:null
                     }},
+                    {Function.ReadIndexStatistics,new List<Func<bool?>>{
+                        ()=>me.Role>=SiteRole.Worker?(bool?)true:null
+                    }},
                 };
             }
         }

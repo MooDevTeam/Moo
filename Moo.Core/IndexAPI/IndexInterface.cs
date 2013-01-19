@@ -17,7 +17,7 @@ namespace Moo.Core.IndexAPI
             {
                 return new List<string>
                 {
-                    "Problem","Article","User","Contest","Tag"
+                    "Problem","Article","User","Contest","Tag","File"
                 };
             }
         }
@@ -42,6 +42,8 @@ namespace Moo.Core.IndexAPI
                     return NextContest();
                 case "Tag":
                     return NextTag();
+                case "File":
+                    return NextFile();
                 default:
                     throw new ArgumentException("类型不存在", "type");
             }
@@ -141,6 +143,26 @@ namespace Moo.Core.IndexAPI
                     Keywords = new List<string>(),
                     Title = tag.Name,
                     Content = ""
+                };
+            }
+        }
+
+        int passedFileNumber;
+        IndexItem NextFile()
+        {
+            using (MooDB db = new MooDB())
+            {
+                UploadedFile file = (from f in db.UploadedFiles
+                                     orderby f.ID
+                                     select f).Skip(passedFileNumber++).FirstOrDefault();
+                if (file == null) return null;
+
+                return new IndexItem
+                {
+                    ID = file.ID,
+                    Keywords = new List<string>(),
+                    Title = file.Name,
+                    Content = file.Description
                 };
             }
         }

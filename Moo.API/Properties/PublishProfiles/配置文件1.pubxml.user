@@ -17,13 +17,13 @@
       <publishTime>12/12/2012 17:23:09</publishTime>
     </File>
     <File Include="bin/Moo.API.dll">
-      <publishTime>12/14/2012 12:32:24</publishTime>
+      <publishTime>12/18/2012 16:00:23</publishTime>
     </File>
     <File Include="bin/Moo.API.pdb">
       <publishTime>09/18/2012 14:53:58</publishTime>
     </File>
     <File Include="bin/Moo.Core.dll">
-      <publishTime>12/14/2012 12:32:23</publishTime>
+      <publishTime>12/18/2012 16:00:21</publishTime>
     </File>
     <File Include="bin/Moo.Core.pdb">
       <publishTime>09/18/2012 14:53:56</publishTime>
@@ -50,7 +50,7 @@
       <publishTime>12/12/2012 17:23:07</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/14/2012 12:32:25</publishTime>
+      <publishTime>12/18/2012 16:00:24</publishTime>
     </File>
     <File Include="WebSockets/WebSocketsAPI.ashx">
       <publishTime>12/12/2012 17:23:07</publishTime>

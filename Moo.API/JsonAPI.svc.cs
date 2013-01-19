@@ -85,15 +85,32 @@ namespace Moo.API
             {
                 string text = QueryParameters["text"];
                 string type = QueryParameters["type"];
+                int? skip = OptionalIntParameter("skip");
                 int top = int.Parse(QueryParameters["top"]);
                 if (!new IndexInterface().Types.Contains(type))
                     throw new ArgumentException("类型无效");
 
                 using (var search = new Search())
                 {
-                    var searchResult= search.DoSearch(text, type, top);
+                    var searchResult = search.DoSearch(text, type, top);
                     return searchResult;
                 }
+            }
+        }
+
+        [OperationContract]
+        [WebGet(UriTemplate = "IndexStatistics")]
+        public object IndexStatistics()
+        {
+            Access.Required(null, null, Function.ReadIndexStatistics);
+            using (var search = new Search())
+            {
+                Dictionary<string, int> result = new Dictionary<string, int>();
+                foreach (var type in new IndexInterface().Types)
+                {
+                    result.Add(type, search.IndexStatistics(type));
+                }
+                return result;
             }
         }
         #endregion

@@ -89,6 +89,7 @@ namespace Moo.Core.Security
         DeleteTag,
 
         //Management
-        GarbageCollect
+        GarbageCollect,
+        ReadIndexStatistics
     }
 }
