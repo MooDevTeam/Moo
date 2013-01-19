@@ -85,7 +85,7 @@ namespace Moo.Core.Daemon
                 if (flg == 0)
                 {
                     using (var cmd = new SqlCommand("" +
-                            "CREATE FUNCTION fn_search_" + type + "(@key nvarchar(50),@top int,@fulltext int = 1)\r\n" +
+                            "CREATE FUNCTION fn_search_" + type + "(@key nvarchar(50),@top int,@skip int,@fulltext int = 1)\r\n" +
                             "RETURNS @ReturnTable TABLE([ID] INT,[title] nvarchar(50),[content] varchar(max))\r\n" +
                             "AS\r\n" +
                             "BEGIN\r\n" +
@@ -104,7 +104,9 @@ namespace Moo.Core.Daemon
                             "       INSERT INTO @T1\r\n" +
                             "       SELECT  DISTINCT [ID],[RANK]=1000000  FROM [Suffix" + type + "] WHERE [content] like @key+'%'" +
                             "    INSERT INTO @T2\r\n" +
-                            "    SELECT TOP(@top) [ID],SUM([RANK]) FROM @T1 GROUP BY [ID] ORDER BY SUM([RANK]) DESC\r\n" +
+                            "    SELECT [ID],[RANK] FROM\r\n" +
+                            "    (SELECT TOP(@top+@skip) [ID],SUM([RANK]) AS [RANK],ROW_NUMBER() OVER(ORDER BY SUM([RANK]) DESC) AS RowNumber FROM @T1 GROUP BY [ID] ORDER BY SUM([RANK]) DESC) AS TMP\r\n" +
+                            "    WHERE [RowNumber]>@skip\r\n" +
                             "    INSERT INTO @ReturnTable\r\n" +
                             "    SELECT [@T2].[ID],[title],[content] FROM\r\n" +
                             "    @T2 LEFT JOIN ["+type+"] ON [@T2].[ID]=["+type+"].[ID]\r\n" +
